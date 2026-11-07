@@ -1,0 +1,368 @@
+.kanbanSubtaskKindBadge {
+  /* Единственный шринкуемый элемент в строке — см. frontend-responsive.mdc. */
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-accent-soft);
+  color: var(--color-fg-on-accent-soft);
+}
+.kanbanParentStackHeaderRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+.kanbanParentStackHeaderRow .kanbanParentStackTitleLink {
+  flex: 1;
+  min-width: 0;
+}
+.kanbanParentStackHeader {
+  padding: var(--space-sm) var(--space-compact);
+  background: var(--color-bg-muted);
+  border-bottom: none;
+  touch-action: none;
+  user-select: none;
+  min-width: 0;
+}
+.kanbanParentStackTitleLink {
+  display: block;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+.kanbanParentStackTitle {
+  display: block;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.kanbanParentStackTitleLink:hover .kanbanParentStackTitle {
+  color: var(--color-accent);
+}
+.kanbanParentStackSummary {
+  padding: var(--space-sm) var(--space-compact) var(--space-sm);
+  border-bottom: 1px solid var(--color-border-subtle, var(--color-border));
+  background: var(--color-bg-muted);
+  cursor: pointer;
+}
+.kanbanParentStackSummaryTags {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.kanbanParentStackSummaryBody {
+  gap: 6px;
+}
+.kanbanParentStackBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding: var(--space-compact) var(--space-sm) var(--space-sm);
+  background: var(--color-bg-muted);
+}
+.kanbanParentStackSubtasksToggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  margin: 0;
+  padding: 4px var(--space-xs);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font: inherit;
+  font-size: var(--font-size-caption);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  text-align: left;
+}
+.kanbanParentStackSubtasksToggle:hover {
+  color: var(--color-heading);
+  background: color-mix(in srgb, var(--color-bg-surface) 70%, transparent);
+}
+.kanbanParentStackSubtasksToggle:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+.kanbanParentStackSubtasksChevronOpen {
+  transform: rotate(90deg);
+}
+.kanbanParentStackSubtasksCount {
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: normal;
+  opacity: 0.85;
+}
+.kanbanParentStackSubtasksAction {
+  margin-left: auto;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--color-text-secondary);
+}
+.kanbanParentStackSubtasksToggle:hover .kanbanParentStackSubtasksAction {
+  color: var(--color-accent);
+}
+.kanbanParentStackSubtasksPanel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    grid-template-rows var(--duration-normal) var(--ease-out),
+    opacity var(--duration-normal) var(--ease-out);
+}
+.kanbanParentStackSubtasksPanelOpen {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  pointer-events: auto;
+}
+.kanbanParentStackSubtasksPanelInner {
+  overflow: hidden;
+  min-height: 0;
+}
+.kanbanParentStackSubtasksList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  padding-top: 2px;
+}
+.kanbanParentStackSubtasksPanelInner .kanbanParentStackSubtasksList + .kanbanParentStackSubtasksList {
+  margin-top: var(--space-sm);
+}
+.kanbanOtherStatusSubtaskLink:hover .kanbanSubtaskCardTitle {
+  color: var(--color-accent);
+}
+.kanbanOtherStatusSubtaskTop .kanbanSubtaskCardRef {
+  margin-right: auto;
+}
+.kanbanSubtaskBadgeBtn {
+  align-self: flex-start;
+  margin-top: 0;
+  margin-left: 0;
+  padding: 0;
+  font-size: var(--font-size-caption);
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  line-height: inherit;
+  cursor: pointer;
+  text-align: left;
+  width: fit-content;
+}
+.kanbanSubtaskBadgeBtn:hover {
+  color: var(--color-accent);
+}
+.kanbanSubtaskBadgeBtn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .kanbanParentStackSubtasksChevron,
+  .kanbanParentStackSubtasksPanel {
+    transition: none;
+  }
+}
+.kanbanSubtaskCard {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-elev-1);
+  touch-action: none;
+  user-select: none;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.12s ease;
+}
+.kanbanSubtaskCard:hover,
+.kanbanSubtaskCard:focus-within {
+  border-color: color-mix(in srgb, var(--color-accent) 38%, var(--color-border));
+  box-shadow: var(--shadow-elev-2);
+}
+:global([data-theme='dark']) .kanbanSubtaskCard {
+  background: var(--color-bg-elevated);
+}
+.kanbanSubtaskCardLink {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-sm);
+  color: inherit;
+  text-decoration: none;
+  min-width: 0;
+  border-radius: inherit;
+  outline: none;
+}
+.kanbanSubtaskCardLink:focus-visible {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 55%, transparent);
+}
+.kanbanSubtaskCardLink:hover .kanbanSubtaskCardTitle {
+  color: var(--color-accent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .kanbanSubtaskCard {
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .kanbanSubtaskCard:hover,
+  .kanbanSubtaskCard:focus-within {
+    transform: none;
+  }
+}
+.kanbanSubtaskCardTop {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+.kanbanSubtaskCardTop .kanbanSubtaskCardRef {
+  margin-right: auto;
+}
+.kanbanSubtaskCardTags {
+  margin-top: 0;
+  overflow: hidden;
+  max-height: 24px;
+  min-width: 0;
+}
+.kanbanSubtaskCardRef {
+  font-size: var(--font-size-caption);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.kanbanSubtaskAssigneeAvatar {
+  flex-shrink: 0;
+}
+.kanbanSubtaskCardTitle {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--color-text-primary);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.kanbanSubtaskCardFooter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+.kanbanNestedSubtaskOpenCue {
+  flex-shrink: 0;
+  margin-left: auto;
+  font-size: var(--font-size-caption);
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+.kanbanSubtaskCardLink:hover .kanbanNestedSubtaskOpenCue {
+  color: var(--color-accent);
+}
+.kanbanSubtaskTypeIcon {
+  font-size: 14px;
+  line-height: 1;
+  color: var(--color-accent);
+  opacity: 0.9;
+}
+.kanbanSubtaskPriorityBars {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.kanbanSubtaskPriorityBars span {
+  display: block;
+  width: 14px;
+  height: 3px;
+  border-radius: 1px;
+}
+
+.kanbanParentStack {
+  /* Переопределяем фиксированную высоту из .kanbanCard — стек растёт по содержимому */
+  height: auto;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  background: var(--color-bg-muted);
+  border-color: var(--color-border);
+}
+/* CSS-шеврон вместо ▶/▼ (unicode часто рисуется как оранжевая «кнопка»). */
+.kanbanParentStackSubtasksChevron {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin: 0 2px;
+  border-style: solid;
+  border-width: 4px 0 4px 6px;
+  border-color: transparent transparent transparent var(--color-text-muted);
+  transition: transform var(--duration-normal) var(--ease-out);
+  flex-shrink: 0;
+}
+.kanbanOtherStatusSubtask {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-subtle);
+}
+.kanbanOtherStatusSubtaskLink {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-sm);
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+}
+.kanbanOtherStatusSubtaskLink:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+.kanbanOtherStatusSubtaskTop {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+.kanbanOtherStatusBadge {
+  flex-shrink: 0;
+  max-width: 7rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--font-size-caption);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  padding: 1px var(--space-xs);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+}
+/* Подъём при ховере только для вложенных карточек (не для drag-able standalone) */
+.kanbanParentStackBody .kanbanSubtaskCard:hover,
+.kanbanParentStackBody .kanbanSubtaskCard:focus-within {
+  transform: translateY(-1px);
+}

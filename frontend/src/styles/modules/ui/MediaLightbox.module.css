@@ -1,0 +1,80 @@
+.lightboxOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-lightbox);
+  background: rgba(0, 0, 0, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: zoom-out;
+  backdrop-filter: blur(4px);
+  animation: lightboxFadeIn 0.15s ease;
+}
+
+.lightboxOverlayElevated {
+  z-index: var(--z-lightbox-elevated);
+}
+
+@keyframes lightboxFadeIn {
+  from { opacity: 0 }
+  to   { opacity: 1 }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lightboxOverlay {
+    animation: none;
+  }
+}
+
+.lightboxClose {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 32px;
+  line-height: 1;
+  color: #fff;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.8;
+  padding: 4px 8px;
+  border-radius: 6px;
+  z-index: 1;
+}
+
+.lightboxClose:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.lightboxClose:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.lightboxImage {
+  max-width: min(90vw, 1200px);
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 6px;
+  cursor: default;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+}
+
+.lightboxVideo {
+  max-width: min(90vw, 1200px);
+  max-height: 90vh;
+  border-radius: 6px;
+  cursor: default;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+}
+
+.lightboxFooter {
+  position: absolute;
+  bottom: var(--space-xl);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: var(--space-sm);
+  cursor: default;
+}

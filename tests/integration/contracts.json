@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "contracts": [
+    {
+      "service_id": "sso",
+      "kind": "oauth2_app",
+      "required_env": [
+        "APP_BASE_URL",
+        "E2E_SSO_USER_EMAIL",
+        "E2E_SSO_USER_PASSWORD"
+      ],
+      "optional_env": [
+        "SSO_BASE_URL",
+        "SSO_CLIENT_ID",
+        "SSO_CLIENT_SECRET",
+        "SSO_REDIRECT_URI"
+      ]
+    }
+  ]
+}

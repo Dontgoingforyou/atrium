@@ -1,0 +1,251 @@
+---
+description: DRY — единые источники правды в проекте; что переиспользовать, что не дублировать
+globs: backend/**/*.py,frontend/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# DRY — каталог переиспользуемых слоёв
+
+Перед добавлением «своей» копии логики проверь этот список. Подробнее о принципах — **general.mdc** (раздел «DRY и единый источник правды»), о сервисном слое — **services.mdc**.
+
+## Когда DRY обязателен
+
+- Одна и та же **политика** (права, видимость, лимиты, формат ошибки) — один модуль.
+- Одна и та же **инфраструктура** (WS, storage, пагинация, SSO) — не копировать в домен.
+- Одна и та же **бизнес-операция** из HTTP, SQLAdmin и фоновой задачи — один сервис/use case.
+
+## Когда дублирование допустимо
+
+- **Разные bounded context** с похожим UX (канбан задач vs воронка специалистов) — не сливать в «универсальный фреймворк» без третьего хоста и явной боли. Дерево комментариев задачи, документа и специалиста уже общее: `app/services/comment_thread.py`.
+- Фронт дублирует **удобство** (лейблы, disabled-кнопки); бэкенд остаётся **обязательной** проверкой — см. **security.mdc**.
+
+## Актуальность этого файла
+
+Таблицы ниже — рабочий каталог, а не архив: устаревшая строка (переименованная/удалённая функция) опаснее отсутствия строки, потому что ей доверяют не глядя в код.
+
+- **Добавляешь новый кросс-доменный модуль, фасад или сквозную утилиту** (что-то, что должны вызывать 2+ домена) — в **том же** PR добавь строку в соответствующую таблицу этого файла.
+- **Переименовываешь/удаляешь/переносишь** что-то из таблицы ниже — обнови или удали строку в том же PR, не оставляй как «почини потом».
+- Заметил в таблице путь, который уже не существует или ведёт не туда, — исправь строку сразу же, даже если пришёл в файл по другому поводу.
+
+---
+
+## Backend — сквозные слои
+
+| Область | Единый источник | Не дублировать |
+|---------|-----------------|----------------|
+| Исключения домена, HTTP-коды, `code` API | `app/core/exceptions.py` (`NotFoundError`, `ForbiddenError`, …); тело вручную — `build_error_payload` | `HTTPException` в сервисах — **error-handling.mdc** |
+| HTTP MCP `/api/v1/mcp` | `app/portal_mcp/` — тул зовёт публичный фасад домена с `UserPublic` из Bearer | свой SQL, `commit` и вторая матрица ролей в туле — **backend-mcp.mdc** |
+| Время UTC | `app/core/utils.now_utc` | локальные `_now_utc()` в сервисах |
+| Календарный день срока задачи / просрочка | `portal_collab/services/_task_due_calendar.py` (`today_portal`, `overdue_cutoff_utc`, `task_due_calendar_date`) | `due_at < now`; свой `ZoneInfo("Europe/Moscow")` в home/queries/reminders |
+| Сравнение секретов (webhook, HMAC URL) | `app/core/utils.hmac_secrets_equal` | `hmac.compare_digest` напрямую без проверки длины |
+| JWT payload без верификации (TTL кэша и т.п.) | `app/core/utils.decode_jwt_payload_unverified` | не использовать для auth-решений |
+| ILIKE-поиск (экранирование) | `app/core/text_search.escape_ilike_pattern` | копии `_escape_ilike_pattern` в доменах |
+| Группы IdP, slug ролей, `gid_number` отдела | `app/core/auth_constants.py` (`SSO_GID_OUTSTAFF`, `IDP_GROUP_OUTSTAFF`, `normalize_sso_gid_number`); `IDP_GROUP_MANAGER` — алиас `outstaff`, не политика менеджера | строки `"outstaff"`, `"students"`, `"10000"` в коде |
+| Enum статусов/типов | `app/core/enums.py` | магические строки в моделях и API |
+| «Менеджер или admin» / timesheet-only | `app/core/permissions.py`: `is_manager_or_admin`, `is_timesheet_only`, `require_manager_or_admin` | своя проверка по группе `outstaff` вместо `gid_number` |
+| RBAC документов | `app/services/rbac.py`: `user_can_access_documents`, `user_can_access_developer_docs`; константы секций — `portal_documents/constants.py` | своя проверка `is_timesheet_only` в доменах вместо вызова этих функций |
+| Настройки, лимиты, TTL | `app/core/config.Settings` / `get_settings()` | хардкод порогов — **backend-storage.mdc** |
+| Redis URL + пароль | `app/core/redis_url.build_redis_url_with_password` / `Settings.effective_redis_url` | ручная склейка `REDIS_URL` с паролем |
+| Константы типов поиска | `app/core/portal_search_constants.py` | литералы `document`/`task`/… в роутерах поиска |
+| Таймауты httpx-клиентов к внешним сервисам | `app/core/config.Settings` (`http_client_timeout_seconds` и отдельные поля по сервису) | `httpx.AsyncClient(timeout=20.0)` хардкод — не копировать |
+| Постраничные ответы | `app/schemas/pagination.py` → `PagedResponse[T]` | свой `{items, total, skip, limit}` — **api-pagination.mdc** |
+| Текущий пользователь, deps | `app/api/deps_auth.py` | разбор JWT в роутерах вручную |
+| SSO, refresh, группы токена | `app/services/sso/` | отдельный httpx к Keycloak в доменах |
+| Белый список входа на стенд | `app/services/sso/login_allowlist.py` (`ensure_portal_login_allowed`); пустой `PORTAL_LOGIN_ALLOWLIST` — без ограничения | своя проверка email в роутерах auth / `deps_auth` |
+| Клиент AsyncOpenAI (сборка) | `app/services/openai_client.py` (`build_openai_client`); эмбеддинги и Whisper — одни `openai_api_key` / `openai_base_url`; Whisper — `timeout=Settings.openai_whisper_timeout_seconds` | своя сборка `AsyncOpenAI(**kwargs)` в доменах (`portal_search/_embedding_generate.py` — `http_client_timeout_seconds`; `portal_chat/transcription.py` — отдельный timeout Whisper; guard на отсутствие `api_key` и тип ошибки — на стороне домена) |
+| Профиль, аватар пользователя | `user_photo_url.py` + `user_photo_meta_cache.py` (`get_cached_photo_meta` / `get_cached_photo_meta_bulk`) + EA `integrations/effective_admin/` + `portal_user_avatar.py` / `portal_user_photo_proxy.py` + публичный `portal_user.avatar_urls_for_subs`; group chat — `avatar_presign` + MinIO | своя валидация MIME; MinIO user-avatar; цикл `get_cached_photo_meta` в списке пользователей; вызов `_avatar_url_for_profile` из другого домена |
+| Видимость людей в пикерах и SQLAdmin «Сотрудники» | `portal_user_visibility.py` (`hidden_emails_for_directory`, `directory_employee_visible_sql`, `HIDDEN_DIRECTORY_EMAILS`) + EA `emails_check.py` + кэш `ea_email_active_cache.py` + `portal_user_profile.gid_number`; вход — `list_portal_users` / `list_portal_user_subs_ordered` и `PortalSpecialistProfileAdmin` | свой фильтр уволенных/тестовых/чужого отдела во фронте или в `/users/specialists` |
+| Валидация MIME/размера загрузок | `app/services/file_upload_validation.py` (`open_upload_stream` — поток в MinIO без копии тела в `bytes`) | копии whitelist MIME; `await file.read()` целиком в роутере вложения — **backend-storage.mdc** |
+| Jira (специалисты BASE) | `app/integrations/jira/` | write для задач — `write_client.py` + `portal_collab/services/task_jira_*` |
+| Outbound задач → AUTASKS | `task_jira_outbound.py`, `task_jira_schedule.py`, `task_jira_backfill.py`, `task_jira_column_sync.py` (gate `jira_tasks_sync_enabled`) | inbound из AUTASKS; sync на staging |
+| Теги документов и задач | `app/services/portal_tags.py` (`list/create/update/delete`, `replace_document_tags`, `resolve_name_and_slug_for_admin_form`) | CRUD тегов в доменных модулях |
+| Настройки аккаунта | `app/services/portal_account.py` | PATCH профиля в других доменах |
+| Присутствие / last seen | `app/services/portal_presence.py`, `portal_last_seen.py` | — |
+| MinIO: upload, download bytes, presign, delete batch | `app/infrastructure/storage/client.py` (`async_upload_file`, `async_upload_stream_to_key`, `async_download_object_bytes`, `get_presigned_url`, `async_delete_object(s)`) | прямой boto/minio в сервисах; тело вложения читать через `open_upload_stream`, не `await file.read()` целиком — **backend-storage.mdc** / **security.mdc** |
+| Email (SMTP) | `app/infrastructure/email/smtp.py` (`send_email`), шаблоны `app/infrastructure/email/templates.py` | свой aiosmtplib/smtp в доменах; HTML без `html.escape` |
+| Rich-media (изображения в rich-text) | `app/services/rich_media.py` (RBAC + presign) + `app/services/rich_media_upload.py` (upload + magic bytes) | свой upload/RBAC в доменах |
+| SSO token cache (Redis) | `app/infrastructure/cache/token_cache.py` | свой GET/SET по сырому JWT |
+| Rate limit (sliding window) | `app/infrastructure/cache/rate_limit.py` | свой счётчик в Redis/памяти |
+| Lock bulk-reindex | `app/infrastructure/cache/reindex_lock.py` | свой SET NX без fencing token |
+| Optimistic locking (CAS) | `app/core/optimistic_lock.py` (`compare_and_swap_row`) → `ConflictError` | check-then-write version в Python; копия WHERE version в доменах — **services.mdc** |
+| WS-комнаты, pub/sub | `app/infrastructure/ws/room_manager.py`, `managers.py` | свой Redis pub/sub в домене — **backend-websocket.mdc** |
+| WS-инбокс / presence | `app/infrastructure/ws/inbox_manager.py` (`INBOX_CHANNEL_PREFIX`, `inbox_channel`, `inbox_channel_pattern`) | свой канал `inbox:{sub}` |
+| WS keepalive (ping/pong) | `app/infrastructure/ws/keepalive.py` (`ws_keepalive`, `is_pong`) | свой цикл ping в хендлере |
+| WS-тикеты (одноразовые) | `app/infrastructure/ws/_ticket_base.py`, `tickets.py` | копия TTL/store логики |
+| Document collab (Hocuspocus) | `portal_documents/services/document_collab.py` + `routes/document_collab.py`; FE `useDocumentCollabSession` / `utils/documents/documentCollab.ts`; `services/document-collab/` | свой Yjs в FastAPI; managed SaaS |
+| Константы WS-событий тредов | `app/portal_chat/comment_thread_events.py` | строка `"thread_updated"` в сервисах |
+| Push инбокса после уведомления | `inbox_publish.publish_portal_notification_update` / **`publish_portal_notification_updates`** (batch, с `notification_ids_by_sub`) / **`publish_portal_notification_withdrawals`** и **`publish_chat_inbox_withdrawals`** (отзыв после удаления задачи или сообщения) | прямой Redis; `send_message` из домена; цикл `for sub in subs` |
+| SQLAdmin: категории меню | `app/admin/sqladmin_categories.py` | строки категорий в вьюхах |
+| SQLAdmin: формат user_sub | `app/portal_collab/admin/formatters.py` (`fmt_user_sub`, `fmt_author_sub`, …) | свои `_resolve_user` в admin |
+| SQLAdmin: конвертер полей | `app/admin/model_converter.CosmoletAdminModelConverter` | — |
+| SQLAdmin: русские подписи enum (форма + форматтеры) | `app/admin/enum_labels.py` (`AGREEMENT_STATUS_LABELS_RU`, `TASK_STATUS_LABELS_RU`, `TASK_PRIORITY_LABELS_RU`, плюс перечисления `portal_finance` — `CONTRACT_STATUS_LABELS_RU`, `INVOICE_STATUS_LABELS_RU`, `PROCUREMENT_STATUS_LABELS_RU` и др., плюс `portal_learning` — `LEARNING_MATERIAL_TYPE_LABELS_RU`, `LEARNING_MATERIAL_STATUS_LABELS_RU`, `USER_CHECKLIST_STATUS_LABELS_RU`) | свой словарь подписей в `formatters.py`/`model_converter.py`/доменных `admin/*.py` |
+| Карта доменов, политики | `backend/app/MODULES.md` + README пакетов | — |
+
+---
+
+## Backend — доменные фасады (вызывать, не копировать)
+
+| Домен | Фасад / точка входа | Внутренняя разбивка |
+|-------|---------------------|---------------------|
+| Документы | `portal_documents/services/portal_document.py` | `portal_document_queries`, `_mutations`, `_trash`, `_reorder`, `portal_document_shortcuts` (ярлыки documentLink → nav tree), `document_file` (вложения PDF/office/текст; медиа — `rich_media`) |
+| Задачи | `portal_collab/services/task.py` | `_task_queries`, `_task_mutations`, `_task_reads`, `_task_assignees`, `task_home`, `task_column`, `task_comment`, `task_link`, `_task_due_calendar` (просрочка / окна срока) |
+| Договорённости | `portal_collab/services/agreement.py` | — |
+| **Уведомления (все типы)** | `portal_collab/services/notification.py` | `_notification_task` (`create_mention_notifications`, `create_comment_notifications`), `_notification_rows` (`add_comment_notification_row`), `_notification_create` (assign / document / calendar / task due), `_task_due_reminders` (`process_task_due_reminders`) |
+| Чат | `portal_chat/services/chat.py` | `_queries_*`, `_mutations_*` |
+| Специалисты, доска | `portal_specialists/services/board.py` | `board_entries`, `board_columns_statuses`, `board_shared` (`require_manager_or_admin`, `require_specialist_write_access`) |
+| Специалисты, карточка | `portal_specialists/services/specialist_detail.py` | профиль, ссылки, заметки, purge |
+| Специалисты, Jira | `portal_specialists/services/jira_import.py` | `jira_import_board.py` — колонка доски и ссылки импорта; `jira_board_sync.py` — колонки; `specialist_jira_status_map.py` — все status id колонки доски → `column_key`; клиент — `integrations/jira/` |
+| Специалисты, pref | `portal_specialists/services/specialist_board_pref.py` | порядок/скрытие колонок канбана |
+| Специалисты, поиск | `portal_specialists/services/search.py` | вызывается из `portal_search`, не копировать SQL |
+| Поиск | `portal_search/services/search.py` | доменные `_search_*` |
+| Главная | `portal_home/services/home.py` | агрегирует домены, не дублирует их запросы |
+| Навигация | `portal_navigation/services/navigation.py` | — |
+| Календарь | `portal_calendar/services/` (`_calendars`, `_events`, `_attendees`, `_sharing`, `_reminders`, `_access`, `_recurrence`, `_search`) | публичный фасад: `search_events`, `accessible_calendar_event_ids`; cleanup уведомлений — `delete_calendar_event_pre_cancel_notifications`; legacy share-token (`accept_share_token`) |
+| Избранное | `portal_favorites/services/favorite.py` | `add_favorite`, `remove_favorite`, `list_favorites`, `remove_favorites_for_documents` (вызывается из `portal_documents/services/portal_document_trash.py` при purge/TTL — не при soft-delete и не `DELETE` по `PortalFavorite` напрямую в другом домене) |
+| Telegram-привязка | `portal_telegram/services/binding.py` | `generate_bind_code`, `confirm_bind`, `unlink` / `delete_binding_for_user` (purge без своего commit); доставка в TG только через `inbox_publish`, не `send_message` из доменов; ссылка на встречу в отбивке — `calendar_meeting_url.py` (`first_http_url`, `calendar_meeting_http_url`, `calendar_meeting_url_for_notification`); кнопки — `telegram_url_markup.notification_url_keyboard` (не парсить URL в listener и не плодить вторую клавиатуру) |
+| Таймшиты | `portal_time_entries/services/time_entry.py` | `_time_entry_reports` (`ensure_timesheets_access`, `effective_user_sub_filter`), `_jira_csv_import`, `_export`; доступ не копировать — `core.permissions` |
+
+**Правило:** list/get по id — **одна** политика видимости в queries; мутации — в mutations; REST и SQLAdmin по возможности зовут те же функции (**backend-sqladmin.mdc**).
+
+---
+
+## Backend — комментарии и realtime (важно)
+
+| Что | Где | Примечание |
+|-----|-----|------------|
+| CRUD комментариев к **задаче** | `portal_collab/services/task_comment.py` | RBAC через `get_task` |
+| CRUD комментариев к **документу** | `portal_documents/services/document_comment.py` | RBAC через документ |
+| CRUD комментариев о **специалисте** | `portal_specialists/services/specialist_note.py` | RBAC карточки; таблицы отдельные (`specialist_sub`) |
+| Уведомления @mention / комментарий задачи | `portal_collab/services/notification.py` | **не** писать insert в `portal_notification` в других доменах |
+| WS после мутации комментария | `get_task_comments_manager()` / `get_document_comments_manager()` | не свой канал Redis; у специалиста канала нет |
+
+**Shared-слой тредов:** `app/services/comment_thread.py` (`attach_comment_replies`, `list_top_level_comments`). Доменные `task_comment`, `document_comment` и `specialist_note` — RBAC, запись и уведомления своего хоста.
+
+**Снятый техдолг:** `_escape_ilike_pattern` → `core/text_search.py`; `_now_utc` локальные → `core.utils.now_utc`; inbox batch → `publish_portal_notification_updates`.
+
+---
+
+## Backend — мягкое удаление / корзина
+
+Сейчас реализовано только у документов (`portal_document.deleted_at` + TTL-очистка `app/jobs/document_trash_nightly.py`, сервис `portal_documents/services/portal_document_trash.py`). При появлении «корзины» у второго домена (например задач) — повторять ту же схему полей и подход, не изобретать новую:
+
+| Что | Соглашение |
+|-----|------------|
+| Поля модели | `deleted_at: datetime \| None` (aware UTC); отдельный `is_deleted` не заводить |
+| Видимость в списках | queries по умолчанию фильтруют `deleted_at IS NULL`; отдельный `list_trash(...)` — для самой корзины |
+| Окончательная очистка | периодическая задача по TTL в `app/jobs/` (см. **services.mdc**, «Фоновые и периодические задачи»); флаг и час UTC — в `Settings`, срок хранения документов — константа `DOCUMENT_TRASH_TTL_DAYS` |
+| Восстановление | явный `restore_...` в сервисе, не просто `deleted_at = None` россыпью в роутере |
+
+## Backend — канбан / доски
+
+| Сценарий | Модуль | Не путать с |
+|----------|--------|-------------|
+| Колонки и reorder **задач** | `portal_collab`: `task_column.py`, `reorder_task` в `_task_mutations.py`, `task_board_pref.py`, `task_board_ws.py` | — |
+| KPI главной ↔ list_tasks | `_task_home_common.apply_done_this_month_filter` / `apply_no_assignee_filter` + `task_column.task_column_status_sets` (`done_like` / `approval_like` / `closed` / `kpi_inactive`) + `apply_kpi_active_filter`; `status=done` в `list_tasks` раскрывается в done-like ключи (не сырой `done`, если это «На согласовании»); месяц — `month_start_utc` в `_task_due_calendar`; FE URL `tasksPageUrl` (`kpi_open`, `overdue`, `done_this_month`, `no_assignee`); regex title — одна пара BE+FE (`taskColumnTitlePatternsSync.test.ts`) | не копировать SQL; не тащить `status=col_*` в чипы статусов; не второй `ZoneInfo` в queries |
+| Воронка **специалистов** | `portal_specialists`: `board_columns_statuses.py`, `board_entries.py` | это другой домен, другие таблицы |
+| Общее только | `is_manager_or_admin`, WS `TopicRoomManager`, префиксы в `room_manager.py` | «универсальный Kanban-сервис» не существует |
+
+---
+
+## Frontend — сквозные слои
+
+| Область | Единый источник | Не дублировать |
+|---------|-----------------|----------------|
+| Глобальный state: сессия/токен | `src/store/authStore.ts` (`useAuthStore`: `accessToken` in-memory, `expiresAt`/`oauthClientId`/`user` в zustand persist; `setSession`/`clearSession`/`logout`/`patchUser`); ключ persist — `AUTH_PERSIST_KEY` из `src/constants/auth.ts`; DTO `AuthUser` — `src/types/auth.ts`; cross-tab sync через `storage`-слушатель | свой копия стейта сессии в `useState`/Context; хранение `accessToken` в localStorage/sessionStorage; свой `fetch('/auth/logout')` в обход `authStore.logout` |
+| Глобальный state: тема | `src/store/themeStore.ts` (`useThemeStore`: `data-theme` на `<html>` + localStorage через zustand persist; ключ `THEME_PERSIST_KEY`); FOUC-инлайн в `frontend/index.html` дублирует `readPersistedTheme`/`applyThemeToDocument` — держать в синхроне | свой `useState` для темы; хардкод `'cosmolet-theme'`/`'light'` мимо `themeStore` |
+| Undo-уведомления и информационные тосты | `src/contexts/delayedActionContext.ts` (тип + `createContext`) + `src/contexts/DelayedActionContext.tsx` (провайдер) + `src/hooks/delayedActionQueue.ts` (очередь) + `src/hooks/useDelayedAction.ts` (обвязка) + `src/hooks/useDelayedActionContext.ts` (consumer) + `useScheduleDeleteWithUndo.ts` (с отменой) / `useNotifyToast.ts` (без отмены); рендер — `src/components/common/ActionUndoSnackbar.tsx` | свой `useState`/`setTimeout` toast-стейт и вёрстка тоста в компоненте страницы |
+| HTTP, refresh 401, `API_BASE` | `src/api/rawClient.ts` (`apiFetch`, `authenticatedFetch`, `silentRefreshAccessToken`) | свой fetch без refresh |
+| Разбор ошибок API | `src/api/parseResponse.ts` (+ `apiConflict.ts` / `ApiConflictError` для 409 `code=conflict`) | сырой `res.json()` в каждом экране; молчаливый success при CAS-конфликте |
+| CAS PATCH без version в кэше | `patchPortalDocumentWithCas` / `patchTaskWithCas` / `updateEventWithCas` (GET→expected_version) | ручной GET перед каждым PATCH в UI |
+| Ключи React Query | `src/api/queryKeys.ts` (кросс-доменные) или колоцированный `<feature>QueryKeys.ts` рядом со страницей/контроллером (доменные, по правилам колокации из **react-frontend.mdc**) | строковые ключи-литералы в компонентах — **известный техдолг:** в `queryKeys.ts` централизованы кросс-доменные ключи (`PORTAL_USERS_QUERY_KEY`, `PORTAL_CHATS_ALL_QUERY_KEY`, `portalChatMessagesQueryKey`, `portalPinnedMessagesQueryKey`, `PORTAL_NAVIGATION_TREE_QUERY_KEY`, `PORTAL_TAGS_QUERY_KEY`, `PORTAL_FAVORITES_QUERY_KEY`, `PORTAL_NOTIFICATIONS_*` и др.), но часть доменных ключей ещё остаётся литералами вне общего файла; новые ключи заводить в `queryKeys.ts`/`<feature>QueryKeys.ts`, не по образцу существующих лит |
+| Query-ключи документа (карточка, children, comments, history, files, dialog-recent/search) | `src/utils/documents/documentNavigation.ts` (`portalDocumentQueryKey`, `documentChildrenQueryKey`, `documentCommentsQueryKey`, `documentHistoryQueryKey`, `documentFilesQueryKey`, `documentDialogRecentQueryKey`, `documentDialogSearchQueryKey`) — фактический источник для layout, tasks, hooks | литералы `['portal','document', …]` в JSX/страницах; массовый перенос в `queryKeys.ts` — follow-up (трогает hooks/pages/layout) |
+| Query-ключ корзины документов | `src/utils/documents/documentTrashQuery.ts` (`DOCUMENT_TRASH_QUERY_KEY`, `invalidateDocumentTrash`) — TrashPage, `useDocumentActions` | литерал `['portal','document-trash']` / свой `invalidateQueries` после purge/restore |
+| URL аватара пользователя (отсев legacy MinIO) | `src/utils/avatar/sanitizeUserAvatarUrl.ts` (`sanitizeUserAvatarUrl`, `isLegacyMinioUserAvatarUrl`) + `portalUsersAvatarBySub` + `useResolvedAvatarUrl` + `resolveChatAvatarImageUrl` (список/тред/виджет чата) | свой `avatar_url` без санитайза в RequireAuth / пикерах; второй пайплайн фото в чате |
+| Текст на цветной заливке (чип, событие календаря) | `src/utils/color/contrastingTextOn.ts` (`contrastingTextOn`, WCAG contrast); теги — `getContrastingTagTextColor` как обёртка | порог `luminance > 0.5`; хардкод `color: #fff` / `--color-on-accent` на пользовательском фоне |
+| Публичный href документа (`/documents/{id}` и `/p/{slug}/documents/{id}`) | `src/utils/documents/documentHref.ts` (`getDocumentPublicHref`, `getDocumentPublicUrl`) — канон; `portalDocumentHref` в `documentNavigation.ts` — тонкая обёртка SPA без slug | свой `/documents/${id}` / `encodeURIComponent` в страницах и навигации |
+| Приведение unknown → Record (нормализаторы поиска) | `src/utils/search/_normalizeShared.ts` (`asRecord`) — `normalizeSearchHit` и `normalizeSemanticHit` | свой `typeof === 'object'` / каст в каждом нормализаторе |
+| Href результата поиска (документ/чат/задача/специалист/…) | `src/utils/search/searchNavigation.ts` (`getSearchResultHref`); документ без slug делегирует сюда из `documentHref.ts` | свой `/documents/${id}` / `/chats?` в шапке и `/search` |
+| Инвалидация кэша глобального поиска | `src/utils/search/invalidatePortalSearch.ts` (`invalidatePortalSearchQueries`) + `PORTAL_SEARCH_QUERY_KEY_PREFIX` | литерал `['portal','search']` / свой `invalidateQueries` после мутаций |
+| Подсветка поискового query (`?highlight=`) | `src/utils/search/searchHighlight.ts` (`SEARCH_HIGHLIGHT_PARAM`, `clampHighlightQuery`, `highlightPlainTextParts`, `highlightInSanitizedHtml`) | свой `?q=` / разбор токенов / `<mark>` в страницах |
+| DnD id документа/секции сайдбара (`doc:` / `section:`) | `src/utils/navigation/navDocumentDndIds.ts` — канон; `src/components/layout/navDocumentDnd.ts` — re-export + collision/анимация | литералы `doc:` / `section:` в layout/тестах; копировать парсеры |
+| Оптимистичный патч дерева навигации (title/icon/remove/append/reorder) | `src/utils/navigation/patchPortalNavigationTreeCache.ts` + `PORTAL_NAVIGATION_TREE_QUERY_KEY` из `queryKeys.ts` | литералы `['portal','navigation-tree']` в тестах/новых правках; свой обход дерева в компонентах |
+| DTO / типы API | `src/types/` — **и read-, и write-DTO** (`*Create`/`*Patch`/`*Update` живут в `src/types/`, не inline в `*Api.ts`); `*Api.ts` только импортируют их (допустим re-export для совместимости). Пример: `src/types/document.ts` → `PortalDocument`, `PortalDocumentCreate`/`Update`/`QuickCreate`, `PortalTag`/`PortalTagCreate`/`Update` | расходящиеся копии типов; inline write-DTO в `*Api.ts` (история аудита DEV-2212: create/update/patch-тела задвигались прямо в api-файлах — теперь канон в `src/types/`) |
+| UI тред комментариев | `src/components/comments/PortalCommentThread.tsx` | вторая реализация списка/reply/form |
+| Строка добавляемых фильтров (чипы + «+ Добавить фильтр») | `src/components/common/AddableFilterBar.tsx` + `AddableFilterBar.module.css`; обёртка скролла строки — `.controls` в `styles/modules/tasks/TasksPageShell.module.css` (задачи, специалисты, бенч) | свой toolbar из `<select>` / вторая CSS-копия overflow; второй `overflow-x` на `.chipsRow` |
+| Модалки (dialog) | `src/components/ui/Modal.tsx` (`Modal`) — единый портал+backdrop+Escape+body-overflow+close-button; общие `useFocusTrap`/`useBodyScrollLock` — `src/hooks/` (применяются в Modal/ConfirmDialog/RightDrawer/MediaLightbox) | своя `createPortal`+backdrop+keydown+body-overflow реализация в компоненте страницы/секции |
+| Правый drawer (panel+backdrop+transition+focus-trap) | `src/components/ui/RightDrawer.tsx` (`RightDrawer`) + `styles/modules/ui/RightDrawer.module.css`; состояние открытия/анимации — `src/hooks/useRightDrawer.ts` (колбэк `onClosed` — единый источник правды о моменте закрытия: instant для `prefers-reduced-motion`, иначе по `transitionend` transform; контроллеры чистят связанный state в нём, не дублируя `matchMedia`) | своя `createPortal`+backdrop+transition+close в каждом drawer (история документа, связи тега); кросс-доменный импорт `history*` классов из `documents/PortalDocumentAside.module.css` |
+| API тредов | `src/api/commentThreadApi.ts` (`createCommentThreadApi`, `uploadCommentThreadMedia`) | копии list/create/delete/upload-media в *Api.ts |
+| Скачивание blob как файла (экспорт CSV/TXT/XLSX) | `src/utils/downloadBlob.ts` (`triggerBlobDownload`, `filenameFromContentDisposition`) | свой парсинг `Content-Disposition` + `<a>`/`URL.createObjectURL` в каждом *Api.ts |
+| WS reconnect | `src/hooks/ws/` (`constants`, `url`, `useReconnectingWebSocket`, `fetchWsTicket`) | свой backoff в каждом хуке — потребители канона: `useChatWebSocket.ts`, `pages/tasks/useKanbanBoardWebSocket.ts`, `pages/specialists/useSpecialistsBoardWebSocket.ts` |
+| WS-тикет (одноразовый тикет перед подключением) | `src/hooks/ws/fetchWsTicket.ts` (`fetchWsTicket(path): Promise<string \| null>`) — единая POST + разбор `{ticket}` через `authenticatedFetch`, возвращает `null` при сбое | копии `authenticatedFetch(...) + await res.json()` в обход `parseResponse.ts` в WS-хуках; `useChatWebSocket` поверх хелпера зовёт `onError` при `null` (его опция `onError` — только о сбое тикета, не о WS-ошибках) |
+| WS keepalive ping/pong (FE) | `src/utils/wsPing.ts` (`isWsPing`, `WS_PONG_MESSAGE`) — ответ в `useReconnectingWebSocket` | свой разбор `{"type":"ping"}` в хуке комнаты |
+| Kanban display helpers | `src/domain/kanban/kanbanDisplayCommon.ts` | дублировать merge order / other bucket |
+| Kanban collision (колонка vs карточка) | `src/domain/kanban/kanbanCollision.ts` (`resolveKanbanBoardCollisions`) | своя pointerWithin-фильтрация колонок в доске специалистов |
+| Kanban column overlay / drop-анимация | `src/components/tasks/kanban/kanbanDndAnimation.ts` + `KanbanColumnDragOverlay.tsx` | второй overlay колонки; `defaultDropAnimationSideEffects` на колонке |
+| Rich-text: вставка buildin-toggle | `src/domain/documents/buildinToggle.ts` (`buildinToggleInsertAttrs` — сразу `open: true`; `shouldSettleToggleChromeOnNodeUpdate` / `shouldReleaseOpenToggleSlotHeight`); свернуть — стрелка; высота — `buildinToggleSlotAnim.ts` (`settleBuildinToggleSlotHeight` / `playBuildinToggleSlotHeight`, WAAPI px); chrome/open-commit/enter-body рядом с NodeView; `ignoreMutation` (`shouldIgnoreBuildinToggleChromeMutation`); attrs.open после анимации; blur не пишет `open` | `open: false` у нового блока; писать `open` на клик; CSS grid/transition без `ignoreMutation` (PM сносит NodeView на каждом кадре height); native `details.open` в редакторе; settle на каждый Enter |
+| Rich-text: заголовок buildin-toggle | `src/domain/documents/buildinToggleTitle.ts` (`applyBuildinToggleEditChrome` — поле/крестик только в правке; Space — `shouldPreventDefaultOnToggleTitleKey` + вставка в input; Enter — `buildinToggleAttrsOnTitleEnter` + каретка в тело, не за блоком; клик по полоске — `shouldToggleBuildinOpenOnChromeClick`, поле не тоглит); attrs в NodeView — только blur/Enter, не на каждый `input` (иначе Yjs пересоздаёт поле); collab — `services/document-collab/src/parse-buildin-toggle-title.mjs` (sync-тест chrome-селектора) | вторая копия parse в schema-nodes.mjs; `setNodeMarkup` title на каждый символ; отдавать Space в ProseMirror |
+| Rich-text: перестановка блоков | `src/domain/documents/richTextBlockReorder.ts` + `tiptapBlockReorderExtension.ts` / preview / handle: шапка toggle → весь раздел (`preferToggleAncestorForPointerTarget`); тело → строка внутри как абзац; ручка шапки не ремапится влево (`shouldHoldBlockReorderHandleWithoutResync` только atomic); выделение текста — `buildinToggleSelection` (range, не точка) | канбан `@dnd-kit` в TipTap; ghost внутри `.editor` |
+| Rich-text: фокус при входе в правку | `src/domain/documents/richTextEditorFocus.ts` (`resolveRichTextFocusTarget`, `shouldMoveRichTextFocusToEnd`, `mapClickCoordsToDocPos`) — каретка в точку клика; `focus('end')` только если клик мимо текста | `focus('end')` на каждый эффект во время набора; не глушить клик по toggle вне правки (вход с одного клика); `focus('end')` при native-каретке в теле toggle |
+| Rich-text: каретка в теле buildin-toggle | `src/domain/documents/buildinToggleSelection.ts` (`shouldSyncPmSelectionFromNative` — `mappedFrom`/`mappedTo`, `shouldApplyNativeSelectionFromPm`, `findBuildinToggleDepth`) + `tiptapBuildinToggleSelection.ts` (`bindBuildinToggleBodyCaret`) — до клавиши PM ← native range (`posAtDOM`); после Enter native ← PM (`domAtPos`), без `view.focus()`; не схлопывать выделение в точку | свой Enter/`setTextSelection` по угаданной позиции; `view.focus()` из тела toggle; отдельный `buildinToggleEnter.ts` |
+| Документ: вход/выход правки тела | `src/domain/documents/documentBodyEditGesture.ts` (`shouldHoldOutsideCloseUntilPointerUp`) — вход по `click`, outside на `mousedown`; не глушить первый клик снаружи | `suppress` до следующего `pointerup` после `onClick` (выход со второго клика) |
+| Kanban горизонтальный pointer-pan | `src/hooks/useKanbanBoardPointerPan.ts` | копия pan-логики в каждой доске |
+| Kanban скролл при DnD | `useKanbanDragBoardScroll` + `resolveDragBoardWheelDelta` (вертикальный жест тачпада → вбок); в простое — `resolveHorizontalWheelDelta` | игнорировать deltaY при drag; вторая копия wheel→scrollLeft |
+| WS событие треда (FE) | `src/domain/comments/commentThreadEvents.ts` | строка `'thread_updated'` |
+| Стили, токены | `src/styles/tokens.css`, `global.css` | хардкод цветов в компонентах — **react-frontend.mdc** |
+| Ключи sessionStorage/localStorage | `src/constants/` (`auth.ts`, `docsAuth.ts`, `portalActiveChat.ts`, `chatStorage.ts`, `documentTrash.ts`, `uiSounds.ts`, `changelog.ts` и т.п. по контуру) | литералы-ключи в компонентах/страницах; конвенция нейминга — **react-frontend.mdc** (раздел «Ключи sessionStorage / localStorage») |
+| UI-SFX (procedural, клики/тосты) | фасад `src/utils/sound/uiSounds.ts` (`playUiSound`, `previewUiSound`, `get/setUiSoundsEnabled`, click-listener: tap откладывается и отменяется, если в том же ходе сыграл `error`/`success`); ролл набора — `uiSoundKit.ts` (`rollUiSoundKit`, динамический import, без пула в layout); ключи `cosmolet_ui_sounds_*` и `UI_SOUND_SKIP_*` — `src/constants/uiSounds.ts`; плеер — `player.ts` (PLAYER_JS); пул — `pool/*.json` + `mutate.ts`; вход задачи в Done — `shouldPlayTaskDoneSuccess` в `domain/tasks/taskColumns.ts`; необратимое удаление — `ConfirmDialog` `confirmSound="error"` (звук на confirm; тост/инлайн при сбое API — `silent` / без второго `playUiSound`); удаление с undo — `useScheduleDeleteWithUndo` / `useScheduleTaskDelete` | вызов `playSound` со страниц; hover на pointerover; фиксированные 6 рецептов вместо пула; статический import пула в layout; литерал `data-ui-sound`; подгрузка с vercel |
+| TTL корзины документов (дней) | `src/constants/documentTrash.ts` (`DOCUMENT_TRASH_TTL_DAYS`); sync с бэкендом — `tests/documents/documentTrashTtlDaysSync.test.ts` | хардкод `90 дней` в `TrashPage.tsx`, `onboarding/steps.ts` и др. |
+| Минимальная длина поискового запроса | `src/constants/search.ts` (`PORTAL_SEARCH_MIN_QUERY_LEN`); sync с бэкендом — `tests/search/portalSearchMinQueryLenSync.test.ts` | хардкод `2` в компонентах поиска |
+| Макс. длина цитаты ответа в чате | `src/utils/chat/messageQuoteSelection.ts` (`CHAT_REPLY_QUOTE_TEXT_MAX_LENGTH`); sync с бэкендом — `tests/utils/chat/chatReplyQuoteMaxLengthSync.test.ts` | хардкод `1000` в компонентах/хуках |
+| Чистая доменная логика UI | `src/domain/` | бизнес-правила в JSX |
+| Онбординг / guided tour | `src/domain/onboarding/guidedTour.ts` (`preventGuidedTourOrphans`, `canSkipEntireGuidedTour`, `resolveGuidedTourSkipLabel`, `resolveTourStepNavigationKind`, `stepNeedsTourDocument`, **все `stepNeedsTourDemo*` предикаты** (`task`/`specialist`/`event`/`timeEntry`/`document`/`chat*`), шаги через `filterGuidedTourSteps`); общие document-шаги — `src/onboarding/documentTourSteps.ts` (`documentStep`, `FIRST_DOCUMENT_LINK`) | свои правила пропуска, подписи «Пропустить» и ручные `\n` в текстах шагов, дублирование step ID между вариантами тура; вёрстка — `src/onboarding/` + `styles/modules/onboarding/` |
+| Исполнитель задачи по умолчанию при создании | `src/domain/tasks/taskAssigneeDefaults.ts` (`resolveDefaultTaskAssigneeSubs`) | своя копия «team + фильтр → владелец доски, иначе текущий пользователь» в странице и inline-создании |
+| Rich-media (upload/resolve/sanitize) | `src/api/richMediaApi.ts` + `src/utils/html/sanitizeRichHtml.ts` + `src/hooks/useSanitizedRichHtml.ts` | копировать resolve/sanitize логику в компонентах |
+| buildin-toggle: авто-раскрытие `details.buildin-toggle` в HTML документа/rich-text | `src/domain/documents/buildinToggle.ts` (`applyBuildinToggleAutoOpen`, `buildinToggleBodyHasContent`) | своя проверка «есть ли контент в toggle-body» и простановка `open` в компонентах |
+| buildin-toggle: проверка «есть ли видимый контент в toggle-body» (атом) | `src/utils/html/isEmptyHtml.ts` (`buildinToggleBodyHasVisibleContent`) — общий атом для `isEmptyHtml` и `domain/documents/buildinToggle.ts` | дублировать textContent/img-проверку `.buildin-toggle-body` в `domain/` и `utils/` |
+| SPA-переход по ссылке из сырого HTML (без полной перезагрузки) | `src/utils/spaNavigate.ts` (`spaNavigate`, `registerSpaNavigate`) + `src/components/layout/SpaNavigateRegistrar.tsx` (регистрация `useNavigate()` из `AppLayout`) | свой `window.location.assign`/ручной `history.pushState` в обработчиках кликов по rich-text ссылкам |
+| Нормализация http(s)-URL при вводе (домен без схемы → `https://`) | `src/utils/html/normalizeHttpUrl.ts` | локальные `normalizeUrl` в формах ссылок / LinkDialog |
+| Второстепенные действия хедера чата (перейти в чаты, вложения, настройки группы) | `src/components/chat/thread/ChatHeaderOverflowMenu.tsx` — используется и на странице `/chats` (`ChatsThreadColumn.tsx`), и в попап-виджете (`FloatingDmWidgetPanel.tsx`) | свой набор кнопок в ряд хедера в каждом месте отдельно |
+| Галерея вложений чата (медиа/файлы/голосовые, переход к сообщению) | `src/components/chat/composer/ChatAttachmentsGalleryModal.tsx` + `listChatAttachments` в `chatApi.ts` | скролл истории чата в поиске вложения |
+| Предпросмотр медиа (лайтбокс) | `src/components/ui/MediaLightbox.tsx` (portal + Escape + клик по фону + img/video) | своя portal+overlay-реализация лайтбокса в компонентах |
+| Лайтбокс изображения в TipTap NodeView | `src/components/tasks/richText/openRichTextImageLightbox.ts` — осознанное исключение: NodeView `documentImage` живёт вне React-дерева (raw DOM), поэтому `<MediaLightbox>` нельзя вставить напрямую; hashed CSS Module (`RichTextEditor.module.css`) + `var(--z-lightbox)` ок; запрет второй raw-DOM lightbox и стабильных `:global` class names для overlay | вторая raw-DOM обёртка лайтбокса для других NodeView / `:global(.rich-text-image-lightbox*)` |
+| Фильтр кандидатов `@`-упоминаний | `src/utils/chat/filterMentionUsers.ts` — чат (`MentionAwareTextarea`) и комментарии (`MentionTextarea`); внутри зовёт `getUserDisplayLabel`, не копирует формулу | свой slice/hard-cap списка в каждом textarea |
+| Отображаемое имя пользователя (display_name → email → username → sub) | `src/utils/userLabel.ts` (`getUserDisplayLabel`) — пикеры (`UserPicker`, `UserMultiPicker`, `SpecialistMultiPicker`), чат, комментарии, фильтры и `filterMentionUsers`; текущий пользователь в справочнике — `src/utils/user/sessionUserInDirectory.ts` + `usePortalUserDirectory` (не UUID, если скрыт из `/portal/users` или в профиле пустые имена) | своя копия `u.display_name \|\| u.email \|\| u.username \|\| u.sub`; пикер без `withSessionUserInDirectory` |
+| Ключи storage чата (тост, push, звук ЛС, виджет, частые реакции) | `src/constants/chatStorage.ts` + `portalActiveChat.ts` | литералы `cosmolet:chat_*` / `portal_chat_frequent_reactions_v1` в utils/компонентах |
+| Post-login редирект (docs/redoc vs admin-bridge vs SPA) | `src/utils/auth/postLoginRedirect.ts` (`goToPostLoginPath`) + `src/utils/auth/safeRedirect.ts` (`sanitizeNextPath`) — LoginPage, AuthCallbackPage, `authNextPath` | дублировать ветвление `stashDocsBearerToken` / `/admin/` в страницах; своя политика next-path; stash access-токена для `/admin/` |
+| Трудозатраты: минуты/даты/группировка/валидация часов | `src/utils/time/timeEntryUtils.ts` (`formatMinutes`, `formatDateRu`, `monthToDateRange`, `groupEntriesByDay`, `parseHoursToMinutes`, `todayStr`, …) — таймшиты, аналитика, home, day-calendar | копии в `pages/timesheets/` или `formatMinutes`/`todayStr` рядом с UI; `calendar/dayCalendarUtils.todayDateStr` зовёт `todayStr` |
+| Иконки портала (Phosphor Light, единый размер/вес) | `src/components/icons/portalIcons.tsx` (`IconBell`, `IconStar`, `IconSpeakerOn/Off`, … + `PORTAL_ICON_*` константы + `withDefaults` с `aria-hidden`) | прямой импорт `@phosphor-icons/react` в компонентах страниц; отдельные обёртки-файлы «`XxxIcon.tsx`, который просто зовёт `IconYyy` без props» — **не заводить** (YAGNI). Переименование иконки через re-export (`IconSpeakerOn as IconVolumeOn` в `VolumeNotificationIcons.tsx`) допустимо **только** когда доменное имя расходится с upstream-именем Phosphor и используется из 2+ мест; иначе звать исходную `Icon*` напрямую |
+| Инвалидация кэша «Связи тега» (drawer) | `src/utils/tags/tagUsagesQueryKeys.ts` (`TAG_USAGES_QUERY_KEY_PREFIX`) — канон префикса; `invalidateTagUsages.ts` сбрасывает его; `pages/tags/tagsQueryKeys.ts` реэкспортирует + `tagUsagesQueryKey` | литерал `['portal','tags','usages']` в pages/хуках; импорт префикса из `pages/` в `utils/` |
+
+**Структура `src/api/` — доменные подпапки.** Порог ~25-30 файлов (**react-frontend.mdc**) пройден — обёртки API сгруппированы по доменам: `api/tasks/tasksApi.ts`, `api/chat/chatApi.ts`, `api/documents/documentsApi.ts` + `api/documents/documentCommentsApi.ts`, `api/finance/financeApi.ts`, `api/learning/learningApi.ts`, `api/specialists/specialistsApi.ts`, `api/calendar/calendarApi.ts`, `api/timeEntries/timeEntriesApi.ts`, `api/notifications/notificationsApi.ts` + `api/notifications/pushApi.ts`, `api/tags/tagsApi.ts`, `api/agreements/agreementsApi.ts`, `api/telegram/telegramApi.ts`, `api/search/searchApi.ts`, `api/favorites/favoritesApi.ts`. Новые эндпоинты добавлять **в существующий** файл домена, не плодить клиенты.
+
+Кросс-доменная инфраструктура остаётся плоской в корне `src/api/` (используется 2+ доменами, не привязана к одному): `rawClient.ts`, `parseResponse.ts`, `queryKeys.ts`, `commentThreadApi.ts`, `richMediaApi.ts`, `usersApi.ts`, `authApi.ts`, `accountApi.ts`, `navigationApi.ts`, `homeApi.ts`, `health.ts`.
+
+**Теги** — CRUD (`listTags`/`createTag`/`updateTag`/`deleteTag`) и агрегатор `getTagUsages` живут вместе в `api/tags/tagsApi.ts` (раньше CRUD ошибочно лежал в `documentsApi.ts`, что мешало найти его по имени файла) — не разносить снова по разным файлам.
+
+---
+
+## Чеклист перед PR
+
+1. **Права** — используется `is_manager_or_admin` / `rbac` / доменный `get_*` с той же политикой, что list?
+2. **Ошибки** — `AppError`-подклассы, не `HTTPException` в сервисе?
+3. **Время** — `now_utc()` из core?
+4. **Уведомления** — через `notification.py`, не прямой INSERT?
+5. **WS** — через `managers.py` + константы событий?
+6. **Storage** — через `storage/client.py`, лимиты из Settings?
+7. **Комментарии UI** — `PortalCommentThread` + `useCommentThreadWebSocket`?
+8. **Пагинация** — `PagedResponse` для растущих списков?
+9. **Дублирую ли я файл из другого домена «с заменой двух строк»?** — если да, остановись и вынеси shared или вызови фасад.
+
+---
+
+## Связанные правила
+
+| Тема | Файл |
+|------|------|
+| Общий DRY, размер файлов | **general.mdc** |
+| Сервисы, фасады, ORM vs DTO | **services.mdc** |
+| RBAC, IDOR | **security.mdc** |
+| WebSocket | **backend-websocket.mdc** |
+| React, компоненты | **react-frontend.mdc** |
+| Карта модулей | `backend/app/MODULES.md` |

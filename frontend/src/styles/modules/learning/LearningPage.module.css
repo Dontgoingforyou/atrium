@@ -1,0 +1,529 @@
+/* ── Карточки материалов ─────────────────────────────────── */
+
+.materialGrid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-compact);
+}
+
+.materialCard {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+  transition: border-color 0.15s;
+}
+
+.materialCard:hover {
+  border-color: var(--color-accent);
+}
+
+.materialCardHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-compact);
+  margin-bottom: var(--space-xs);
+}
+
+.materialCardOpen {
+  display: flex;
+  flex: 1 1 12rem;
+  align-items: center;
+  gap: var(--space-compact);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.materialCardOpen:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.materialCardActions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.materialTitle {
+  font-weight: 500;
+  flex: 1;
+  min-width: 0;
+}
+
+.materialTypeBadge {
+  font-size: var(--font-size-caption);
+  background: var(--color-bg-chip);
+  color: var(--color-accent);
+  border-radius: var(--radius-sm);
+  padding: var(--radius-xs) var(--space-sm);
+  white-space: nowrap;
+}
+
+.badgeAfter {
+  margin-left: var(--space-sm);
+}
+
+.materialBody {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.materialDetail {
+  margin-top: var(--space-lg);
+}
+
+.detailTitle {
+  margin-top: 0;
+}
+
+.detailMeta {
+  margin-bottom: var(--space-sm);
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-link);
+  font-size: var(--font-size-small);
+  padding: 0 0 var(--space-md) 0;
+  font-family: inherit;
+  display: inline-block;
+}
+
+.backBtn:hover {
+  text-decoration: underline;
+}
+
+.backBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* ── Чек-листы ────────────────────────────────────────────── */
+
+.checklistList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-compact);
+}
+
+.checklistCard {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.checklistHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-compact);
+  margin-bottom: var(--space-2xs);
+}
+
+.checklistTitle {
+  font-weight: 500;
+  flex: 1;
+  min-width: 0;
+}
+
+.expandBtn {
+  margin-left: auto;
+}
+
+.mutedSmall {
+  font-size: var(--font-size-small);
+  margin: 0 0 var(--space-sm);
+}
+
+.mutedCaption {
+  font-size: var(--font-size-caption);
+  margin: 0 0 var(--space-sm);
+}
+
+.adminHint {
+  font-size: var(--font-size-caption);
+  margin-top: 0;
+}
+
+.progressBar {
+  height: var(--space-2xs);
+  background: var(--color-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  margin-bottom: var(--space-compact);
+}
+
+.progressFill {
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: var(--radius-sm);
+  transition: width 0.3s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progressFill {
+    transition: none;
+  }
+}
+
+.progressText {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-md);
+}
+
+.checklistItems {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.checklistItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-compact);
+  padding: var(--space-xs) 0;
+}
+
+.checklistItem input[type='checkbox'] {
+  margin-top: var(--radius-xs);
+  cursor: pointer;
+  width: var(--space-lg);
+  height: var(--space-lg);
+  flex-shrink: 0;
+}
+
+.checklistItemText {
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+
+.checklistItemText.done {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+.completedBadge {
+  background: var(--color-bg-success-soft);
+  color: var(--color-fg-on-success-soft);
+  border-radius: var(--radius-sm);
+  padding: var(--radius-xs) var(--space-sm);
+  font-size: var(--font-size-caption);
+  font-weight: 500;
+}
+
+/* ── Квизы ────────────────────────────────────────────────── */
+
+.quizList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-compact);
+}
+
+.quizCard {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.quizCardHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-compact);
+  margin-bottom: var(--space-2xs);
+}
+
+.quizTitle {
+  font-weight: 500;
+  flex: 1;
+  min-width: 0;
+}
+
+.quizCardActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.quizMeta {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+.quizPage {
+  max-width: 600px;
+}
+
+.quizPageTitle {
+  margin-top: 0;
+  margin-bottom: var(--space-lg);
+}
+
+.quizStartDesc {
+  margin-bottom: var(--space-lg);
+}
+
+.quizQuestionCount {
+  font-size: var(--font-size-small);
+  margin-bottom: var(--space-xl);
+}
+
+.questionBlock {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-lg) var(--space-xl);
+  margin-bottom: var(--space-lg);
+}
+
+.questionText {
+  font-weight: 500;
+  margin-bottom: var(--space-md);
+  line-height: 1.5;
+}
+
+.answerOptions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.answerOption {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-compact);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.1s, background 0.1s;
+}
+
+.answerOption:hover {
+  border-color: var(--color-accent);
+  background: var(--color-bg-selected-soft);
+}
+
+.answerOption:focus-within {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.answerOptionSelected {
+  border-color: var(--color-accent);
+  background: var(--color-bg-selected);
+}
+
+.answerOptionCorrect {
+  border-color: var(--color-border-success);
+  background: var(--color-bg-success-soft);
+}
+
+.answerOptionWrong {
+  border-color: var(--color-danger-ui);
+  background: var(--color-bg-warning-review);
+}
+
+.answerOptionText {
+  font-size: var(--font-size-small);
+  line-height: 1.5;
+}
+
+.correctMark {
+  margin-left: auto;
+  color: var(--color-fg-on-success-soft);
+  font-size: var(--font-size-caption);
+}
+
+.wrongHint {
+  margin-top: var(--space-2xs);
+  font-size: var(--font-size-caption);
+  color: var(--color-danger);
+}
+
+.submitBtn {
+  margin-top: var(--space-sm);
+}
+
+.resultBlock {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-xl);
+  text-align: center;
+}
+
+.resultScore {
+  font-size: var(--font-size-h2);
+  font-weight: 700;
+  color: var(--color-heading);
+  margin-bottom: var(--space-xs);
+}
+
+.resultLabel {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+.attemptsWrap {
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin-top: var(--space-md);
+}
+
+.attemptsCaption {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.attemptsTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-small);
+  margin-top: var(--space-md);
+}
+
+.attemptsTable th {
+  text-align: left;
+  padding: var(--space-2xs) var(--space-compact);
+  color: var(--color-text-label);
+  font-weight: 600;
+  border-bottom: 2px solid var(--color-border);
+}
+
+.attemptsTable td {
+  padding: var(--space-2xs) var(--space-compact);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+/* ── Админ: обучение ─────────────────────────────────────── */
+
+.adminToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+  padding: var(--space-compact) var(--space-md);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.materialAdminMeta {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2xs);
+}
+
+.adminForm {
+  max-width: 640px;
+}
+
+.adminFormTitle {
+  margin: 0 0 var(--space-md);
+  font-size: var(--font-size-b1);
+}
+
+.questionsHeading {
+  margin-top: var(--space-xl);
+}
+
+.adminFormActions {
+  margin-top: var(--space-lg);
+}
+
+.adminFormActionsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+
+.adminFieldStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.adminLabel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+  font-size: var(--font-size-small);
+  color: var(--color-text-label);
+}
+
+.adminInput,
+.adminTextarea {
+  font: inherit;
+  padding: var(--space-sm) var(--space-compact);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-input);
+  color: var(--color-text-primary);
+}
+
+.adminTextarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.checklistItemRow {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: flex-start;
+  margin-bottom: var(--space-sm);
+}
+
+.checklistItemRow input {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  padding: var(--space-2xs) var(--space-sm);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.quizAdminBlock {
+  margin-top: var(--space-md);
+  padding: var(--space-md);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-subtle);
+}
+
+.quizQuestionAdmin {
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.quizQuestionAdmin:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.deleteQuestionBtn {
+  margin-left: var(--space-sm);
+}

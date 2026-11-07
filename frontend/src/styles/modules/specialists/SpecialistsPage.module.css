@@ -1,0 +1,196 @@
+/* Карточка специалиста на Kanban-доске */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.cardSortable {
+  cursor: grab;
+}
+
+.cardDragging {
+  cursor: grabbing;
+}
+
+.cardName {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cardRemoveBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-caption);
+  line-height: 1;
+  flex-shrink: 0;
+  opacity: 0.55;
+  transition: opacity 0.15s, color 0.15s;
+}
+
+.cardRemoveBtn:hover {
+  opacity: 1;
+  color: var(--color-danger-ui, var(--color-danger));
+}
+
+.cardRemoveBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.cardMetaLabel {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 44px;
+}
+
+.cardMetaValue {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cardFooter {
+  margin-top: 8px;
+  min-width: 0;
+}
+
+.cardClickable {
+  cursor: pointer;
+}
+
+.cardClickable:hover {
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+.cardClickable:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.sectionTitle {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.allList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.allList li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.allListRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.allListRow .allListBtn {
+  flex: 1;
+  min-width: 0;
+}
+
+.allListName {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-small);
+  color: var(--color-text-primary);
+}
+
+.allListBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  color: var(--color-accent);
+  padding: 0;
+}
+
+.allListBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.allListMeta {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+.allListMetaMuted {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.allListNameBlock {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.allListNamePrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.allListDirection {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.scopeLabel {
+  margin-top: 0;
+}
+
+.pager {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cardRemoveBtn {
+    transition: none;
+  }
+}

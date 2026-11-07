@@ -1,0 +1,431 @@
+/* ── Менеджерский вью ────────────────────────────────────── */
+
+.monthPicker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.managerToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.specialistsCount {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+.sortBtn {
+  padding: 4px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  color: var(--color-text-label);
+  font-family: inherit;
+}
+
+.sortBtn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.sortBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.specialistsList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.specialistCard {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  overflow: hidden;
+}
+
+.specialistCardExpanded {
+  border-color: var(--color-accent);
+}
+
+.specialistHeader {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  gap: 12px;
+}
+
+.specialistHeader:hover {
+  background: var(--color-bg-hover);
+}
+
+.specialistHeader:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.specialistInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.specialistName {
+  font-weight: 600;
+  color: var(--color-heading);
+  font-size: var(--font-size-body);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.specialistEmail {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
+.specialistStats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.specialistHours {
+  font-weight: 600;
+  color: var(--color-accent);
+  font-size: var(--font-size-body);
+}
+
+.specialistEntriesCount {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+.specialistChevron {
+  font-size: 10px;
+  color: var(--color-text-muted);
+}
+
+.specialistEntries {
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-md) 16px;
+}
+
+.specialistEntries .dayGroup + .dayGroup {
+  margin-top: 0;
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.managerEntryRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-size: var(--font-size-small);
+}
+
+.specialistEntries .managerEntryRow {
+  padding: 8px 0;
+}
+
+.managerEntryRow:last-child {
+  border-bottom: none;
+}
+
+.managerEntryBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.managerEntryTask {
+  font-weight: 500;
+  color: var(--color-heading);
+}
+
+.managerEntryNote {
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.managerEntryHours {
+  font-weight: 600;
+  color: var(--color-text-label);
+  white-space: nowrap;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.panelLoading,
+.panelEmpty {
+  padding: 12px 16px;
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+/* ── DeveloperTimesheetView ─────────────────────── */
+
+.headerActions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.entriesList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Группировка записей по дням (Developer + Manager) ──────────── */
+
+.dayGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.dayGroup + .dayGroup {
+  margin-top: var(--space-md);
+}
+
+.dayGroupHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: 2px 0;
+}
+
+.dayGroupDate {
+  font-weight: 600;
+  color: var(--color-heading);
+  font-size: var(--font-size-small);
+  text-transform: capitalize;
+}
+
+.dayGroupTotal {
+  font-weight: 600;
+  color: var(--color-text-label);
+  font-size: var(--font-size-small);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.dayGroupTotalWarn {
+  color: var(--color-warning);
+}
+
+.dayGroupEntries {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ── TimeEntryForms ─────────────────────────────── */
+
+.createEntryForm {
+  max-width: 600px;
+}
+
+.formRow {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.hoursInput {
+  width: 80px;
+}
+
+.hoursHint {
+  margin: -4px 0 0;
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
+.hoursHint code {
+  background: var(--color-bg-chip);
+  border-radius: var(--radius-sm);
+  padding: 1px 5px;
+}
+
+/* ── Массовое добавление (BulkAddEntryForm) ─────────────── */
+
+.weekdayPicker {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.weekdayOption {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  font-size: var(--font-size-small);
+  color: var(--color-text-label);
+  cursor: pointer;
+}
+
+.weekdayOptionChecked {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: var(--color-bg-chip);
+}
+
+.weekdayOption:has(:focus-visible) {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.bulkPreview {
+  margin: 0;
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.bulkSuccess {
+  margin: 0 0 16px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-chip);
+  color: var(--color-accent);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+}
+
+/* ── Импорт из Jira (ImportJiraCsvForm) ─────────────────── */
+
+.importSummary {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-chip);
+  font-size: var(--font-size-small);
+}
+
+.importSummaryLine {
+  margin: 0;
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.importErrorsList {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: var(--color-warning);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.importErrorItem {
+  font-size: var(--font-size-caption);
+}
+
+.formFieldFlex {
+  flex: 1;
+  min-width: 160px;
+}
+
+.inlineFormActions {
+  display: flex;
+  gap: 6px;
+  align-self: flex-end;
+}
+
+.btnSubmitEntry {
+  align-self: flex-start;
+}
+
+.entryRowEditing {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* ------------------------------------------------------------------ */
+/* Кнопки экспорта в карточке специалиста                             */
+/* ------------------------------------------------------------------ */
+
+.specialistExportRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 16px 8px;
+  flex-wrap: wrap;
+}
+
+.specialistExportLabel {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.exportBtn {
+  padding: 2px 8px;
+  font-size: var(--font-size-caption);
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-muted);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: background 0.1s, border-color 0.1s, color 0.1s;
+}
+
+.exportBtn:hover:not(:disabled) {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.exportBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.exportBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exportBtn {
+    transition: none;
+  }
+}
+
+.exportError {
+  font-size: var(--font-size-caption);
+  color: var(--color-danger);
+}

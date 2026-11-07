@@ -1,0 +1,58 @@
+.replyBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+  padding: var(--space-sm) var(--space-compact);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg-subtle));
+  border: 1px solid color-mix(in srgb, var(--color-accent) 22%, var(--color-border));
+}
+
+.replyBannerText {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.replyBannerLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.replyBannerSnippet {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.replyBannerClose {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0;
+}
+
+.replyBannerClose:hover {
+  background: var(--color-border-subtle);
+  color: var(--color-text-primary);
+}
+
+.composerError {
+  font-size: var(--font-size-caption);
+  margin: 0 0 6px;
+}

@@ -1,0 +1,154 @@
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.listNested {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.item {
+  margin-top: 1px;
+  min-width: 0;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-radius: var(--radius-sm);
+  min-height: 28px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.row:hover {
+  background: var(--color-bg-subtle);
+}
+
+/* кнопка свернуть/развернуть */
+.collapseBtn {
+  flex-shrink: 0;
+  width: 20px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.collapseBtn:hover {
+  color: var(--color-heading);
+  background: var(--color-bg-muted);
+}
+
+.collapseBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* заглушка по ширине кнопки для листьев */
+.collapseSpace {
+  flex-shrink: 0;
+  display: inline-block;
+  width: 20px;
+}
+
+.collapseIcon {
+  display: inline-block;
+  transition: transform 0.18s ease;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.collapseIcon[data-state='closed'] {
+  transform: rotate(-90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collapseIcon { transition: none; }
+}
+
+.branchShell {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.22s ease;
+  min-width: 0;
+  width: 100%;
+}
+
+.branchShell[data-state='open'] {
+  grid-template-rows: 1fr;
+}
+
+.branchShell[data-state='open'] > .branchInner {
+  overflow: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .branchShell { transition: none; }
+}
+
+.branchInner {
+  overflow: hidden;
+  min-width: 0;
+  width: 100%;
+}
+
+/* Единый стиль ссылки — и для nav-узлов, и для документов */
+.link {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 4px 3px 0;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--color-heading);
+  font-size: 13px;
+}
+
+.link:hover {
+  color: var(--color-heading);
+}
+
+.linkActive {
+  color: var(--color-accent) !important;
+  font-weight: 500;
+}
+
+.pageIcon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  opacity: 0.5;
+  color: var(--color-text-muted);
+}
+
+.linkText {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shortcutRow {
+  opacity: 0.92;
+}
+
+.shortcutLink {
+  font-style: italic;
+}
+

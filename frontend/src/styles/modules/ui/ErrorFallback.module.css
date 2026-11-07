@@ -1,0 +1,30 @@
+.fallback {
+  max-width: 520px;
+  margin: var(--space-2xl) auto;
+  padding: 0 var(--space-lg);
+  line-height: 1.5;
+  color: var(--color-text-muted);
+  font-family: system-ui, sans-serif;
+}
+
+.title {
+  color: var(--color-danger-strong);
+  font-size: 1.25rem;
+  margin-bottom: var(--space-md);
+}
+
+.message {
+  color: var(--color-danger);
+  margin: 0;
+  word-break: break-word;
+}
+
+.actions {
+  margin-top: var(--space-lg);
+}
+
+.hint {
+  margin-left: var(--space-md);
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}

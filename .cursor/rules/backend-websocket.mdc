@@ -1,0 +1,61 @@
+---
+description: WebSocket и real-time (чаты, pub/sub)
+globs: "**/*.py"
+alwaysApply: false
+---
+
+# WebSocket и real-time — соглашения
+
+## Назначение
+
+Real-time сценарии (чаты, комментарии, документы, доска задач) — отдельный транспорт от REST: те же **правила доступа**, что и у HTTP, не ослаблять из-за другого протокола. WS-инфраструктура — `app/infrastructure/ws/` (`room_manager.py`, `managers.py`, `inbox_manager.py`, `tickets.py`); HTTP/WS-обработчики — в доменных модулях (`portal_chat/routes/chats.py`, `portal_documents/routes/document_realtime.py`, `portal_collab/routes/tasks.py` и т.д.).
+
+## Авторизация
+
+- Токен передавать **безопасно для проекта** (например query-параметр или subprotocol) — как принято в кодовой базе; не логировать полный токен (**logging.mdc**).
+- Переиспользовать ту же **верификацию** пользователя, что и для API (`verify_access_token` / аналог), не дублировать «упрощённую» проверку.
+
+## Согласованность с REST
+
+- События по WebSocket **не заменяют** персистентность: клиент после переподключения должен иметь возможность подтянуть состояние через **REST** (история сообщений и т.д.).
+- Права «видеть чат / писать» — **те же**, что в сервисном слое чата; не обходить RBAC в обработчике WS.
+- **Комната с данными** (чат, комментарии): фильтр по доступу / сегментация комнат — **security.mdc**.
+- **Invalidate-only** (календарь `CALENDAR_ROOM_ID`, доска задач): ids + refetch REST; не смешивать с комнатами, где в payload есть содержимое.
+
+## Обработка соединений
+
+### `WebSocketDisconnect`
+
+`WebSocketDisconnect` — **штатная ситуация**, не ошибка. Обрабатывать явно через `except WebSocketDisconnect`:
+
+```python
+try:
+    while True:
+        data = await websocket.receive_text()
+        ...
+except WebSocketDisconnect:
+    await manager.disconnect(websocket, chat_id)
+    # logger.info(...) — опционально, не logger.exception
+```
+
+Не пробрасывать `WebSocketDisconnect` выше без обработки — это приведёт к 500 в логах вместо штатного отключения.
+
+### Ping / Pong
+
+Долгие WS (минуты простоя) — server-side keepalive: `ws_keepalive` + `is_pong` из
+`app/infrastructure/ws/keepalive.py` (`WS_PING_INTERVAL` / `WS_PING_TIMEOUT` в `constants.py`).
+В receive-loop пропускать `{"type":"pong"}` через `keepalive.notify_pong()` / `is_pong`.
+Образец — `portal_documents/routes/document_comments.py`. Новые long-lived хендлеры подключать так же;
+Redis pub/sub и балансировщик **не** заменяют обнаружение мёртвого TCP.
+
+## Мультиинстанс
+
+- Если используется **Redis pub/sub** (или аналог) для доставки между воркерами — документировать зависимость; при добавлении каналов не забывать про подписку/отписку и обработку ошибок соединения с Redis.
+- Потеря соединения с Redis — не должна роняться весь процесс; предусмотреть graceful degradation или алерт.
+
+## Тестирование
+
+- Критичные сценарии — интеграционные тесты: подключение с валидным/невалидным токеном, доставка сообщения; см. **testing.mdc**.
+- Тикет одноразовый: повторный `consume` / второй connect тем же ticket → отказ; тикет чужого prefix не принимается.
+- Unit keepalive (`ws_keepalive` + `is_pong`): pong отменяет `close(1001)`; без pong — закрытие по таймауту.
+- Не полагаться только на ручную проверку в браузере для регрессий по правам.

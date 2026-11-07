@@ -1,0 +1,17 @@
+.externalLink {
+  color: var(--color-link);
+  text-decoration: underline;
+  display: inline-block;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+  vertical-align: baseline;
+  cursor: pointer;
+  pointer-events: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.externalLink:hover {
+  color: var(--color-accent-hover);
+}

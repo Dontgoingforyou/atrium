@@ -1,0 +1,113 @@
+/* Интеграция с Jira (SpecialistJiraSection) */
+
+.jiraSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md, 12px);
+}
+
+.jiraLinkedHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.jiraBadge {
+  display: inline-block;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-accent-soft);
+  color: var(--color-accent);
+}
+
+.jiraExternalLink {
+  font-size: var(--font-size-small);
+  color: var(--color-accent);
+}
+
+.jiraExternalLink:hover {
+  text-decoration: underline;
+}
+
+.jiraExternalLink:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.jiraSyncedAt {
+  margin: 0;
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
+.jiraActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.jiraSearchList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.jiraSearchItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-panel);
+}
+
+.jiraSearchMeta {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--font-size-small);
+}
+
+.jiraFieldGroups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md, 12px);
+  margin-top: 8px;
+}
+
+.jiraFieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm, 8px);
+}
+
+.jiraGroupTitle {
+  margin: 0;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.jiraFieldLink {
+  color: var(--color-accent);
+  word-break: break-all;
+}
+
+.jiraFieldLink:hover {
+  text-decoration: underline;
+}
+
+.jiraFieldLink:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}

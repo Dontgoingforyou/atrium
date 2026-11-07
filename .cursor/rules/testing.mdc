@@ -1,0 +1,215 @@
+---
+description: Соглашения по тестам (pytest, Vitest; Playwright — см. playwright-integration.mdc)
+globs: "backend/tests/**,frontend/tests/**,tests/**"
+alwaysApply: false
+---
+
+# Тесты — соглашения
+
+## Пирамида тестов Cosmolet
+
+| Слой | Где | Назначение |
+|------|-----|------------|
+| Backend API / RBAC | `backend/tests/` (pytest) | контракт API, права, БД |
+| Frontend логика | `frontend/tests/` (Vitest) | `domain/`, `utils/`, `api/`, `hooks/`, `pages/` (вынесенная логика), `onboarding/`, точечно хелперы `components/` |
+| Стендовый браузер | `tests/integration/` (Playwright) | SSO UI, cookie/refresh, SPA-guards |
+
+Playwright — **тонкий** слой; правила написания и запуска — **playwright-integration.mdc**. Не дублировать в e2e то, что уже закрыто pytest/Vitest. Playwright **не** входит в % coverage бэка/фронта.
+
+**Главный критерий качества теста** (бэк и фронт): тест должен **уметь поймать реальную поломку** контракта / безопасности / UX-правила. Порог coverage — **пол CI**, не цель и не мерило аудита. Тест «ради строк %» без сценария поломки — удалить или переписать.
+
+## TDD (test-driven development)
+
+- **Новая нетривиальная логика** (сервисы, разбор JWT, маппинг групп IdP → роли портала, правила доступа; на фронте — `domain/`/`utils/`, парсеры URL, sanitize, defaults): по возможности цикл **красный тест → минимальная зелёная реализация → рефакторинг**.
+- **HTTP API**: тесты на успех, отказ по авторизации (401/403) и валидацию добавлять **до merge** вместе с эндпоинтом; внешний SSO/IdP — **мокать**, секреты не в репозитории.
+- **Фронт (Vitest)**: чистые функции, `safeRedirect` / post-login, маппинг ролей для UI, onboarding side-effects — в том же духе TDD; тяжёлый UI и визуал — после стабильного контракта с API, без догмы «каждая строчка JSX сначала тестом».
+- **Допустимые исключения**: одноразовые скрипты, чистый spike без merge, визуальный полиш. Права/данные/оплаты на **бэке** закрываются pytest; на фронте — клиентские инварианты (redirect, sanitize, defaults, tour не трогает чужих), не дубль серверной RBAC-матрицы.
+- TDD **не отменяет** остальные правила этого файла (фикстуры, моки, запрет слабых ассертов).
+
+## Граница тестов (развязка от структуры)
+
+Ориентир — Р. Мартин, «Чистая архитектура», гл. 28 (The Test Boundary).
+Тест зависит от **правила и публичного входа**, не от нарезки модулей. Отдельный Testing API не вводим.
+
+### Backend
+
+| Что проверяем | Вход | Не делать |
+|---|---|---|
+| Сценарий, RBAC, контракт API | HTTP (`AsyncClient` + фикстуры ролей) или **публичная** функция сервиса (`create_task`, `list_documents`, …) | `await routes.handler(...)`; `patch("app....routes.foo.svc.bar")` ради маппинга DTO |
+| Алгоритм без I/O | Публичная функция (`userCanEditTask`, `escape_ilike_pattern`) | Тащить чистую функцию в HTTP «для чистоты» |
+| SQLAdmin: хуки, форматтеры, converter, `can_*` | Публичные методы вьюхи (`on_model_change`, …), форматтер, `CosmoletAdminModelConverter`; флаги `can_create`/`can_edit`/`can_delete` как контракт | Instantiate-only smoke (`ModelView()` + `category`); тесты «ради строк coverage» |
+| SQLAdmin: доступ к `/admin` | HTTP (`GET /admin/`, login, demote, exit) | Полагаться только на мок `authenticate` без сценария без cookie / снятой роли |
+| Внешний мир (SSO, Jira, MinIO, Telegram) | Мок на границе клиента | Мок своей БД/ORM |
+
+Приватные `_...` — деталь реализации. Цикл `parent_document_id` в меню — сценарий публичного `get_navigation_tree` (узлы как корни + warning), не unit `_would_create_nav_cycle`. Иначе — вынести в публичную функцию или проверить сценарием.
+
+**Запрещено** добавлять файлы `*_coverage.py`, `*_routes_unit.py`, `*_routes_direct.py` и прямые вызовы хэндлеров «чтобы поднять %». В `backend/pyproject.toml` у pytest-cov есть `concurrency = ["greenlet", "thread"]` — это **instrumentation покрытия** async-тел, не пакет `backend/tests/concurrency/`. Дырку закрывать сценарием правила или выносом логики из роутера (Humble Object). При аудите или касании такого файла — схлопывать в HTTP / публичный сервис: дубль удалить, уникальное правило оставить под обычным именем. **Rename недостаточно:** тесты приватных `_...` роутера убрать в пользу HTTP / публичного сервиса, не оставлять тот же coverage-набор под обычным именем.
+
+`exception_handlers`: HTTP на `AppError` и необработанный `Exception` → 500 + `code=internal_error` без traceback в теле. Не unit мёртвых `_http_exception_*`, пока в `app/` нет `raise HTTPException`. Pydantic 422 — тело FastAPI `{"detail":[...]}`, не `{code, message}`; не требовать единый payload, пока нет задачи на handler + SPA.
+
+Порог coverage — **пол, не цель** (см. раздел «Покрытие»). Новый модуль ~80% строк — следствие сценариев, не отдельных coverage-тестов.
+
+Один HTTP-файл на роутер: не держать пересекающиеся `test_*_oidc.py` и `test_*_routes.py` с одним и тем же happy-path. Уникальное правило — в одном месте.
+
+`patch` сервиса + `assert_awaited` (wiring) допустим на границе EA/Redis, **если** 401/403/валидация закрыты отдельным HTTP без мока use-case. Wiring **не** заменяет тест правила.
+
+Signed photo proxy (`GET /portal/users/{sub}/photo`): HTTP-сценарии на 401, протухшую/битую подпись и неизвестный sub обязательны, не только unit HMAC.
+
+Публичные auth-эндпоинты (`/auth/login`, `/token`, `/refresh`, `/authorization-url`, `/logout`, `/logout-beacon`) — аналог «100% RBAC»: success + whitelist/open-redirect + 422 валидации + сбой SSO + **cookie-контракт** (`rt` HttpOnly, path `/api/v1/auth/refresh`, не в JSON) + beacon инвалидирует кэш только для plausible JWT и **не** зовёт SSO logout. Обёртки `require_portal_admin` / `require_non_developer` не дублировать в `tests/auth`, если 403 уже есть на доменном HTTP.
+
+Форматтер, возвращающий `Markup`: пользовательские строки **экранировать**; тест на XSS (`<script>`, CSS injection в `style=`) обязателен.
+
+Email HTML (`app/infrastructure/email/templates.py`) — тот же XSS-контракт (`<script>`, кавычки в `href`); SMTP — публичный `send_email` (disabled / html-alternative / exception → `False`), не только мок доменного `_reminders.send_email`.
+
+### Frontend (Vitest)
+
+| Что проверяем | Вход | Не делать |
+|---|---|---|
+| Чистая логика UI (`domain/`, `utils/`) | Публичный export модуля | Тест ради строк coverage; дубль того же правила в `pages/` и `utils/` |
+| Клиент API / refresh / parse ошибок | Публичные функции (`silentRefreshAccessToken`, `apiFetch`, `parseResponse`…) + мок `fetch`/store на границе | Мок модуля под тестом целиком ради `toHaveBeenCalled` без проверки эффекта |
+| Вынесенные хелперы страниц/компонентов | Публичная функция рядом со страницей / в `components/**` utils | Поднимать jsdom/RTL «на весь JSX»; дублировать Playwright |
+| Onboarding / guided tour side-effects | Публичные `ensureTourDemo*` + мок API на границе | Сценарий, где тур пишет чужому пользователю (см. **security.mdc**) |
+| FE↔BE sync констант (TTL корзины, min query, quote max) | Чтение константы FE + источника BE (как в `*Sync.test.ts`) | Хардкод ожидаемого числа только на одной стороне |
+| Open redirect / safe URL / sanitize HTML | Публичные `safeRedirect`, `sanitizeRichHtml`, … | Считать «функция не упала» достаточным без враждебного ввода |
+
+Среда Vitest — **`environment: 'node'`** (`frontend/vitest.config.ts`), `include` только `tests/**/*.test.ts`. **Не** заводить `.test.tsx` / React Testing Library / jsdom-сценарии в `frontend/tests/` без отдельной задачи на смену конфига. DOM/SSO/cookie — Playwright.
+
+**Запрещено** (FE coverage-theater):
+
+- тесты без ассерта **эффекта правила** (вызов «чтобы не упало», только `toBeTruthy` на лейбле без контракта);
+- `vi.mock` всего дерева + единственный ассерт `toHaveBeenCalled` **вместо** проверки результата/побочного эффекта, который ломает пользователя;
+- раздувать `domain/`/`utils/` бессмысленными кейсами ради порога CI, когда дыра — в security/redirect/tour/api-клиенте;
+- дублировать серверную RBAC/IDOR-матрицу в Vitest (это pytest); на FE — клиентские инварианты и отображение.
+
+Имя файла теста — по модулю под тестом (`taskDetailPanelState.test.ts`, не имя React-компонента, если тестируется хелпер). Импорты — предпочтительно `@/…` (как в src); относительные `../../src/` не плодить в новых тестах.
+
+Минимальный набор для **новой** нетривиальной FE-логики до merge:
+
+1. **Happy-path** — ожидаемый результат контракта.
+2. **Хотя бы один adversarial / edge**, который **ломает фронт**, если правило съедет: open redirect, XSS-строка в sanitize, `expiresAt: null` → logout, tour не зовёт `createChat` с чужим `member_subs`, неверный default assignee, sync-константа ≠ бэкенд и т.п.
+3. Уникальное правило — **в одном** тест-файле (не копировать между `pages/` и `utils/`).
+
+Подробный чеклист аудита пакетов — [`frontend/tests/README.md`](frontend/tests/README.md).
+
+### Доменные чеклисты бэка — в `backend/tests/README.md`
+
+Конкретные контракты по доменам и инфраструктуре — в [`backend/tests/README.md`](backend/tests/README.md). Здесь — принципы. При конфликте принципа и чеклиста — принцип приоритетнее.
+
+### SQLAdmin (`/admin`)
+
+- Хуки `on_model_change` / `after_model_change`, форматтеры и converter — публичный вход (sqladmin зовёт их сам). Проверять **правило** (автор не перезаписывается на edit, slug из имени, `can_delete=False` у документа), не факт создания класса.
+- HTTP-гейт: без cookie — не 200 на `/admin/`; после снятия `is_portal_admin` — отказ и сброс сессии. Это тот же контур «100% RBAC», что и API.
+- `KeycloakAdminAuth._profile_is_portal_admin` ходит в **глобальный** `async_session_factory`, не в `Depends(get_db_session)`. Фикстуры `client_admin` / `sqlite_session` эту сессию **не** подменяют. Для проверки профиля — `monkeypatch` factory на тестовый engine или мок `_profile_is_portal_admin`; не считать `client_admin` достаточным для `/admin`.
+- Не дублировать REST `/api/v1/admin/...` тестами HTML-форм SQLAdmin. Детали — **backend-sqladmin.mdc**.
+
+## Организация
+
+### Backend
+
+- Общие фикстуры — в корневом `backend/tests/conftest.py`; специфичные для домена — в `conftest.py` подпакета (`backend/tests/portal_finance/conftest.py` и т.п.).
+- Кросс-доменные shared-роуты (`/portal/account`, `/portal/users`, presence, avatar, photo, beacon) — HTTP-тесты в `backend/tests/api/`. Доменный пакет не держит HTTP этих эндпоинтов.
+- Роли, нужные в 2+ пакетах (`client_developer`, `client_manager`, `client_no_idp`) — в корневом `conftest.py`.
+- **При добавлении нового доменного модуля** (`portal_X/`) — создавать подпакет `backend/tests/portal_X/` с собственным `conftest.py` для доменных фикстур (тестовые объекты, специфичные overrides). Не захламлять корневой `conftest.py` фикстурами одного домена.
+- **Новые** фикстуры — в `conftest.py` пакета, не внутри `test_*.py`. Уже объявленные в `test_*.py` **не мигрировать пачкой**; при касании файла — вынести, если фикстура переиспользуется.
+- **Запрещено** вызывать `app.dependency_overrides.clear()` **в теле теста** (ломает изоляцию). В teardown фикстур корневых `client_*` — targeted `pop(get_db_session)` / `pop(get_current_user)`, не `clear()`. 401 без пользователя — фикстура `client_sqlite_only` (БД есть, `get_current_user` не подменён). Смена пользователя в одном тесте — `as_user` / `override_dependency` из доменного `conftest` (календарь, чат, collab, documents, favorites, finance, home, learning, navigation, search, specialists), без `clear()`.
+- Аватар группового чата — HTTP/сервис в `tests/portal_chat/`, не в корне `tests/`.
+- WS комментариев задачи — `tests/portal_collab/`, не `portal_chat`. Фикстуры домена — `tests/portal_collab/conftest.py` (`assert_api_error`, `as_user`, `override_dependency`).
+- WS документов (comments/content/nav-tree) — `tests/portal_documents/`. Фикстуры домена — `tests/portal_documents/conftest.py` (`assert_api_error`, `as_user`, `override_dependency`, `create_doc`).
+- Юниты `InboxManager` / `ConnectionManager` / `TopicRoomManager` — `tests/infrastructure/ws/`, не доменный пакет.
+- BuildIn-import — `backend/tests/scripts/` + `conftest.py` (fixture workspace); не смешивать с доменными HTTP-тестами документов.
+- `backend/tests/services/` — уникальный контракт shared-модуля (`avatar_presign`, presence/last_seen throttle, EA avatar validation, photo meta cache, portal user ghost/has_photo); иначе domain/infrastructure/HTTP в `tests/api/`.
+
+### Frontend
+
+- Структура `frontend/tests/` зеркалит слои `src/`: `domain/`, `utils/`, `api/`, `hooks/`, `pages/<feature>/`, `components/` (хелперы), `onboarding/`.
+- Sync FE↔BE констант — `tests/documents/`, `tests/search/`, `tests/utils/chat/*Sync*` (и аналоги); не смешивать с unit соседнего UI без нужды.
+- Общие полифилы (`localStorage` в node) — в shared helper при втором потребителе; не копировать `MemoryStorage` в каждый файл.
+- Для singleton-модулей (`rawClient`) — `vi.resetModules` / `vi.doMock` + динамический import (как в существующих тестах); не оставлять «грязный» модульный стейт между кейсами.
+
+## Параметризация
+
+- Backend: несколько кейсов с одной логикой → `@pytest.mark.parametrize`.
+- Frontend: → `it.each` / `test.each` (Vitest).
+- Цикл `for` по набору значений внутри одного теста для «набора ассертов» **нежелателен** — лучше параметризация или отдельные тесты.
+
+## Ассерты
+
+- Не использовать `try/except/pytest.fail` для проверки «не упало» — вызывать код напрямую.
+- В `pytest.raises` / Vitest `expect(() => …).toThrow` по возможности — ожидаемое сообщение/тип.
+- Избегать слабых проверок вроде «просто больше нуля» / `toBeTruthy()` без привязки к ожидаемому значению или контракту.
+- Ошибка API (бэк): `status` **и** `code` и/или `message` — не один только `status_code`. Для `/openapi.json` ещё `WWW-Authenticate: Bearer`. ASGI-unit 429 — тоже `status` и `code=rate_limited`.
+- Ошибка API (фронт-клиент): проверять разбор через `parseResponse` / `userFacingMessageFromUnknown` (или эквивалент) — не только «fetch мокнули».
+- Security-заголовки: точное значение HSTS (`max-age=31536000; includeSubDomains`), не «заголовок есть».
+- Запрещён тест без ассерта эффекта (вызов «чтобы не упало» / coverage no-op).
+- Запрещён «статус 200» / «функция вернула truthy» без проверки правила из комментария или контракта.
+
+## Права доступа
+
+- **Backend:** каждый значимый HTTP-маршрут **должен** иметь тесты: успешный доступ при наличии прав и отказ (401/403/редирект — по контракту) без прав или с чужими правами. Контур `/admin` — без cookie и после demote `is_portal_admin`. Тестовые пользователи — через фикстуры, не хардкод секретов.
+- **Frontend:** не дублировать полную RBAC/IDOR-матрицу API в Vitest. Закрывать клиентские инварианты (скрытие пунктов меню / disabled по роли — если логика в чистой функции; open redirect; tour isolation). UI-guards в браузере — Playwright.
+
+## Конкурентность и гонки
+
+Раздел относится к **backend**. Два разных класса гонок — не смешивать в одном тесте без нужды.
+
+### UNIQUE / IntegrityError
+
+- Для операций с **уникальными ограничениями**, лимитами, состояниями «только один активный» — тест с **двумя параллельными** вызовами (`asyncio.gather`, две сессии/клиента) и проверкой «одна строка + ожидаемый исход».
+- Parallel-тест должен бить в **UNIQUE / IntegrityError**, а не только в Python pre-check.
+- Новый `except IntegrityError` в сервисе **в том же изменении** получает parallel-тест (`tests/concurrency` или доменный пакет).
+
+### Optimistic locking (CAS / version)
+
+- Для сущностей с `version` + `expected_version` (**services.mdc**, CAS): два параллельных update/PATCH с **одним и тем же** `expected_version` → ровно один успех, второй — `ConflictError` (или HTTP 409 с `code=conflict`); финальный `version == start + 1`.
+- Тест обязан проходить через **атомарный WHERE version** (реальный сервис/SQL), а не только через Python-ветку «если version != expected».
+- Новый CAS на сущности **в том же изменении** — parallel-тест в `tests/concurrency/` или доменном пакете.
+
+### Общие требования к parallel-тестам
+
+- Фикстура: file SQLite (не `:memory:`), отдельные сессии, желательно `PRAGMA journal_mode=WAL` и `foreign_keys=ON`. Образец — `backend/tests/concurrency/conftest.py`.
+- Имя `concurrent` / `parallel` **запрещено** для последовательных вызовов в одной сессии.
+
+К Vitest разделы UNIQUE/CAS выше **не** применять как обязательный parallel-gather. На фронте закрывать контракт иначе: разбор `code=conflict` / `expected_version` в patch-теле / dirty-only autosave — unit на чистые хелперы (**react-frontend.mdc**).
+
+## Данные в тестах
+
+- **Backend:** запрещено хардкодить суррогатные ключи из БД (`pk=1`), если есть фикстуры моделей — использовать `entity.pk` и т.п.
+- **Frontend:** запрещено хардкодить ключи `localStorage`/`sessionStorage` и magic strings контракта — брать из `src/constants/` / канона модуля.
+
+## Моки
+
+- **Backend:** мокировать внешние зависимости (SSO, очереди, FS, время при флаках). **Не мокировать** собственную БД/ORM, если принято использовать тестовую БД.
+- **Frontend:** мокировать `fetch`, сторонние API-обёртки, storage/time на **границе**. **Не мокировать** модуль под тестом так, что проверяется только wiring мока.
+
+## Покрытие
+
+### Backend (pytest-cov)
+
+- CI / `make coverage-backend` (или `make coverage`): порог **70%** строк по `app/` (`backend/pyproject.toml` → `fail_under`) — **пол**, не цель писать тесты ради строк (см. «Граница тестов»).
+- В `omit` сейчас `app/portal_collab/services/agreement.py` — пол 70% **не** включает этот файл. Не компенсировать omit coverage-тестами; RBAC закрывать HTTP-сценариями. `app/portal_chat/services/chat.py` в omit **не** класть.
+- Новый нетривиальный модуль (сервисы, доменная логика) — ориентир **не ниже ~80%** покрытия строк модуля **сценариями правил**, не файлами `*_coverage.py`.
+- Для API: успешный сценарий + отказ по правам + хотя бы один негативный кейс валидации.
+- Финансовые, RBAC-критичные и безопасностные модули — **100% покрытие RBAC-сценариев** (401/403 для каждого эндпоинта; для SQLAdmin — HTTP-гейт `/admin`, см. выше). Публичные `/auth/*` без сессии — см. cookie/beacon/whitelist выше, не требовать 401 на login/token.
+
+### Frontend (Vitest + `@vitest/coverage-v8`)
+
+- Coverage считается **только** по слою чистой логики: `frontend/src/domain/**`, `frontend/src/utils/**` (см. `frontend/vitest.config.ts`). Страницы, компоненты, CSS, `api/`, `hooks/`, `onboarding/` **не** входят в порог CI — но тесты этих слоёв **обязательны по контракту поломки**, не «опциональны, потому что вне %».
+- Локально / CI: `make coverage-frontend` или `npm run test:coverage` в `frontend/`.
+- Порог CI (thresholds): **lines ≥ 70%**, statements ≥ 70%, functions ≥ 70%, branches ≥ 55% — **пол** по `domain/`+`utils/`. Ориентир на новый нетривиальный модуль в этом слое — ~**80%** строк **сценариями правил**, не бессмысленными кейсами.
+- **Аудит и ревью смотрят на способность теста сломать фронт**, не на вклад в %. Не удалять `api`/`onboarding`/`hooks` тесты как «не в coverage».
+- Playwright/e2e в этот % не смешивать (см. **playwright-integration.mdc**).
+
+## Бэкенд Cosmolet (async SQLAlchemy, FastAPI)
+
+- Тесты, использующие **БД** проекта, — через фикстуры из `backend/tests/conftest.py` (сессия, клиент API, моки SSO); не смешивать с синхронным Django.
+- Тестовая БД создаётся через **`Base.metadata.create_all`** (SQLite in-memory), а не через Alembic-миграции — это намеренное решение (детали в **backend-alembic.mdc**). Сидовые данные из миграций добавлять через фикстуры вручную при необходимости.
+- Для **WebSocket** — интеграционные сценарии с реальным или тестовым приложением по договорённости команды; см. **backend-websocket.mdc**.
+
+Конкретные имена фикстур авторизации (Keycloak и т.д.) **не копировать** из других проектов — использовать и расширять существующие в `conftest.py` этого репозитория.
+
+## Фронтенд Cosmolet (Vitest)
+
+- Запуск: `make test-frontend` / `make coverage-frontend` из корня (см. **agent-terminal-tests.mdc**).
+- Конфиг: `frontend/vitest.config.ts` — node, `maxWorkers: 1`, alias `@` → `src/`.
+- Структура и приоритеты слоёв — также **react-frontend.mdc** (раздел «Тесты»); при конфликте с этим файлом по границе/анти-coverage — **этот файл**.
+- Guided tour / onboarding side-effects — **security.mdc** + тесты в `frontend/tests/onboarding/`.

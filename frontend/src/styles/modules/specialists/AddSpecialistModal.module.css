@@ -1,0 +1,86 @@
+.modalSearchInput {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: var(--space-md, 12px);
+}
+
+.modalList {
+  list-style: none;
+  margin: 0;
+  padding: 0 4px 4px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* Поиск остаётся на месте, список скроллится внутри. */
+  max-height: min(360px, calc(100dvh - 240px));
+  min-height: 0;
+}
+
+.modalEmpty {
+  padding: var(--space-md, 16px);
+  text-align: center;
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+.modalListItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  color: inherit;
+  transition: background 0.12s;
+}
+
+.modalListItem:hover {
+  background: var(--color-bg-subtle);
+}
+
+.modalListItem:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.modalItemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.modalItemName {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modalItemEmail {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modalItemAction {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modalListItem {
+    transition: none;
+  }
+}

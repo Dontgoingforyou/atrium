@@ -1,0 +1,41 @@
+/* Split в модалке детали задачи: порог 768px намеренно (раньше page 1024) — уже модалка. */
+.split {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  width: 100%;
+  min-width: 0;
+}
+
+.splitMain {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.splitSide {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  scrollbar-gutter: stable;
+}
+
+@media (min-width: 768px) {
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 280px);
+    column-gap: var(--space-xl);
+    row-gap: var(--space-md);
+    align-items: start;
+  }
+
+  .splitMain {
+    grid-column: 1;
+  }
+
+  .splitSide {
+    grid-column: 2;
+  }
+}

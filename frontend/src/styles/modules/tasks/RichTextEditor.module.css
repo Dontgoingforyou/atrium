@@ -1,0 +1,218 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+  transition: border-color 0.15s;
+}
+
+.wrapper:focus-within {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+/* Страница документа: без рамки, как пустой лист */
+.wrapperSheet {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.wrapperSheet:focus-within {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+
+.toolbarSheetWrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    grid-template-rows 0.24s ease,
+    opacity 0.2s ease;
+}
+
+/* Внешний слот: анимация на .docToolbarSlotShell, тулбар без повторного схлопывания */
+.toolbarSheetWrap.toolbarSheetWrapExternal {
+  display: block;
+  grid-template-rows: unset;
+  opacity: 1;
+  pointer-events: auto;
+  transition: none;
+}
+
+.toolbarSheetWrapOpen {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  pointer-events: auto;
+  position: sticky;
+  top: var(--portal-doc-toolbar-sticky-top, 2.75rem);
+  z-index: 25;
+  background: var(--color-bg-page);
+  border-bottom: 1px solid var(--color-border-subtle);
+  margin-bottom: var(--space-xs);
+}
+
+.toolbarSheetWrapOpen.toolbarSheetWrapExternal {
+  position: static;
+  top: auto;
+  z-index: auto;
+  background: var(--color-bg-page);
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+
+.toolbarSheetInner {
+  min-height: 0;
+  overflow: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toolbarSheetWrap {
+    transition-duration: 0.01ms;
+  }
+
+  .editorInSheet {
+    transition-duration: 0.01ms;
+  }
+}
+
+.editorInSheet {
+  padding: var(--space-xs);
+  padding-inline-start: 0;
+  margin-left: 0;
+  min-height: calc(var(--min-rows, 3) * 1.65em + var(--space-sm));
+  overflow-wrap: break-word;
+  transition: min-height 0.24s ease;
+}
+
+/* Просмотр на странице документа — высота по содержимому, как у .bodyHtml */
+.editorInSheetIdle {
+  min-height: 0;
+  padding: var(--space-xs);
+  padding-inline-start: 0;
+  margin-left: 0;
+}
+
+/* Типографика как у .bodyHtml на странице документа */
+.editorInSheet :global(.ProseMirror) {
+  color: var(--color-heading);
+  line-height: 1.65;
+  font-family: inherit;
+}
+
+.editorInSheet :global(.ProseMirror p) {
+  margin: 0 0 0.75em;
+}
+
+.editorInSheet :global(.ProseMirror p:last-child) {
+  margin-bottom: 0;
+}
+
+.editorInSheet :global(.ProseMirror h1) {
+  font-size: 1.3em;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.editorInSheet :global(.ProseMirror h2),
+.editorInSheet :global(.ProseMirror h3) {
+  font-size: 1.1em;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.editorInSheetIdle :global(.ProseMirror) {
+  cursor: text;
+  min-height: auto;
+}
+
+.editorInSheetIdle :global(.ProseMirror a) {
+  cursor: pointer;
+}
+
+.editor {
+  flex: 1;
+  padding: var(--space-sm) var(--space-md);
+  padding-inline-start: var(--space-xl);
+  min-height: calc(var(--min-rows, 3) * 1.6em + var(--space-md) * 2);
+  cursor: text;
+}
+
+/* Лист документа: текст на направляющей заголовка, ручка в --portal-doc-row-padding. */
+.editor.editorInSheet,
+.editor.editorInSheetIdle {
+  padding-inline-start: 0;
+  margin-left: 0;
+}
+
+.dropZone {
+  position: relative;
+}
+
+.dropZoneActive .editor {
+  outline: 2px dashed var(--color-accent);
+  outline-offset: -2px;
+}
+
+.dropOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  color: var(--color-accent);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+}
+
+.dropError {
+  margin: 0;
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--font-size-small);
+  color: var(--color-danger);
+}
+
+/* Хешированные классы — openRichTextImageLightbox; не :global (UI-spoof через class в HTML). */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-lightbox);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Как MediaLightbox: плотный скрим, не --color-backdrop (тот светлее). */
+  background: rgba(0, 0, 0, 0.82);
+  cursor: zoom-out;
+}
+
+.lightboxClose {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lightboxImg {
+  max-width: min(92vw, 1200px);
+  max-height: 88vh;
+  object-fit: contain;
+  cursor: default;
+}

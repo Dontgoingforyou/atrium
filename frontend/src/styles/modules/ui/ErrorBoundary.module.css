@@ -1,0 +1,31 @@
+.fallback {
+  max-width: 480px;
+  margin: var(--space-4xl) auto;
+  padding: var(--space-xl);
+  font-family: system-ui, sans-serif;
+}
+
+.title {
+  color: var(--color-danger-strong);
+  margin-bottom: var(--space-sm);
+}
+
+.message {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-lg);
+}
+
+.detail {
+  font-size: var(--font-size-caption);
+  background: var(--color-bg-subtle);
+  padding: var(--space-md);
+  border-radius: var(--radius-sm);
+  overflow-x: auto;
+  color: var(--color-heading);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.reload {
+  margin-top: var(--space-lg);
+}

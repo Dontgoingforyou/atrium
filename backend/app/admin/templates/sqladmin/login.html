@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Вход — {{ title }}</title>
+    <link
+      rel="stylesheet"
+      href="/admin/statics/css/tabler.min.css"
+    />
+    <link rel="stylesheet" href="/static/admin-brand/admin-brand.css" />
+    <style>
+      .page { background: var(--tblr-bg-surface-secondary, #f4f6fa); }
+    </style>
+  </head>
+  <body class="antialiased">
+    <div class="page page-center">
+      <div class="container-tight py-4">
+
+        <div class="text-center mb-4">
+          {% if logo_url %}
+            <img src="{{ logo_url }}" alt="{{ title }}" height="40" class="mb-2" />
+          {% endif %}
+          <h2 class="mb-0">{{ title }}</h2>
+        </div>
+
+        <div class="card card-md shadow-sm">
+          <div class="card-body text-center py-5">
+
+            <h3 class="card-title mb-1">Панель администратора</h3>
+            <p class="text-muted mb-4">
+              Доступ разрешён только пользователям группы
+              <code>cosmolet_role_admin</code>
+            </p>
+
+            {% set err = request.query_params.get("error") %}
+            {% if err %}
+            <div class="alert alert-danger mb-4 text-start" role="alert">
+              <div class="d-flex align-items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon me-2" width="24" height="24"
+                     viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                  <circle cx="12" cy="12" r="9" />
+                  <line x1="12" y1="8" x2="12" y2="12" />
+                  <line x1="12" y1="16" x2="12.01" y2="16" />
+                </svg>
+                <div>
+                  {% if err == "forbidden" %}
+                    Нет доступа. Войдите с аккаунтом группы <strong>cosmolet_role_admin</strong>.
+                  {% else %}
+                    Ошибка входа: <code>{{ err }}</code>. Попробуйте ещё раз.
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endif %}
+
+            <a href="/login?next=%2Fadmin-bridge" class="btn btn-primary btn-lg w-100">
+              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                   viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+                <path d="M20 12h-13l3 -3m0 6l-3 -3" />
+              </svg>
+              Войти через портал
+            </a>
+            <p class="text-muted small mt-3 mb-0">
+              Сначала войдите в портал с аккаунтом группы <code>cosmolet_role_admin</code>,
+              затем откроется переход в панель.
+            </p>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </body>
+</html>

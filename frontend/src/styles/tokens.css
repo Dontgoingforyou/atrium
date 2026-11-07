@@ -1,0 +1,264 @@
+/**
+ * Дизайн-токены портала. Подключаются первыми из main.tsx.
+ * Тема: атрибут `data-theme` на `html` — `light` | `dark`.
+ * Нейтрали: светлая — Interview; тёмная — нейтральные серые (ChatGPT-like), без синего оттенка.
+ * Акценты кнопок/полей — фирменный фиолет (с адаптацией ссылки на тёмном фоне).
+ */
+:root {
+  /* ─── Шрифт (общее) ─────────────────────────────────────────── */
+  --font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI Emoji', 'Apple Color Emoji',
+    'Noto Color Emoji', sans-serif;
+
+  /* ─── Типографическая шкала (Manrope) ────────────────────────── */
+  --font-size-h2: 32px;
+  --font-size-h3: 24px;
+  --font-size-h4: 20px;
+  --font-size-b1: 18px; /* Body / Subheading Medium */
+  --font-size-b2: 16px;
+  --font-size-body: 14px; /* p2 Medium — основной текст */
+  --font-size-caption: 12px; /* p4 */
+  --letter-spacing-grip: -2px;
+  --font-size-small: 13px; /* промежуточный */
+  --font-size-title-sm: 18px;
+  --font-size-title-page: 22px;
+  /** Крупный emoji-only в пузыре DM. */
+  --font-size-emoji-bubble: 48px;
+  /** Эмодзи-мяч в мини-игре (emoji-pong). */
+  --font-size-emoji-game: 40px;
+  /** Высота поля emoji-pong (на узких экранах ограничивается через min с dvh). */
+  --emoji-game-field-min-height: 900px;
+  --emoji-game-field-height: 900px;
+  /** Фон поля emoji-pong. */
+  --emoji-game-field-bg: #f5e6a8;
+  --emoji-game-paddle: #1a1a1a;
+  --emoji-game-score-muted: rgb(0 0 0 / 0.14);
+  --emoji-game-scoreboard-fg: #5c5340;
+
+  --font-weight-heading: 600; /* SemiBold */
+  --font-weight-medium: 500;
+  --font-weight-regular: 400;
+
+  /* ─── Радиусы (общие) ───────────────────────────────────────── */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /** Тёплый фон подсветки поиска / цитаты (поверх акцента). */
+  --color-search-hit-warm: #f5e6a8;
+
+  /* ─── Отступы (общие) ─────────────────────────────────────── */
+  --space-xs: 4px;
+  --space-2xs: 6px;
+  --space-sm: 8px;
+  --space-compact: 10px;
+  --space-md: 12px;
+  --space-lg: 16px;
+  --space-xl: 24px;
+  --space-2xl: 32px;
+  --space-3xl: 48px;
+  --space-4xl: 64px;
+  --tour-anchor-scroll-pad: var(--space-4xl);
+
+  /* ─── z-index слоёв (overlay-компоненты) ──────────────────────── */
+  --z-dropdown: 800;
+  /** FAB / floating DM-виджет — между dropdown и drawer. */
+  --z-floating: 1000;
+  --z-drawer: 1100;
+  --z-lightbox: 9000;
+  --z-lightbox-elevated: 11000;
+  --z-modal: 20000;
+  --z-toast: 21000;
+  /** Порталы над toast (emoji picker, аналоги SearchablePicker). */
+  --z-popover: 22000;
+
+  /** Строки документа: дочерние страницы, «+ Новый документ», «Добавить комментарий». */
+  --portal-row-icon-size: 20px;
+  --portal-icon-text-gap: 10px;
+  /** Внутренний padding строки/пунктирной кнопки (от рамки до иконки и текста). */
+  --portal-doc-row-padding: 14px;
+
+  /* Тени (уровни — light/dark переопределяют) */
+  --shadow-elev-1: 0 1px 3px rgb(0 0 0 / 0.08);
+  --shadow-elev-2: 0 2px 8px rgb(0 0 0 / 0.1);
+  --shadow-elev-3: 0 8px 32px rgb(0 0 0 / 0.18);
+  --shadow-elev-4: 0 10px 36px rgb(0 0 0 / 0.2);
+  --duration-normal: 0.25s;
+  /** Прыжок по цитате в чате — синхрон с `REPLY_JUMP_HIGHLIGHT_MS`. */
+  --duration-reply-quote-hit: 2.8s;
+  --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Светлая тема ──────────────────── */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+
+  /* ─── Текст ───────────────────────────────────────────── */
+  --color-text-primary: #252525; /* dark/main */
+  --color-text-secondary: rgba(37, 37, 37, 0.8); /* dark/800 */
+  --color-text-muted: rgba(37, 37, 37, 0.6); /* dark/600 */
+  --color-text-hint: rgba(37, 37, 37, 0.6);
+  --color-text-label: rgba(37, 37, 37, 0.8);
+  --color-text-disabled: rgba(37, 37, 37, 0.4); /* dark/400 */
+  --color-heading: #252525;
+  --color-link: #6131cf;
+
+  /* ─── Состояния / акцент (фиолетовая система) ─────── */
+  --color-accent: #6131cf; /* accent/main */
+  --color-accent-hover: #49239f;
+  --color-on-accent: #fefefc; /* light/main */
+  --color-warning: #ff6f00;
+  /** Бренд-панель логина (форсит light). */
+  --color-brand-login-panel: #df4d12;
+  --color-info: #0ea5e9;
+  --color-success: #1a9000;
+  /** Серии бенч-графиков (офферы / CV). */
+  --color-bench-orange: #df4d12;
+  /** Серии бенч-графиков (выходы / конверсия выходов). */
+  --color-bench-chartreuse: #e1e235;
+  --color-danger: #df1b1f;
+  --color-danger-ui: #df1b1f;
+  --color-danger-strong: #b00020;
+  --color-priority-low: #16a34a;
+  --color-priority-medium: #d97706;
+  --color-priority-high: #dc2626;
+  --color-presence-online: #22c55e;
+  --color-presence-away: #eab308;
+  /** Фоллбек заливки <mark> в rich-text (редактор и просмотр документа). */
+  --color-rich-text-highlight: #fef08a;
+  --color-bg-hover: rgba(0, 0, 0, 0.05);
+  /** Базовый цвет тени для color-mix в box-shadow попапов/карточек. */
+  --color-shadow: #000;
+
+  /* ─── Поверхности и границы ─────────────────────── */
+  --color-border: rgba(37, 37, 37, 0.2);
+  --color-border-subtle: rgba(37, 37, 37, 0.12);
+  --color-border-primary: rgba(37, 37, 37, 0.8);
+  --color-bg-page: #f6f7f9;
+  --color-bg-surface: #fefefc; /* light/main */
+  --color-bg-muted: #fafafa;
+  --color-bg-subtle: #f4f5f7;
+  --color-bg-panel: #f8f9fa;
+  /* Карточки на фоне surface (канбан и т.п.) */
+  --color-bg-elevated: #fafafa;
+  --color-bg-selected: rgba(97, 49, 207, 0.08);
+  --color-bg-selected-soft: rgba(97, 49, 207, 0.04);
+  --color-bg-chip: rgba(97, 49, 207, 0.08);
+  --color-bubble-other: #f4f5f7;
+  --color-text-on-dark-muted: rgba(255, 255, 255, 0.7);
+  --shadow-elev-1: 0 1px 3px rgb(0 0 0 / 0.08);
+  --shadow-elev-2: 0 2px 8px rgb(0 0 0 / 0.13);
+  --shadow-elev-3: 0 8px 32px rgb(0 0 0 / 0.12);
+  --shadow-elev-4: 0 10px 36px rgb(0 0 0 / 0.16);
+  --input-focus-shadow: 0 0 0 0.2rem rgba(97, 49, 207, 0.2);
+  /* Модалки, скрим */
+  --color-backdrop: rgba(9, 30, 66, 0.35);
+  /* «Мягкие» статусы (списки, дашборд) */
+  --color-bg-accent-soft: rgba(97, 49, 207, 0.1);
+  --color-fg-on-accent-soft: #6131cf;
+  --color-bg-danger-soft: rgba(223, 27, 31, 0.15);
+  --color-bg-success-soft: #e6f4ea;
+  --color-fg-on-success-soft: #188038;
+  --color-bg-warning-review: #fff5f5;
+  --color-bg-finance-tint: #fff8f8;
+  /* Поля ввода: как поверхность */
+  --color-bg-input: #fefefc;
+  --color-border-success: #1a9000;
+  /** Кольцо фокуса для :focus-visible на интерактивных элементах. */
+  --color-focus-ring: #6131cf;
+
+  /* Кнопки поиска (primary/main): тёмные на светлой теме */
+  --color-search-action-bg: #252525;
+  --color-search-action-fg: #fefefc;
+  --color-search-action-hover-bg: rgba(37, 37, 37, 0.8);
+  --color-search-action-muted-bg: transparent;
+  --color-search-action-muted-fg: #252525;
+  --color-search-action-muted-border: rgba(37, 37, 37, 0.2);
+  --color-search-action-muted-hover-bg: rgba(37, 37, 37, 0.1);
+}
+
+/* ─── Тёмная тема ───────────── */
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-text-primary: #ececec;
+  --color-text-secondary: #b4b4b4;
+  --color-text-muted: #8e8e8e;
+  --color-text-hint: #8e8e8e;
+  --color-text-label: #d4d4d4;
+  --color-text-disabled: rgba(212, 212, 212, 0.45);
+  --color-heading: #ececec;
+  /* читаемый фиолетовый на тёмном фоне */
+  --color-link: #a78bfa;
+
+  --color-accent: #8b5cf6;
+  --color-accent-hover: #a78bfa;
+  --color-on-accent: #ffffff;
+  --color-warning: #d29922;
+  --color-brand-login-panel: #df4d12;
+  --color-info: #38bdf8;
+  --color-success: #3fb950;
+  --color-bench-orange: #f97316;
+  --color-bench-chartreuse: #eab308;
+  --color-danger: #f85149;
+  --color-danger-ui: #f85149;
+  --color-danger-strong: #ff7b72;
+  --color-priority-low: #3fb950;
+  --color-priority-medium: #d29922;
+  --color-priority-high: #f85149;
+  --color-presence-online: #3fb950;
+  --color-presence-away: #d29922;
+  --color-rich-text-highlight: #fef08a;
+  --color-bg-hover: rgba(255, 255, 255, 0.06);
+  /** Базовый цвет тени для color-mix в box-shadow попапов/карточек. */
+  --color-shadow: #000;
+
+  --color-border: #3a3a3a;
+  --color-border-subtle: rgba(255, 255, 255, 0.1);
+  --color-border-primary: #8e8e8e;
+  --color-bg-page: #212121;
+  --color-bg-surface: #171717;
+  --color-bg-muted: #171717;
+  --color-bg-subtle: #2f2f2f;
+  --color-bg-panel: #171717;
+  --color-bg-elevated: #2f2f2f;
+  --color-bg-selected: rgba(139, 92, 246, 0.18);
+  --color-bg-selected-soft: rgba(139, 92, 246, 0.1);
+  --color-bg-chip: rgba(139, 92, 246, 0.12);
+  --color-bubble-other: #2f2f2f;
+  --color-text-on-dark-muted: rgba(255, 255, 255, 0.72);
+  --shadow-elev-1: 0 1px 3px rgb(0 0 0 / 0.35);
+  --shadow-elev-2: 0 2px 8px rgb(0 0 0 / 0.35);
+  --shadow-elev-3: 0 8px 32px rgb(0 0 0 / 0.5);
+  --shadow-elev-4: 0 10px 36px rgb(0 0 0 / 0.45);
+  --input-focus-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.35);
+  --color-backdrop: rgba(0, 0, 0, 0.6);
+  --color-bg-accent-soft: rgba(139, 92, 246, 0.15);
+  --color-fg-on-accent-soft: #c4b5fd;
+  --color-bg-danger-soft: rgba(248, 81, 73, 0.15);
+  --color-bg-success-soft: rgba(63, 185, 80, 0.12);
+  --color-fg-on-success-soft: #3fb950;
+  --color-bg-warning-review: rgba(248, 81, 73, 0.1);
+  --color-bg-finance-tint: rgba(248, 81, 73, 0.08);
+  --color-bg-input: #171717;
+  /* Граница «успех» для квизов / статусов */
+  --color-border-success: #3fb950;
+  /** Кольцо фокуса для :focus-visible на интерактивных элементах. */
+  --color-focus-ring: #a78bfa;
+
+  /* Кнопки поиска: светлые на тёмной теме */
+  --color-search-action-bg: #ececec;
+  --color-search-action-fg: #212121;
+  --color-search-action-hover-bg: rgba(236, 236, 236, 0.85);
+  --color-search-action-muted-bg: transparent;
+  --color-search-action-muted-fg: #ececec;
+  --color-search-action-muted-border: rgba(236, 236, 236, 0.35);
+  --color-search-action-muted-hover-bg: rgba(236, 236, 236, 0.1);
+
+  --emoji-game-field-bg: #3d3a28;
+  --emoji-game-paddle: #ececec;
+  --emoji-game-score-muted: rgb(255 255 255 / 0.16);
+  --emoji-game-scoreboard-fg: #c9c2a8;
+}

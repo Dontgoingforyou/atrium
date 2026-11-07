@@ -1,0 +1,194 @@
+
+.taskRowCard {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.taskRowCardSubtask {
+  margin-left: var(--space-xl);
+  padding-left: var(--space-md);
+  border-left: 3px solid color-mix(in srgb, var(--color-accent) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-accent) 4%, var(--color-bg-surface));
+}
+
+.taskRowSubtaskBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  align-self: flex-start;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: var(--font-size-caption);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
+}
+
+.taskRowBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: var(--space-xs);
+}
+
+.taskRowTitleBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.taskRowCardSubtask .taskRowTitleBlock {
+  gap: 6px;
+}
+
+.taskRowFooterTags {
+  flex: 1;
+  min-width: 0;
+  margin-top: 0;
+}
+
+.taskRowPriority {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+.taskRowDate {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
+.taskRowDateOverdue {
+  color: var(--color-danger-ui);
+}
+
+.taskRowTitleLink {
+  font-size: var(--font-size-b2);
+  font-weight: 500;
+  margin-bottom: 0;
+  display: inline-block;
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.taskRowTitleLink:hover {
+  text-decoration: underline;
+  color: var(--color-accent);
+}
+
+.taskRowDescription {
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  margin: var(--space-xs) 0 0;
+}
+
+.taskRowDescription a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.taskRowDescription a:hover {
+  text-decoration: none;
+}
+
+.taskRowMeta {
+  display: flex;
+  gap: 10px;
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  flex-wrap: wrap;
+  align-items: center;
+  min-width: 0;
+}
+
+.taskRowBottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  margin-top: var(--space-xs);
+}
+
+.taskRowFooter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  margin-left: auto;
+  padding-top: 0;
+  padding-right: 2px;
+}
+
+.taskRowFooter .statusSelectWrap {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.statusSelectWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.statusSelect {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-md);
+  line-height: 1.2;
+  min-height: unset;
+  border-radius: 999px;
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  font-family: inherit;
+  background: var(--color-bg-surface);
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+.statusSelect:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.statusSelectArrow {
+  font-size: 10px;
+  line-height: 1;
+  opacity: 0.8;
+}
+
+.statusMenu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + var(--space-xs));
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  min-width: 10rem;
+  padding: var(--space-xs) 0;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-elev-2);
+}
+
+.statusMenuItem {
+  width: 100%;
+  padding: var(--space-xs) var(--space-md);
+  border: none;
+  background: transparent;
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.statusMenuItem:hover {
+  background: var(--color-bg-selected);
+}

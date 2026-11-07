@@ -1,0 +1,518 @@
+.page {
+  max-width: min(1320px, 100%);
+  width: 100%;
+  min-width: 0;
+}
+
+.taskNumberBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-panel);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background 0.1s, color 0.1s;
+}
+
+.taskNumberBadge:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.split {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.splitMain,
+.splitSide {
+  min-width: 0;
+}
+
+.splitMain,
+.splitSide {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (min-width: 1024px) {
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 360px;
+    column-gap: 20px;
+    row-gap: 12px;
+    align-items: start;
+  }
+
+  .splitMain {
+    grid-column: 1;
+  }
+
+  .splitSide {
+    grid-column: 2;
+    align-self: start;
+    position: sticky;
+    top: 0.75rem;
+    max-height: calc(100dvh - 2.5rem);
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+  }
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.toolbarActions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.pageTitle {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .page :global(.page-header) {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    min-width: 0;
+  }
+
+  .pageTitle {
+    overflow-wrap: anywhere;
+  }
+
+  .toolbar,
+  .toolbarActions {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+}
+
+.historyLoadMore {
+  margin-top: var(--space-sm);
+}
+
+.linkMuted {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.card {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+}
+
+.sectionCard {
+  padding: var(--space-md);
+}
+
+.formStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+}
+
+.actionsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.deleteTaskBtn {
+  color: var(--color-danger-ui);
+  border-color: color-mix(in srgb, var(--color-danger-ui) 40%, var(--color-border));
+}
+
+.deleteTaskBtn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-danger-ui) 12%, var(--color-bg-surface));
+  border-color: var(--color-danger-ui);
+}
+
+.cardTitle {
+  font-size: var(--font-size-h3);
+  margin: 0 0 var(--space-md);
+}
+
+.sectionCard > .cardTitle,
+.taskPanelHeader .cardTitle {
+  font-size: var(--font-size-b2);
+  font-weight: 600;
+}
+
+.sectionCard > .cardTitle {
+  margin: 0 0 var(--space-sm);
+}
+
+.taskPanelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin: 0;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  box-sizing: border-box;
+}
+
+.taskPanelHeader:hover {
+  background: var(--color-bg-selected);
+}
+
+.taskPanelHeader .cardTitle {
+  margin: 0;
+  flex: 1;
+  pointer-events: none;
+}
+
+.panelEmptyState {
+  margin: 0;
+  font-size: var(--font-size-small);
+  font-weight: 400;
+  color: var(--color-text-muted);
+}
+
+.taskPanelToggleIcon {
+  display: inline-block;
+  flex-shrink: 0;
+  transition: transform 0.22s ease;
+  line-height: 1;
+  font-size: 0.95rem;
+  color: var(--color-accent);
+  pointer-events: none;
+}
+
+.taskPanelToggleIcon[data-state='closed'] {
+  transform: rotate(-90deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .taskPanelToggleIcon {
+    transition: none;
+  }
+}
+
+/* Плавное раскрытие/сворачивание: grid 0fr → 1fr */
+.taskPanelBodyShell {
+  display: grid;
+  align-self: start;
+  grid-template-rows: 0fr;
+  width: 100%;
+  min-width: 0;
+  transition: grid-template-rows 0.25s ease;
+}
+
+.taskPanelBodyShell[data-state='open'] {
+  grid-template-rows: 1fr;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .taskPanelBodyShell {
+    transition: none;
+  }
+}
+
+.taskPanelBodyInner {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  padding-top: var(--space-md);
+  font-size: var(--font-size-body);
+  font-weight: 400;
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+  box-sizing: border-box;
+}
+
+/* Links in open collapsible sections need clickable overflow. */
+.taskPanelBodyShell[data-state='open'] > .taskPanelBodyInner {
+  overflow: visible;
+}
+
+.readOnlyDescription {
+  font-size: var(--font-size-b2);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  cursor: text;
+}
+
+.readOnlyDescription a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.readOnlyDescription a:hover {
+  text-decoration: none;
+}
+
+.titleSearchHit {
+  outline: 2px solid color-mix(in srgb, var(--color-accent) 55%, #f5e6a8);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr));
+  gap: 12px;
+  min-width: 0;
+}
+
+.row .form-label {
+  min-width: 0;
+}
+
+.dueDateField {
+  --picker-control-width: 100%;
+  --picker-trigger-min-height: 2.125rem;
+  --picker-trigger-padding: 0 var(--space-sm);
+  --picker-trigger-font-weight: 400;
+  --picker-trigger-font-size: var(--font-size-body);
+}
+
+.formInputAligned {
+  height: 2.125rem;
+  min-height: 2.125rem;
+  padding: 0 var(--space-sm);
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+.dueDatePicker {
+  display: block;
+  width: 100%;
+}
+
+.saveStatusLine {
+  min-height: 1.35em;
+  margin: 0;
+}
+
+.historyList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.historyItem {
+  border-bottom: 1px solid var(--color-border);
+  padding: 6px 0;
+}
+
+.historyItem:last-child {
+  border-bottom: none;
+}
+
+.historyMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xs);
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-sm);
+}
+
+.historyActor {
+  display: inline-flex;
+  align-items: center;
+}
+
+.historyTime {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
+.historyDiff {
+  margin: 0;
+  padding-left: 18px;
+  font-size: var(--font-size-small);
+}
+
+.subtaskList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.subtaskSortableWrap {
+  width: 100%;
+  min-width: 0;
+  cursor: grab;
+}
+
+.subtaskSortableWrap:active {
+  cursor: grabbing;
+}
+
+.subtaskCard {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  background: var(--color-bg-subtle);
+  min-width: 0;
+  cursor: pointer;
+}
+
+.subtaskCardTitleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.subtaskAssigneeAvatar {
+  flex-shrink: 0;
+}
+
+.subtaskCardControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.subtaskStatusSelect {
+  font-size: var(--font-size-caption);
+  font-family: inherit;
+  font-weight: 500;
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  max-width: 100%;
+  background: var(--color-bg-input);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  color-scheme: inherit;
+}
+
+.subtaskCardTitle {
+  flex: 1;
+  min-width: 0;
+  font-size: var(--font-size-body);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  text-decoration: none;
+  line-height: 1.35;
+  word-break: break-word;
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  cursor: pointer;
+}
+
+.subtaskCardRefNum {
+  font-size: var(--font-size-caption);
+  font-weight: 400;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.subtaskCardTitle:hover {
+  text-decoration: underline;
+}
+
+.subtaskCardDesc {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-secondary);
+  margin: 6px 0 0;
+  white-space: pre-wrap;
+}
+
+.subtaskCardDesc a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.subtaskCardDesc a:hover {
+  text-decoration: none;
+}
+
+.subtaskCardMeta {
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+  font-size: var(--font-size-caption);
+  color: var(--color-text-secondary);
+}
+
+.subtaskCardPriority {
+  opacity: 0.75;
+}
+
+.subtaskCardDue {
+  color: var(--color-text-secondary);
+}
+
+.subtaskCardOverdue {
+  color: var(--color-danger);
+  font-weight: 500;
+}
+
+.subtaskForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  margin-bottom: var(--space-lg);
+}
+
+.subtaskForm .form-input {
+  width: 100%;
+  min-width: 0;
+}
+
+.subtaskAssigneeField {
+  width: 100%;
+  min-width: 0;
+}
+
+.subtaskForm :global(.btn-primary) {
+  width: 100%;
+}

@@ -1,0 +1,13 @@
+{
+  "name": "cosmolet-tests-integration",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "postinstall": "playwright install chromium",
+    "test": "playwright test -c playwright.config.ts",
+    "install-browsers": "playwright install chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0"
+  }
+}

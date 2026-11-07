@@ -1,0 +1,232 @@
+.staleBanner {
+  margin-bottom: var(--space-lg);
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-warning);
+  background: color-mix(in srgb, var(--color-warning) 12%, var(--color-bg-surface));
+  color: var(--color-text-primary);
+  font-size: var(--font-size-small);
+}
+
+.filters {
+  --picker-control-width: 220px;
+  --picker-trigger-padding: 4px 8px;
+  --picker-trigger-min-height: 32px;
+  --picker-trigger-font-size: var(--font-size-small);
+  --picker-trigger-font-weight: 500;
+  --picker-trigger-gap: 6px;
+  --picker-trigger-label-size: var(--font-size-caption);
+  --picker-trigger-chevron-size: 10px;
+}
+
+.periodPicker {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+.resetBtn {
+  box-sizing: border-box;
+  height: 32px;
+  min-height: 32px;
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.exportBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xl);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+}
+
+.card {
+  min-width: 0;
+  padding: var(--space-md);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+}
+
+.cardLabel {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
+.cardValue {
+  margin: 0;
+  font-size: var(--font-size-h4);
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.chartCard,
+.tableCard {
+  min-width: 0;
+  padding: var(--space-md);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-surface);
+}
+
+.chartBody {
+  width: 100%;
+  min-width: 0;
+}
+
+.chartBodyScroll {
+  overflow-x: auto;
+}
+
+.chartBodyWide {
+  min-width: 45rem;
+  height: 260px;
+}
+
+.sectionTitle {
+  margin: 0 0 var(--space-md);
+  font-size: var(--font-size-body);
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.tables {
+  display: grid;
+  gap: var(--space-xl);
+}
+
+.tableWrap {
+  overflow-x: auto;
+  min-width: 0;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-small);
+}
+
+.table th,
+.table td {
+  padding: var(--space-sm);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border-subtle);
+  white-space: nowrap;
+}
+
+.table th {
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.conversionCell {
+  min-width: 0;
+}
+
+.conversionChip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: 24px;
+  padding: 0 var(--space-sm);
+  border-radius: var(--radius-lg);
+  border: 1px solid;
+  font-size: var(--font-size-caption);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+}
+
+.conversionChipLabel {
+  min-width: 0;
+}
+
+.monthlyTooltip {
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-elevated);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-elev-3);
+  font-size: var(--font-size-small);
+}
+
+.monthlyTooltipLabel {
+  margin: 0 0 var(--space-sm);
+  font-size: var(--font-size-caption);
+  font-weight: 400;
+  color: var(--color-text-muted);
+  line-height: 1.2;
+}
+
+.monthlyTooltipList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.monthlyTooltipItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  line-height: 1.25;
+  color: var(--color-text-primary);
+}
+
+.monthlyTooltipSwatch {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.monthlyTooltipName {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.monthlyTooltipValue {
+  font-variant-numeric: tabular-nums;
+}
+
+.errorText {
+  color: var(--color-danger);
+}
+
+@media (max-width: 900px) {
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .cards,
+  .charts {
+    grid-template-columns: 1fr;
+  }
+
+  .resetBtn {
+    width: 100%;
+  }
+}

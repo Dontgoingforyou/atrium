@@ -1,0 +1,189 @@
+.root {
+  position: relative;
+  display: inline-block;
+}
+
+.fixedWidth {
+  display: block;
+  width: var(--picker-control-width, 240px);
+}
+
+.fixedWidth .trigger {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.fixedWidth .triggerValue {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--picker-trigger-gap, 8px);
+  padding: var(--picker-trigger-padding, 8px 12px);
+  min-height: var(--picker-trigger-min-height, auto);
+  box-sizing: border-box;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  color: var(--color-heading);
+  font: inherit;
+  font-size: var(--picker-trigger-font-size, inherit);
+  font-weight: var(--picker-trigger-font-weight, 600);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.trigger:hover {
+  border-color: var(--color-accent);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.triggerLabel:empty {
+  display: none;
+}
+
+.triggerLabel {
+  font-size: var(--picker-trigger-label-size, var(--font-size-small));
+  font-weight: 500;
+  color: var(--color-text-muted);
+}
+
+.triggerValue {
+  min-width: 120px;
+  text-align: left;
+}
+
+.triggerChevron {
+  font-size: var(--picker-trigger-chevron-size, 12px);
+  color: var(--color-text-muted);
+}
+
+.popover {
+  position: fixed;
+  z-index: var(--z-popover);
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: calc(100vw - 32px);
+  padding: var(--space-md);
+  overflow: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-elevated);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-shadow) 18%, transparent);
+}
+
+.yearRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.yearTitle {
+  font-weight: 600;
+  color: var(--color-heading);
+}
+
+.yearTitleBtn {
+  padding: var(--space-xs) var(--space-sm);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  font: inherit;
+  font-weight: 600;
+  color: var(--color-heading);
+  cursor: pointer;
+}
+
+.yearTitleBtn:hover {
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+}
+
+.yearTitleBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.yearNav {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  cursor: pointer;
+  font-size: 18px;
+  color: var(--color-text-label);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+}
+
+.yearNav:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.yearNav:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.monthGrid,
+.yearGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-xs);
+}
+
+.monthBtn,
+.yearBtn {
+  min-width: 0;
+  padding: var(--space-sm) var(--space-xs);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: var(--font-size-small);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+
+.monthBtn:hover:not(:disabled),
+.yearBtn:hover {
+  border-color: var(--color-border);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+}
+
+.monthBtn:focus-visible,
+.yearBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.monthBtnSelected,
+.yearBtnSelected {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.monthBtnDisabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}

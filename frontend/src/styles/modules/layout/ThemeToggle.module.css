@@ -1,0 +1,67 @@
+/* Переключатель темы. */
+.wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: var(--shadow-elev-1);
+  /* как в IMP: плавный hover + GPU */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    box-shadow 0.15s,
+    transform var(--duration-normal) var(--ease-out);
+}
+
+.btn:hover {
+  background: var(--color-bg-subtle);
+  transform: scale(1.1) translateZ(0);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-primary);
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: var(--input-focus-shadow, 0 0 0 0.2rem rgba(97, 49, 207, 0.2));
+}
+
+/* 360° + лёгкий scale — без «ломающейся» дуги 180° */
+@media (prefers-reduced-motion: no-preference) {
+  .btn.justToggled {
+    animation: themeToggleSpin 0.4s var(--ease-out);
+  }
+}
+
+@keyframes themeToggleSpin {
+  from {
+    transform: scale(1.05) rotate(0deg);
+  }
+  to {
+    transform: scale(1.05) rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn.justToggled {
+    animation: none;
+  }
+}

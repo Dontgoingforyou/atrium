@@ -1,0 +1,519 @@
+.layout {
+  display: flex;
+  /* Иначе колонка чата растягивает страницу целиком и поле ввода уезжает под fold */
+  height: 100vh;
+  max-height: 100vh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+@supports (height: 100dvh) {
+  .layout {
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+}
+
+/* ─── Сайдбар ─────────────────────────────────────────────────── */
+
+.sidebarWrapper {
+  position: relative;
+  flex-shrink: 0;
+  height: 100%;
+  overflow: visible;
+}
+
+.sidebar {
+  width: 280px;
+  height: 100%;
+  border-right: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-muted);
+  padding: 16px 12px;
+  overflow: auto;
+  box-sizing: border-box;
+  transition: width 0.2s ease, padding 0.2s ease, border-color 0.2s ease;
+}
+
+.sidebarCollapsed {
+  width: 0;
+  padding: 0;
+  overflow: hidden;
+  border-right-color: transparent;
+}
+
+.sidebarToggleBtn {
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+  width: 20px;
+  height: 52px;
+  padding: 0;
+  border: 1px solid var(--color-border-subtle);
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+  background: var(--color-bg-muted);
+  color: var(--color-text-muted);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.15s, right 0.2s ease;
+  box-shadow: 2px 0 6px rgba(0, 0, 0, 0.08);
+}
+
+.sidebarCollapsedToggle {
+  border-left: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
+  right: -22px;
+}
+
+.sidebarToggleBtn:hover,
+.sidebarToggleBtn:focus-visible {
+  color: var(--color-heading);
+  background: var(--color-bg-subtle);
+}
+
+.sidebarToggleBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  padding-left: 8px;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.logo:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.logoIcon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+.logoText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.navLink {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  text-decoration: none;
+  color: var(--color-heading);
+  font-size: var(--font-size-body);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background var(--duration-normal) var(--ease-out), color var(--duration-normal) var(--ease-out);
+}
+
+.navBadge {
+  flex-shrink: 0;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 18px;
+  text-align: center;
+}
+
+.navLink:hover {
+  background: var(--color-bg-subtle);
+}
+
+.navLinkActive {
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  color: var(--color-accent);
+  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--color-accent);
+}
+
+.navLinkActive:hover {
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+}
+
+.navBtn {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  font: inherit;
+  color: var(--color-heading);
+  font-size: var(--font-size-body);
+}
+
+.navBtn:hover {
+  background: var(--color-bg-subtle);
+}
+
+.navBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 0;
+  padding: 8px 0 0;
+  border-top: none;
+  min-width: 0;
+}
+
+/* Одна линия между секциями «Документы» и «Документы для разработчиков». */
+.navDocumentSection + .navDocumentSection > .sectionHeader {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.navTrailingActionSlot {
+  box-sizing: border-box;
+  flex: 0 0 30px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 2px;
+  min-height: 26px;
+}
+
+.sectionLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  letter-spacing: 0.02em;
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sectionAddBtn {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+
+.sectionAddBtn:hover,
+.sectionAddBtn:focus-visible {
+  color: var(--color-heading);
+  background: var(--color-bg-subtle);
+}
+
+.sectionAddBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.navEmpty {
+  margin: 8px 0 0;
+  padding: 0 0 8px;
+  font-size: 12px;
+  color: var(--color-text-muted);
+  line-height: 1.35;
+  text-align: left;
+}
+
+.navLoading {
+  padding: 8px 12px;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.navError {
+  padding: 8px 12px;
+  color: var(--color-danger-ui);
+  font-size: 13px;
+}
+
+.navRetryBtn {
+  margin-left: 6px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--color-accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.navRetryBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Дерево документов */
+.navDocumentSection {
+  margin-bottom: 0.25rem;
+}
+
+.navDocumentSectionDropOver {
+  outline: 1px dashed var(--color-accent);
+  border-radius: 6px;
+}
+
+/* Одна линия между блоком ссылок сайдбара и первой секцией документов. */
+.navDocumentsScroll {
+  overflow-x: hidden;
+  overflow-y: visible;
+  min-width: 0;
+  max-width: 100%;
+  margin-top: 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.navDocumentsInner {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  vertical-align: top;
+}
+
+/* ─── Основной контент ────────────────────────────────────────── */
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: var(--space-md) var(--space-2xl);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+/* Правая часть шапки: имя+уведомления + выход */
+.userArea {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.avatarFileInput {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.userDisplay {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  max-width: min(280px, 40vw);
+  padding: 0 12px;
+  box-sizing: border-box;
+  border-radius: 10px;
+  background: var(--color-bg-selected);
+  color: var(--color-accent);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 900px) {
+  .userDisplay {
+    max-width: 160px;
+  }
+}
+
+.searchForm {
+  margin-right: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.searchInput {
+  max-width: 280px;
+  min-width: 0;
+  width: 100%;
+  height: 32px;
+  padding: 0 var(--space-compact);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  background: var(--color-bg-subtle);
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.searchInput:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.searchBtn {
+  height: 32px;
+  padding: 0 var(--space-md);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.searchBtn:hover {
+  background: var(--color-accent-hover);
+}
+
+.searchBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.logoutBtn {
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.logoutBtn:hover {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 8%, transparent);
+}
+
+.logoutBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.main {
+  /* Правый padding уменьшается на ширину классического скроллбара
+     (--classic-scrollbar-inset), чтобы колонка текста не сдвигалась. */
+  padding: var(--space-xl) var(--space-2xl);
+  padding-right: calc(var(--space-2xl) - var(--classic-scrollbar-inset, 0px));
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-y: overlay;
+  transition:
+    padding-top var(--duration-normal) var(--ease-out),
+    padding-left var(--duration-normal) var(--ease-out),
+    padding-bottom var(--duration-normal) var(--ease-out);
+}
+
+:global(html[data-guided-tour='1']) .main {
+  scroll-padding-bottom: var(--tour-anchor-scroll-pad);
+}
+
+.pageTransitionFill {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .sidebarToggleBtn,
+  .navLink,
+  .logoutBtn {
+    transition: none;
+  }
+}
+
+/* Страница /chats: на всю высоту в колонке content, без боковых отступов */
+.mainChatsFull {
+  padding: 0;
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Карточка документа: без padding-top у .main — sticky chrome липнет к шапке без зазора */
+.mainDocumentsFlush {
+  padding-top: 0;
+}

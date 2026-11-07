@@ -1,0 +1,277 @@
+/* ─── Общие классы для всех finance-табов ─────────────────────── */
+
+.tableWrapper {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-small);
+}
+
+.theadRow {
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+}
+
+.th {
+  padding: var(--space-sm) var(--space-md);
+}
+
+.td {
+  padding: var(--space-sm) var(--space-md);
+}
+
+.tbodyRow {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.rowInactive {
+  opacity: 0.5;
+}
+
+.tdBold {
+  font-weight: 500;
+}
+
+.tdMuted {
+  color: var(--color-text-muted);
+}
+
+.tdActions {
+  padding: var(--space-sm) var(--space-md);
+  display: flex;
+  gap: var(--space-xs);
+  align-items: center;
+}
+
+.tdInlineEdit {
+  padding: var(--space-xs);
+}
+
+.btnDanger {
+  color: var(--color-danger);
+}
+
+.btnDanger:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.authorCell {
+  font-size: 0.8em;
+}
+
+.statusOverdue {
+  color: var(--color-danger);
+}
+
+.statusActive {
+  color: var(--color-success);
+}
+
+.statusMuted {
+  color: var(--color-text-muted);
+}
+
+/* ─── Лэйаут форм ────────────────────────────────────────────── */
+
+.formPanelWide {
+  max-width: 720px;
+}
+
+.formPanelMedium {
+  max-width: 680px;
+}
+
+.formPanelNarrow {
+  max-width: 560px;
+}
+
+.formRow {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.formFieldWide {
+  flex: 2;
+  min-width: 200px;
+}
+
+.formFieldMedium {
+  flex: 1;
+  min-width: 180px;
+}
+
+.inputAmount {
+  width: 130px;
+}
+
+.inputCurrency {
+  width: 80px;
+}
+
+.inputInn {
+  width: 130px;
+}
+
+.inputEmail {
+  width: 200px;
+}
+
+.inputPhone {
+  width: 160px;
+}
+
+.checkboxField {
+  justify-content: center;
+}
+
+.actionBar {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+/* ─── Карточка сводки (ProcurementTab) ────────────────────────── */
+
+.summaryCard {
+  display: flex;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-lg);
+  padding: var(--space-compact) var(--space-md);
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  font-size: var(--font-size-small);
+}
+
+/* ─── Сводка (SummaryBar) ────────────────────────────────────── */
+
+.summaryBar {
+  display: flex;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+  padding: var(--space-compact) var(--space-md);
+  background: var(--color-bg-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  font-size: var(--font-size-small);
+}
+
+.summaryBarWithOverdue {
+  margin-bottom: var(--space-sm);
+}
+
+.summaryBarNoOverdue {
+  margin-bottom: var(--space-xl);
+}
+
+.summaryPaid {
+  color: var(--color-success);
+}
+
+.overdueBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-danger);
+  font-weight: 600;
+  padding: 0 0 0 var(--space-xs);
+  font-size: inherit;
+  font-family: inherit;
+}
+
+.overdueBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.overdueAlert {
+  margin-bottom: var(--space-xl);
+  padding: var(--space-compact) var(--space-md);
+  background: var(--color-bg-finance-tint);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-danger-ui);
+  font-size: var(--font-size-small);
+}
+
+.overdueAlertTitle {
+  font-weight: 600;
+  color: var(--color-danger);
+  margin-bottom: var(--space-sm);
+}
+
+.overdueList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.overdueItem {
+  display: flex;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.overdueItemTitle {
+  font-weight: 500;
+  flex: 1 1 180px;
+}
+
+.overdueItemAmount {
+  color: var(--color-text-muted);
+}
+
+.overdueItemDate {
+  color: var(--color-danger-ui);
+}
+
+.overdueMore {
+  color: var(--color-text-muted);
+  margin-top: var(--space-xs);
+}
+
+/* ─── Форма закупочной заявки (ProcurementForm) ───────────────── */
+
+.procurementFormCard {
+  padding: var(--space-lg) var(--space-xl);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-lg);
+}
+
+.procurementFormTitle {
+  margin-top: 0;
+  margin-bottom: var(--space-md);
+  font-size: var(--font-size-b2);
+}
+
+.procurementFormBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-compact);
+}
+
+.procurementFormRow {
+  display: flex;
+  gap: var(--space-compact);
+  flex-wrap: wrap;
+}
+
+.procurementFieldCounterparty {
+  flex: 1 1 200px;
+}
+
+.procurementFieldAmount {
+  flex: 1 1 140px;
+}
+
+.procurementFieldCurrency {
+  flex: 0 0 90px;
+}

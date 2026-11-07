@@ -1,0 +1,797 @@
+.page {
+  display: flex;
+  gap: 1rem;
+  min-height: 0;
+  height: calc(100vh - 4rem);
+  padding: 1rem;
+}
+
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.sidebarPeerMuted {
+  opacity: 0.72;
+}
+
+.peerViewHint {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  line-height: 1.35;
+}
+
+.eventColorRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs, 0.35rem);
+  min-width: 0;
+}
+
+.eventColorPickerWrap {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+}
+
+.eventColorSelected {
+  box-shadow: 0 0 0 2px var(--color-accent);
+}
+
+.sidebarTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.calList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.calItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.calShow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: var(--color-text-muted);
+  cursor: pointer;
+}
+
+.calShow input {
+  margin: 0.1rem 0 0;
+  flex-shrink: 0;
+  accent-color: var(--color-accent);
+}
+
+.calLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.875rem;
+}
+
+.calLabelStack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.05rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.calOwner {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  color: var(--color-text-muted);
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+
+.toolbarLeft {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.toolbarRight {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.searchWrap {
+  position: relative;
+  flex: 1 1 12rem;
+  max-width: 16rem;
+  min-width: 0;
+}
+
+.createEventBtn {
+  flex-shrink: 0;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+.searchInput {
+  width: 100%;
+  /* Как у btn-secondary: padding 6px + line-height 1.4 × 14px + border 1px×2 ≈ 33.6 */
+  min-height: 32px;
+  line-height: 1.4;
+}
+
+.searchInputWithClear {
+  padding-right: 1.75rem;
+}
+
+.clearPersonBtn {
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  padding: 0 4px;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.clearPersonBtn:hover {
+  color: var(--color-text-primary);
+}
+
+.searchDropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  left: 0;
+  min-width: min(280px, 90vw);
+  max-height: min(280px, 40vh);
+  overflow: auto;
+  z-index: var(--z-dropdown);
+  margin: 0;
+  padding: 0.5rem;
+  list-style: none;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 4px);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--color-heading) 10%, transparent);
+}
+
+.searchHint,
+.searchError {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.searchError {
+  color: var(--color-danger);
+}
+
+.searchList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.searchItem {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  width: 100%;
+  padding: 0.45rem 0.5rem;
+  border: none;
+  border-radius: var(--radius-sm, 2px);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+
+.searchItem:hover,
+.searchItem[data-active='true'] {
+  background: color-mix(in srgb, var(--color-heading) 6%, transparent);
+}
+
+.searchItemTitle {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.searchItemMeta {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.monthLabel {
+  font-weight: 600;
+  min-width: 9rem;
+  text-align: center;
+}
+
+.gridFrame {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.gridFrameExpanded {
+  overflow: visible;
+}
+
+.grid {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-rows: auto;
+  grid-auto-rows: minmax(5.5rem, 1fr);
+  border: 1px solid var(--color-border);
+  overflow: auto;
+  background: var(--color-bg-surface);
+  align-content: stretch;
+}
+
+.gridHasExpanded {
+  overflow: visible;
+}
+
+.weekday {
+  padding: 0.35rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-subtle);
+}
+
+.dayCellWrap {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  border-right: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-bg-surface);
+}
+
+/* Дети 1–7 — заголовки дней; ячейки с 8-го. Воскресенья: 14, 21, 28… */
+.dayCellWrap:nth-child(7n) {
+  border-right: none;
+}
+
+.dayCell {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  padding: 0.25rem;
+  cursor: pointer;
+  transition:
+    box-shadow 0.22s ease,
+    background-color 0.22s ease,
+    border-color 0.22s ease;
+}
+
+.dayCellExpanded {
+  position: absolute;
+  z-index: 8;
+  inset: 0;
+  height: auto;
+  min-height: 100%;
+  max-height: min(70vh, 28rem);
+  overflow: auto;
+  padding: 0.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm, 4px);
+  box-shadow: var(--shadow-elev-3, 0 8px 32px rgb(0 0 0 / 0.5));
+  background: var(--color-bg-elevated, var(--color-bg-surface));
+}
+
+.dayOutside {
+  opacity: 0.45;
+}
+
+.dayCellExpanded.dayOutside {
+  opacity: 1;
+}
+
+.dayNumRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem;
+  flex-shrink: 0;
+  margin-bottom: 2px;
+}
+
+.dayNum {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.dayCollapseBtn {
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 0 0.2rem;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.dayCollapseBtn:hover {
+  color: var(--color-text-primary);
+}
+
+.dayEvents {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.dayCellExpanded .dayEvents {
+  overflow: visible;
+  flex: none;
+}
+
+.dayExtraSlot {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.22s ease;
+  min-width: 0;
+  width: 100%;
+}
+
+.dayExtraSlot[data-state='open'] {
+  grid-template-rows: 1fr;
+}
+
+.dayExtraInner {
+  overflow: hidden;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.dayExtraSlot[data-state='open'] > .dayExtraInner {
+  overflow: visible;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dayCell {
+    transition: none;
+  }
+
+  .dayExtraSlot {
+    transition: none;
+  }
+
+  .calColorSwatch {
+    transition: none;
+  }
+
+  .calColorSwatch:hover {
+    transform: none;
+  }
+}
+
+.dayNumToday {
+  display: inline-flex;
+  width: 1.4rem;
+  height: 1.4rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-weight: 600;
+}
+
+.eventChip {
+  display: block;
+  width: 100%;
+  flex-shrink: 0;
+  height: 20px;
+  box-sizing: border-box;
+  text-align: left;
+  border: none;
+  border-radius: var(--radius-sm, 4px);
+  padding: 0 0.35rem;
+  font-size: 0.7rem;
+  line-height: 20px;
+  color: var(--color-on-accent);
+  cursor: pointer;
+}
+
+.eventChipLabel {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: inherit;
+}
+
+.eventChipDraggable {
+  cursor: grab;
+  touch-action: pan-x pan-y;
+}
+
+.eventChipDragging {
+  opacity: 0.35;
+}
+
+.eventChipOverlay {
+  width: 10rem;
+  max-width: 40vw;
+  cursor: grabbing;
+  pointer-events: none;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-text-primary) 18%, transparent);
+}
+
+.dayCellDragOver {
+  background: color-mix(in srgb, var(--color-accent) 12%, var(--color-bg-surface));
+}
+
+.dayMore {
+  flex-shrink: 0;
+  height: 20px;
+  box-sizing: border-box;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-size: 0.7rem;
+  line-height: 20px;
+  font-weight: 600;
+  color: var(--color-accent);
+  cursor: pointer;
+}
+
+.dayMore:hover {
+  text-decoration: underline;
+}
+
+.eventChipHighlight {
+  outline: 2px solid var(--color-text-primary);
+}
+
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.field label {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.fieldLabel {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.fieldError {
+  margin: 0;
+  color: var(--color-danger);
+  font-size: var(--font-size-small);
+  font-weight: 500;
+}
+
+.reminderList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.reminderRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.reminderRow select,
+.reminderRow button {
+  min-height: 32px;
+  box-sizing: border-box;
+}
+
+.reminderRow select {
+  flex: 1;
+  min-width: 0;
+}
+
+.reminderRow button {
+  flex-shrink: 0;
+  padding-block: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.departmentSearch {
+  position: relative;
+  flex: 1 1 12rem;
+  max-width: 16rem;
+  min-width: 0;
+}
+
+.departmentSearch .searchDropdown {
+  min-width: 0;
+  width: 100%;
+}
+
+.departmentPeople {
+  list-style: none;
+  margin: 0;
+}
+
+.departmentPerson {
+  width: 100%;
+  min-width: 0;
+  padding: 0.3rem 0.45rem;
+  border: none;
+  border-radius: var(--radius-sm, 2px);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.8125rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.departmentPerson:hover {
+  background: color-mix(in srgb, var(--color-heading) 6%, transparent);
+}
+
+.peerPicker {
+  flex: 1 1 12rem;
+  max-width: 16rem;
+  min-width: 0;
+}
+
+.peerPicker :global(.form-input) {
+  width: 100%;
+  min-width: 0;
+}
+
+.eventChipPeer {
+  outline: 1px dashed var(--color-text-muted);
+}
+
+.dateTimeRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.dayPicker {
+  flex: 1 1 10rem;
+  min-width: 0;
+}
+
+.timeInput {
+  flex: 0 0 auto;
+}
+
+.checkRow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  color: var(--color-text-primary);
+}
+
+.checkRow input[type='checkbox'] {
+  accent-color: var(--color-accent);
+}
+
+.calSwatch {
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid var(--color-border-subtle, var(--color-border));
+}
+
+.calColorSwatch {
+  position: relative;
+  display: inline-flex;
+  width: 0.875rem;
+  height: 0.875rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid var(--color-border-subtle, var(--color-border));
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  transition: box-shadow 0.15s, transform 0.15s;
+}
+
+.calColorSwatch:hover {
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 35%, transparent);
+  transform: scale(1.08);
+}
+
+.calColorInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.calLabelBtn {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+  flex: 1;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+}
+
+.calDeleteBtn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  margin-left: auto;
+  padding: var(--space-xs);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  line-height: 1;
+}
+
+.calDeleteBtn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-danger) 12%, transparent);
+  color: var(--color-danger);
+}
+
+.calDeleteBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.calTitleInput {
+  flex: 1;
+  min-width: 0;
+  padding: 0.15rem 0.35rem;
+  font-size: 0.875rem;
+}
+
+.sidebarActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.deleteBtn {
+  color: var(--color-danger);
+  border-color: color-mix(in srgb, var(--color-danger) 40%, var(--color-border-subtle));
+}
+
+.deleteBtn:hover {
+  background: color-mix(in srgb, var(--color-danger) 12%, var(--color-bg-surface));
+  border-color: var(--color-danger);
+}
+
+@media (max-width: 900px) {
+  .page {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+
+  .grid {
+    grid-auto-rows: minmax(4.5rem, 1fr);
+  }
+}
+
+.searchItem:focus-visible,
+.dayCell:focus-visible,
+.dayCollapseBtn:focus-visible,
+.dayMore:focus-visible,
+.eventChip:focus-visible,
+.calLabelBtn:focus-visible,
+.calDeleteBtn:focus-visible,
+.calColorSwatch:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}

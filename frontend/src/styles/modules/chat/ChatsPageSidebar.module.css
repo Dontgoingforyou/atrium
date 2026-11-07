@@ -1,0 +1,232 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.sidebar {
+  width: clamp(300px, 26vw, 360px);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-muted);
+  min-height: 0;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 100%;
+  }
+
+  .sidebarNarrowHidden {
+    display: none;
+  }
+}
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  flex-shrink: 0;
+  background: var(--color-bg-muted);
+}
+
+.sidebarTitle {
+  flex: 1;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.newDmBtn {
+  padding: 5px 12px;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  transition: opacity 0.12s, transform 0.1s;
+}
+
+.newDmBtn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.backToListBtn {
+  padding: 4px 8px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.listEmpty {
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.chatRow {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  padding: 10px 16px;
+  gap: 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: background 0.1s;
+}
+
+.soundCell {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 0 6px 0 0;
+}
+
+.chatRow:hover {
+  background: color-mix(in srgb, var(--color-bg-subtle) 80%, transparent);
+}
+
+.chatRowWrap {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  position: relative;
+  border-radius: 6px;
+  margin: 1px 4px;
+  width: calc(100% - 8px);
+}
+
+.chatRowWrapActive {
+  background: var(--color-bg-accent-soft);
+}
+
+.chatRowWrapActive::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  background: var(--color-accent);
+  border-radius: 0 2px 2px 0;
+}
+
+.chatRowWrapActive .chatRow:hover {
+  background: transparent;
+}
+
+.chatNameBlock {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.chatName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-heading);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chatMeta {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  line-height: 1.2;
+}
+
+.chatPresenceLine {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.unreadPill {
+  flex-shrink: 0;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 20px;
+  text-align: center;
+}
+
+.pickerSearchWrap {
+  padding: 10px 12px 4px;
+  flex-shrink: 0;
+}
+
+.pickerSearch {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-family: inherit;
+  background: var(--color-bg-input, var(--color-bg-surface));
+  color: var(--color-text-primary);
+  box-sizing: border-box;
+}
+
+.pickerList {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.pickerItem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 9px 14px;
+  gap: 10px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+
+.pickerItem:hover {
+  background: var(--color-bg-subtle);
+}
+

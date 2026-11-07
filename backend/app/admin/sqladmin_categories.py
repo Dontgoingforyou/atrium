@@ -1,0 +1,7 @@
+SQLADMIN_CATEGORY_DOCUMENTS = "Документооборот"
+SQLADMIN_CATEGORY_TASKS = "Задачи и тайм-менеджмент"
+SQLADMIN_CATEGORY_CALENDAR = "Календарь"
+SQLADMIN_CATEGORY_FINANCE = "Финансы и контрагенты"
+SQLADMIN_CATEGORY_LEARNING = "Обучение и чек-листы"
+SQLADMIN_CATEGORY_TESTING = "Тестирование"
+SQLADMIN_CATEGORY_SPECIALISTS = "Сотрудники"

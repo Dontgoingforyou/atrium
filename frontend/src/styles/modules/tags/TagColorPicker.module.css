@@ -1,0 +1,33 @@
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.colorInput {
+  width: 40px;
+  height: 36px;
+  padding: 2px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.colorInput:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.colorInputCompact {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+}
+
+.hexLabel {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  font-family: monospace;
+}

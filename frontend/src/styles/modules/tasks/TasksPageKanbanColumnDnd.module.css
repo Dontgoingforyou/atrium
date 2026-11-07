@@ -1,0 +1,72 @@
+.kanbanColumnDnd {
+  --kanban-column-compact-header: 3.25rem;
+}
+
+.kanbanColumnDnd[data-dragging='true'],
+.kanbanColumnDnd[data-drop-hidden='true'] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Перебить leftover inline opacity:0 от dnd-kit после drop. */
+.kanbanColumnDnd:not([data-dragging='true']):not([data-drop-hidden='true']) {
+  opacity: 1 !important;
+}
+
+.kanbanColumnDnd[data-drag-over='true'] {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.kanbanColumnDnd[data-drop-left='true'] {
+  box-shadow: calc(-1 * var(--space-xs)) 0 0 0 var(--color-accent);
+}
+
+.kanbanColumnDnd[data-drop-right='true'] {
+  box-shadow: var(--space-xs) 0 0 0 var(--color-accent);
+}
+
+.kanbanColumnDnd[data-specialist-drag-over='true'] {
+  outline: 2px dashed var(--color-primary);
+  outline-offset: 2px;
+  background: var(--color-bg-muted);
+}
+
+.kanbanColumnDragOverlay {
+  box-shadow: var(--shadow-elev-3);
+  rotate: 1.5deg;
+  pointer-events: none;
+  flex: none;
+  min-height: 0;
+  height: auto;
+}
+
+.kanbanColumnDragOverlayBody {
+  min-height: 0;
+  padding-block: var(--space-sm);
+}
+
+.kanbanColumnDnd[data-unfolding='true'] {
+  overflow: hidden;
+  animation-name: kanbanColumnUnfold;
+  animation-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+@keyframes kanbanColumnUnfold {
+  from {
+    clip-path: inset(0 0 calc(100% - var(--kanban-column-compact-header)) 0);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kanbanColumnDragOverlay {
+    rotate: none;
+  }
+
+  .kanbanColumnDnd[data-unfolding='true'] {
+    animation: none;
+  }
+}

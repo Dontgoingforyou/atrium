@@ -1,0 +1,80 @@
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--color-border-subtle);
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-compact);
+  width: 100%;
+  min-width: 0;
+}
+
+.editor :global(.form-label) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.editor :global(.form-label .form-input),
+.editor :global(.form-input) {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.statusHint {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.subtaskList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  min-width: 0;
+  width: 100%;
+}
+
+.subtaskItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  min-width: 0;
+}
+
+.subtaskLink {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-link);
+}
+
+.unlinkBtn {
+  flex: none;
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--font-size-small);
+}

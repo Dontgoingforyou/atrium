@@ -1,0 +1,12 @@
+.git
+**/.venv
+**/__pycache__
+**/.mypy_cache
+**/.ruff_cache
+**/node_modules
+**/dist
+*.egg-info
+au_portal_backend
+au_portal_frontend
+# Образ web не собирает backend — не передаём в контекст (ускоряет build на сервере).
+backend

@@ -1,0 +1,609 @@
+
+.editor :global(.ProseMirror) {
+  outline: none;
+  font-size: var(--font-size-body);
+  color: var(--color-text-primary);
+  line-height: 1.6;
+  min-height: inherit;
+}
+
+.editor :global(.ProseMirror p) {
+  margin: 0 0 0.4em;
+}
+
+.editor :global(.ProseMirror p:last-child) {
+  margin-bottom: 0;
+}
+
+.editor :global(.ProseMirror) {
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.editor :global(.ProseMirror ul),
+.editor :global(.ProseMirror ol) {
+  padding-left: 1.4em;
+  margin: 0.3em 0;
+}
+
+/* Чеклист в редакторе: только нативный checkbox TipTap, без псевдо-маркеров просмотра */
+.editor :global(.ProseMirror ul.buildin-task-list) {
+  list-style: none;
+  padding-left: 0;
+  margin: 0.3em 0;
+}
+
+.editor :global(.ProseMirror ul.buildin-task-list > li),
+.editor :global(.ProseMirror li.buildin-task-item) {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 0.35em;
+  margin-bottom: 0.25em;
+}
+
+.editor :global(.ProseMirror ul.buildin-task-list > li::before),
+.editor :global(.ProseMirror li.buildin-task-item::before) {
+  content: none !important;
+  display: none !important;
+}
+
+.editor :global(.ProseMirror ul.buildin-task-list li label),
+.editor :global(.ProseMirror li.buildin-task-item label) {
+  flex-shrink: 0;
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  margin-top: 0;
+  min-height: 1.6em;
+  line-height: 1.6;
+}
+
+.editor :global(.ProseMirror ul.buildin-task-list li label input),
+.editor :global(.ProseMirror li.buildin-task-item label input) {
+  margin: 0;
+}
+
+.editor :global(.ProseMirror ul.buildin-task-list li > div),
+.editor :global(.ProseMirror li.buildin-task-item > div) {
+  flex: 1;
+  min-width: 0;
+}
+
+.editor :global(.ProseMirror mark) {
+  border-radius: var(--radius-sm);
+  padding: 0 0.1em;
+  /* Фоллбек, если mark без inline background-color (голый toggleHighlight). */
+  background-color: var(--color-rich-text-highlight);
+  color: inherit;
+}
+
+.editor :global(.ProseMirror a) {
+  color: var(--color-accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.editor :global(.ProseMirror a.portal-doc-link) {
+  text-decoration: none;
+  color: var(--color-text-primary);
+}
+
+.editor :global(.ProseMirror a.portal-doc-link .portal-doc-link__title) {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
+  text-underline-offset: 0.2em;
+}
+
+.editor :global(.ProseMirror li) {
+  margin-bottom: 0.15em;
+}
+
+.editor :global(.ProseMirror h1) {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0.5em 0 0.35em;
+}
+
+.editor :global(.ProseMirror h2) {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0.45em 0 0.3em;
+}
+
+.editor :global(.ProseMirror h3) {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0.4em 0 0.25em;
+}
+
+.editor :global(.ProseMirror p.is-editor-empty:first-child::before) {
+  content: attr(data-placeholder);
+  color: var(--color-text-hint);
+  pointer-events: none;
+  height: 0;
+  float: left;
+}
+
+.editor :global(.ProseMirror img.buildin-inline-image),
+.editor :global(.ProseMirror .buildin-figure img) {
+  display: block;
+  max-width: 100%;
+  max-height: min(70vh, 720px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  margin: 0.5em 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+}
+
+.editor :global(.ProseMirror .buildin-toggle) {
+  margin: 0.5em 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-subtle);
+}
+
+.editor :global(.ProseMirror .buildin-toggle.ProseMirror-selectednode),
+.editor :global(.ProseMirror .buildin-toggle .ProseMirror-selectednode),
+.editor :global(.ProseMirror .buildin-toggle:focus),
+.editor :global(.ProseMirror .buildin-toggle:focus-visible),
+.editor :global(.ProseMirror .buildin-toggle:focus-within),
+.editor :global(.ProseMirror .buildin-toggle-title-input:focus),
+.editor :global(.ProseMirror .buildin-toggle-title-input:focus-visible),
+.editor :global(.ProseMirror .buildin-toggle-body:focus),
+.editor :global(.ProseMirror .buildin-toggle-body:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
+.isBlockReordering,
+.isBlockReordering * {
+  cursor: grabbing;
+  user-select: none;
+}
+
+.blockReorderSource {
+  opacity: 0;
+}
+
+.editor :global(.ProseMirror .buildin-toggle-header) {
+  cursor: grab;
+  padding: 0.55em 0.85em;
+  font-weight: 600;
+  outline: none;
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.editor :global(.ProseMirror .buildin-toggle-header .buildin-toggle-arrow) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75em;
+  margin: -0.35em 0.25em -0.35em -0.35em;
+  padding: 0.45em 0.5em;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  line-height: 1;
+  transition: transform 0.25s ease;
+  user-select: none;
+  cursor: pointer;
+}
+
+.editor :global(.ProseMirror .buildin-toggle[data-expanded='true'] > .buildin-toggle-header .buildin-toggle-arrow) {
+  transform: rotate(90deg);
+}
+
+.editor :global(.ProseMirror .buildin-toggle-header .buildin-toggle-title-input) {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  font-weight: inherit;
+  color: inherit;
+  min-width: 0;
+  padding: 0;
+  cursor: text;
+  user-select: text;
+}
+
+.editor :global(.ProseMirror .buildin-toggle-header .buildin-toggle-delete) {
+  margin-left: auto;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.editor :global(.ProseMirror .buildin-toggle-header .buildin-toggle-delete:hover) {
+  background: var(--color-bg-danger-soft);
+  color: var(--color-danger);
+}
+
+.editor :global(.ProseMirror[contenteditable='false'] .buildin-toggle-header) {
+  cursor: pointer;
+}
+
+.editor :global(.ProseMirror[contenteditable='false'] .buildin-toggle-header .buildin-toggle-arrow) {
+  cursor: pointer;
+}
+
+.editor :global(.ProseMirror[contenteditable='false'] .buildin-toggle-header .buildin-toggle-title-input) {
+  cursor: inherit;
+  pointer-events: none;
+}
+
+.editor :global(.ProseMirror[contenteditable='false'] .buildin-toggle-header .buildin-toggle-delete) {
+  display: none;
+}
+
+.editor :global(.ProseMirror .buildin-toggle-body-slot[data-state='closed']) {
+  overflow: hidden;
+}
+
+.editor :global(.ProseMirror .buildin-toggle-body-clip) {
+  min-width: 0;
+  width: 100%;
+}
+
+.editor :global(.ProseMirror .buildin-toggle-body) {
+  padding: 0.35em 0.85em 0.85em 1.6em;
+  border-top: 1px solid var(--color-border-subtle);
+}
+
+.editor :global(.ProseMirror) {
+  overflow-x: auto;
+}
+
+.editor :global(.ProseMirror table),
+.editor :global(.ProseMirror table.buildin-csv-import),
+.editor :global(.ProseMirror table.buildin-md-table),
+.editor :global(.ProseMirror table.portal-rich-table) {
+  /* separate обязателен для columnResizing TipTap / prosemirror-tables */
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: auto;
+  width: auto;
+  max-width: none;
+  margin: 0.75em 0;
+  font-size: var(--font-size-small);
+}
+
+.editor :global(.ProseMirror table th),
+.editor :global(.ProseMirror table td) {
+  border: 1px solid var(--color-border);
+  padding: 6px 10px;
+  vertical-align: top;
+  text-align: left;
+  position: relative;
+  min-width: 48px;
+  box-sizing: border-box;
+}
+
+.editor :global(.ProseMirror table th) {
+  background: var(--color-bg-panel);
+  font-weight: 600;
+}
+
+.editor :global(.ProseMirror .tableWrapper) {
+  overflow-x: auto;
+  overflow-y: visible;
+  margin: 0.75em 0;
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding-inline-end: var(--space-2xl);
+}
+
+.editor :global(.ProseMirror .tableWrapper > table) {
+  margin: 0;
+}
+
+/* Ресайз колонок TipTap / prosemirror-tables */
+.editor :global(.ProseMirror.resize-cursor) {
+  cursor: ew-resize !important;
+  cursor: col-resize !important;
+}
+
+.editor :global(.ProseMirror.row-resize-cursor) {
+  cursor: ns-resize !important;
+  cursor: row-resize !important;
+}
+
+.editor :global(.ProseMirror .column-resize-handle) {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background-color: var(--color-accent);
+  pointer-events: none;
+  z-index: 20;
+}
+
+.editor :global(.ProseMirror .selectedCell::after) {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ─── Изображения: выравнивание и resize ─── */
+
+.editor :global(.ProseMirror .buildin-figure-wrap) {
+  position: relative;
+  display: block;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0.75em auto;
+  /* width задаётся через style при ресайзе */
+}
+
+.editor :global(.ProseMirror .buildin-figure-wrap[data-align="left"]) {
+  margin: 0.75em auto 0.75em 0;
+  float: none;
+}
+
+.editor :global(.ProseMirror .buildin-figure-wrap[data-align="right"]) {
+  margin: 0.75em 0 0.75em auto;
+  float: none;
+}
+
+.editor :global(.ProseMirror .buildin-figure-wrap[data-align="center"]) {
+  margin: 0.75em auto;
+  float: none;
+}
+
+.editor :global(.ProseMirror .buildin-figure-wrap .buildin-figure) {
+  position: relative;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+
+.editor :global(.ProseMirror .buildin-figure-wrap .buildin-inline-image) {
+  display: block;
+  max-width: 100%;
+  max-height: min(70vh, 720px);
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  min-width: 0;
+}
+
+/* Тулбар выравнивания — появляется при выделении / hover */
+.editor :global(.ProseMirror .buildin-figure-toolbar) {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  gap: 2px;
+  background: var(--color-bg-elevated, #fff);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  padding: 2px 4px;
+  z-index: 10;
+}
+
+.editor :global(.ProseMirror .ProseMirror-selectednode .buildin-figure-toolbar),
+.editor :global(.ProseMirror .buildin-figure-wrap:hover .buildin-figure-toolbar) {
+  display: flex;
+}
+
+.editor :global(.ProseMirror .buildin-figure-align-btn) {
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-xs, 3px);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.editor :global(.ProseMirror .buildin-figure-align-btn:hover) {
+  background: var(--color-bg-hover);
+}
+
+.editor :global(.ProseMirror .buildin-figure-align-btn--active) {
+  background: var(--color-bg-accent-soft);
+  color: var(--color-accent);
+}
+
+/* Resize-handle в правом нижнем углу */
+.editor :global(.ProseMirror .buildin-figure-resize-handle) {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 14px;
+  height: 14px;
+  background: var(--color-accent);
+  border-radius: 2px 0 var(--radius-xs) 0;
+  cursor: nwse-resize;
+  display: none;
+  z-index: 5;
+}
+
+.editor :global(.ProseMirror .ProseMirror-selectednode .buildin-figure-resize-handle),
+.editor :global(.ProseMirror .buildin-figure-wrap:hover .buildin-figure-resize-handle) {
+  display: block;
+}
+
+.editor :global(.ProseMirror .buildin-figure-delete-btn) {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-xs, 3px);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.editor :global(.ProseMirror .buildin-figure-delete-btn:hover) {
+  background: var(--color-bg-hover);
+}
+
+.editor :global(.ProseMirror .buildin-figure-delete-btn::before),
+.editor :global(.ProseMirror .buildin-figure-delete-btn::after) {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 2px;
+  background: var(--color-danger);
+  border-radius: 1px;
+}
+
+.editor :global(.ProseMirror .buildin-figure-delete-btn::before) {
+  transform: rotate(45deg);
+}
+
+.editor :global(.ProseMirror .buildin-figure-delete-btn::after) {
+  transform: rotate(-45deg);
+}
+
+.editor :global(.ProseMirror .collaboration-carets__caret) {
+  position: relative;
+  margin-left: -1px;
+  margin-right: -1px;
+  border-left: 1px solid;
+  border-right: 1px solid;
+  border-color: inherit;
+  word-break: normal;
+  pointer-events: none;
+}
+
+.editor :global(.ProseMirror .collaboration-carets__label) {
+  position: absolute;
+  top: -1.4em;
+  left: -1px;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px 3px 3px 0;
+  color: #fff;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  user-select: none;
+  pointer-events: none;
+}
+
+.editor :global(.ProseMirror .collaboration-carets__selection) {
+  pointer-events: none;
+}
+
+.blockDragOverlay {
+  position: fixed;
+  z-index: var(--z-dropdown);
+  pointer-events: none;
+  box-shadow: var(--shadow-elev-3);
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-sm);
+  min-height: 0;
+  overflow: visible;
+}
+
+.blockDragOverlay :global(ul),
+.blockDragOverlay :global(ol) {
+  margin: 0;
+  padding-left: 1.4em;
+}
+
+.blockDragOverlay :global(ul.buildin-task-list) {
+  list-style: none;
+  padding-left: 0;
+}
+
+.blockDragOverlay :global(ul.buildin-task-list > li),
+.blockDragOverlay :global(li.buildin-task-item) {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 0.35em;
+  margin: 0;
+}
+
+.blockDragOverlay :global(li.buildin-task-item > div) {
+  flex: 1;
+  min-width: 0;
+}
+
+.blockDropLine {
+  position: fixed;
+  z-index: var(--z-dropdown);
+  pointer-events: none;
+  background: var(--color-accent);
+  border-radius: 1px;
+}
+
+.blockDragHandle {
+  position: fixed;
+  z-index: var(--z-dropdown);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--space-xl);
+  height: var(--space-xl);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  box-shadow: none;
+  cursor: grab;
+  user-select: none;
+  pointer-events: auto;
+  font-size: var(--font-size-caption);
+  line-height: 1;
+  letter-spacing: var(--letter-spacing-grip);
+  color: var(--color-text-muted);
+  opacity: 0.42;
+}
+
+.blockDragHandle:hover {
+  opacity: 0.8;
+  color: var(--color-text-muted);
+  background: color-mix(in srgb, var(--color-text-muted) 10%, transparent);
+}
+
+.blockDragHandle[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blockDragOverlay {
+    box-shadow: var(--shadow-elev-2);
+  }
+
+  .editor :global(.ProseMirror .buildin-toggle-header .buildin-toggle-arrow) {
+    transition: none;
+  }
+}
+

@@ -1,0 +1,34 @@
+.presenceDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.presenceOnline {
+  background: var(--color-presence-online);
+}
+
+.presenceAway {
+  background: var(--color-presence-away);
+}
+
+.presenceOffline {
+  background: var(--color-text-muted);
+  opacity: 0.45;
+}
+
+.presenceBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.presenceLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  line-height: 1.2;
+  white-space: nowrap;
+}

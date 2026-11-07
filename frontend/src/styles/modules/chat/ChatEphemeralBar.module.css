@@ -1,0 +1,21 @@
+.wrap {
+  min-height: 1.25rem;
+  margin-bottom: 4px;
+  overflow: hidden;
+}
+
+.text {
+  display: block;
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.textVisible {
+  opacity: 1;
+  transform: translateY(0);
+}

@@ -1,0 +1,99 @@
+.wrapper {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.inputRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.inputRow input {
+  width: 100%;
+  min-width: 0;
+  padding-right: 1.75rem;
+}
+
+.clearBtn {
+  position: absolute;
+  right: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  padding: 0 4px;
+  font-size: 1.1rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.clearBtn:hover {
+  color: var(--color-text-primary);
+}
+
+.dropdown {
+  position: fixed;
+  z-index: var(--z-popover);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm, 4px);
+  box-shadow: var(--shadow-elev-2);
+  overflow-y: auto;
+}
+
+.option {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.optionText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+}
+
+.option:last-child {
+  border-bottom: none;
+}
+
+.option:hover,
+.option[data-active] {
+  background: var(--color-bg-subtle);
+}
+
+.errorHint {
+  margin: var(--space-xs) 0 0;
+  color: var(--color-danger-ui);
+  font-size: var(--font-size-small);
+}
+
+.optionName {
+  font-weight: 500;
+}
+
+.optionEmail {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.readOnlyValue {
+  color: var(--color-text-secondary);
+  cursor: default;
+  pointer-events: none;
+  background: var(--color-bg-subtle);
+}

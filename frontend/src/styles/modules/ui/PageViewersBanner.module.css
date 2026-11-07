@@ -1,0 +1,82 @@
+.banner {
+  min-width: 0;
+  margin-block: var(--space-2, 8px);
+  padding: var(--space-2, 8px) var(--space-3, 12px);
+  border-radius: var(--radius-sm, 6px);
+  background: var(--color-surface-muted, #f3f4f6);
+  color: var(--color-text-secondary, #4b5563);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.bannerAvatars {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.avatarsLabel {
+  min-width: 0;
+  color: var(--color-text-secondary, #4b5563);
+  font-size: 0.75rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.avatars {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.avatarRing {
+  display: inline-flex;
+  border-radius: 50%;
+  padding: 1px;
+  background: var(--color-bg, #fff);
+  box-shadow: 0 0 0 1.5px var(--viewer-ring, var(--color-accent));
+  z-index: 0;
+}
+
+.avatarRing + .avatarRing {
+  margin-inline-start: -6px;
+}
+
+.avatarRing:hover {
+  z-index: 1;
+}
+
+.avatarFace {
+  border-color: transparent;
+}
+
+:global([data-theme='dark']) .banner {
+  background: var(--color-surface-muted, #1f2937);
+  color: var(--color-text-secondary, #d1d5db);
+}
+
+:global([data-theme='dark']) .bannerAvatars {
+  background: transparent;
+}
+
+:global([data-theme='dark']) .avatarsLabel {
+  color: var(--color-text-secondary, #d1d5db);
+}
+
+:global([data-theme='dark']) .avatarRing {
+  background: var(--color-bg, #111827);
+}
+
+@media (max-width: 640px) {
+  .avatarsLabel {
+    display: none;
+  }
+}

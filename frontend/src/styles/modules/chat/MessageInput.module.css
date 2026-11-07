@@ -1,0 +1,468 @@
+.form {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: var(--space-compact) var(--space-lg);
+  border-top: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-surface);
+  position: relative;
+}
+
+.formPanel {
+  border-top: none;
+  border-radius: 16px;
+  padding: var(--space-compact) var(--portal-doc-row-padding);
+  background: color-mix(in srgb, var(--color-bg-surface) 94%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--color-border-subtle) 40%, transparent),
+    0 8px 28px color-mix(in srgb, var(--color-bg-surface) 65%, transparent);
+}
+
+.formPanel .sendBtn {
+  border-radius: 10px;
+}
+
+/* Список pending вложений */
+.attachmentList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-bottom: var(--space-sm);
+}
+
+.attachmentChip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: 3px 8px 3px 6px;
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-bg-surface));
+  border: 1px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
+  border-radius: 6px;
+  font-size: 12px;
+  max-width: 260px;
+}
+
+.attachmentIcon {
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.attachmentName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 120px;
+  color: var(--color-text-primary);
+}
+
+.attachmentSize {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  font-size: 11px;
+}
+
+.attachmentStatus {
+  font-size: 11px;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+.attachmentError {
+  color: var(--color-danger);
+}
+
+.attachmentDone {
+  color: var(--color-success);
+}
+
+.attachmentProgressTrack {
+  width: 32px;
+  height: 4px;
+  flex-shrink: 0;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  overflow: hidden;
+}
+
+.attachmentProgressFill {
+  display: block;
+  height: 100%;
+  background: var(--color-accent);
+  border-radius: 2px;
+  transition: width 0.15s linear;
+}
+
+.attachmentRemove {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  color: var(--color-text-muted);
+  padding: 0 0 0 2px;
+  flex-shrink: 0;
+}
+
+.attachmentRemove:hover {
+  color: var(--color-text-primary);
+}
+
+/* Строка ввода */
+.inputRow {
+  display: flex;
+  gap: var(--space-sm);
+  align-items: flex-end;
+}
+
+.composerActions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Скрытый file input */
+.fileInput {
+  display: none;
+}
+
+.attachBtn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: color 0.12s, background 0.12s, border-color 0.12s;
+  flex-shrink: 0;
+}
+
+.attachBtn:hover:not(:disabled) {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+}
+
+.attachBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.micBtn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  transition: color 0.12s, background 0.12s, border-color 0.12s;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.micBtn:hover:not(:disabled) {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+}
+
+.micBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.micRecording {
+  color: var(--color-danger);
+  border-color: color-mix(in srgb, var(--color-danger) 55%, var(--color-border));
+  animation: micPulse 1.2s ease-in-out infinite;
+}
+
+@keyframes micPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-danger) 35%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-danger) 0%, transparent);
+  }
+}
+
+.recordingMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: 12px;
+  color: var(--color-text-muted);
+  padding: 0 4px 6px;
+}
+
+.recordingTimer {
+  font-variant-numeric: tabular-nums;
+  min-width: 3.2em;
+}
+
+.cancelRecordBtn {
+  border: none;
+  background: transparent;
+  color: var(--color-accent);
+  cursor: pointer;
+  font-size: 12px;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.cancelRecordBtn:hover {
+  color: var(--color-text-primary);
+}
+
+.voicePreviewRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-compact);
+  padding: 6px var(--space-sm);
+  margin: 0 0 6px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--color-accent) 8%, var(--color-bg-surface));
+  border: 1px solid color-mix(in srgb, var(--color-accent) 25%, transparent);
+}
+
+.voicePreviewAudioHidden {
+  display: none;
+}
+
+.voicePreviewPlayBtn {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  cursor: pointer;
+}
+
+.voicePreviewTime {
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+  flex: 1;
+}
+
+.voicePreviewDiscardBtn {
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  border-radius: 8px;
+  padding: 6px var(--space-compact);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.voicePreviewDiscardBtn:hover {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.voicePreviewSendBtn {
+  border: none;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border-radius: 8px;
+  padding: 6px var(--space-md);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.voicePlayTri {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 6px 0 6px 9px;
+  border-color: transparent transparent transparent currentColor;
+  margin-left: 1px;
+}
+
+.voicePauseBars {
+  display: flex;
+  gap: 3px;
+}
+
+.voicePauseBar {
+  width: 3px;
+  height: 11px;
+  background: currentColor;
+  border-radius: 1px;
+}
+
+.textareaWrap {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+.emojiBtn {
+  position: absolute;
+  right: 6px;
+  bottom: 5px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.15rem;
+  line-height: 1;
+  color: var(--color-text-muted);
+  transition: color 0.12s, background 0.12s;
+  z-index: 1;
+}
+
+.emojiBtn:hover:not(:disabled) {
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+
+.emojiBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.emojiBtnGlyph {
+  pointer-events: none;
+}
+
+.pickerWrapPortal {
+  position: fixed;
+  z-index: var(--z-popover);
+  overflow: visible;
+  box-shadow: var(--shadow-elev-2);
+  border-radius: 10px;
+  border: 1px solid var(--color-border-subtle);
+  padding: 3px;
+  background: var(--color-bg-surface);
+  box-sizing: border-box;
+}
+
+.pickerWrapPortal :global(em-emoji-picker) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  min-height: 200px;
+  height: min(48dvh, 360px);
+  max-height: min(48dvh, 360px);
+}
+
+.pickerWrap {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  right: 0;
+  z-index: 4000;
+  width: fit-content;
+  max-width: min(100vw - 16px, 400px);
+  min-height: 0;
+  overflow: visible;
+  box-shadow: var(--shadow-elev-2);
+  border-radius: 10px;
+  border: 1px solid var(--color-border-subtle);
+  /* Лёгкий внутренний зазор, чтобы верхние кнопки не прилипали к рамке */
+  padding: 3px;
+  background: var(--color-bg-surface);
+}
+
+.pickerFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: var(--space-md) var(--space-lg);
+  font-size: 13px;
+  color: var(--color-text-muted);
+  box-sizing: border-box;
+}
+
+.pickerWrap :global(em-emoji-picker) {
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  min-height: 230px;
+  height: min(48dvh, 360px);
+  max-height: min(48dvh, 360px);
+}
+
+.textarea {
+  flex: 1;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  resize: none;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 9px 44px 9px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  min-height: 40px;
+  max-height: 140px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  background: var(--color-bg-input);
+  color: var(--color-text-primary);
+  line-height: 1.45;
+  transition: border-color 0.15s;
+  display: block;
+}
+
+.textarea:focus {
+  border-color: var(--color-accent);
+  box-shadow: none;
+}
+
+.sendBtn {
+  height: 40px;
+  padding: 0 var(--space-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: opacity 0.12s, transform 0.1s;
+}
+
+.sendBtn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.sendBtn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

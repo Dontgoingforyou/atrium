@@ -1,0 +1,488 @@
+.attachmentFile {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: color-mix(in srgb, var(--color-bg-surface) 70%, transparent);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
+  text-decoration: none;
+  color: var(--color-text-primary);
+  font-size: 13px;
+  max-width: 280px;
+  transition: background 0.12s;
+}
+
+.attachmentFile:hover {
+  background: color-mix(in srgb, var(--color-accent) 8%, var(--color-bg-surface));
+}
+
+.attachmentFileIcon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.attachmentFileName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.attachmentFileSize {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+}
+
+.attachmentAudio {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  max-width: min(100%, 320px);
+  background: color-mix(in srgb, var(--color-bg-surface) 70%, transparent);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 10px;
+}
+
+.attachmentAudioLabel {
+  font-size: 12px;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachmentAudioPlayer {
+  width: 100%;
+  height: 36px;
+  vertical-align: middle;
+}
+
+/*
+ * Рамка цитаты. Размер = .bubbleBody (14px / --font-size-body).
+ * Не использовать font: inherit на том же узле — сбрасывает font-size.
+ */
+.replyQuote {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0 0 var(--space-sm);
+  padding: var(--space-xs) var(--space-sm) var(--space-xs) var(--space-compact);
+  border: none;
+  border-left: 3px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+  background: color-mix(in srgb, var(--color-bg-subtle) 88%, transparent);
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  font-family: inherit;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.45;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  user-select: text;
+  -webkit-user-select: text;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.replyQuote:hover {
+  background: color-mix(in srgb, var(--color-bg-subtle) 70%, var(--color-accent) 12%);
+}
+
+.replyQuote::selection,
+.replyQuote *::selection {
+  /* Только цвет — без влияния на метрики строки */
+  background: color-mix(in srgb, var(--color-accent) 35%, transparent);
+  color: inherit;
+}
+
+.replyQuoteAuthor {
+  display: block;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-heading);
+  line-height: 1.45;
+  color: var(--color-accent);
+  margin: 0 0 var(--space-xs);
+}
+
+.replyQuoteBody {
+  display: block;
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--color-text-primary);
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/*
+ * Маркер «свой» пузырь для вложенных селекторов этого модуля.
+ * Вешать вместе с layout.bubbleMine — иначе CSS modules не матчит чужой hash.
+ */
+.bubbleMine {
+}
+
+/* Свой пузырь: рамка и текст читаемы на акцентном фоне. */
+.bubbleMine .replyQuote {
+  border-left-color: color-mix(in srgb, var(--color-on-accent) 65%, transparent);
+  background: color-mix(in srgb, var(--color-on-accent) 14%, transparent);
+}
+
+.bubbleMine .replyQuote:hover {
+  background: color-mix(in srgb, var(--color-on-accent) 22%, transparent);
+}
+
+.bubbleMine .replyQuoteAuthor {
+  color: var(--color-on-accent);
+}
+
+.bubbleMine .replyQuoteBody {
+  color: color-mix(in srgb, var(--color-on-accent) 88%, transparent);
+}
+
+.forwardHeader {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-accent);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+/* Свой пузырь: акцентный фон — заголовок «Переслано от» должен быть читаемым (не цветом акцента на акценте). */
+.bubbleMine .forwardHeader,
+.bubbleMine .forwardAuthor {
+  color: var(--color-on-accent);
+}
+
+.bubbleMine a,
+.bubbleMine a:hover,
+.bubbleMine a:visited {
+  color: var(--color-on-accent);
+  text-decoration-color: color-mix(in srgb, var(--color-on-accent) 70%, transparent);
+}
+
+.forwardAuthor {
+  font-weight: 600;
+}
+
+.reactionsRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.reactionChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border-subtle);
+  background: color-mix(in srgb, var(--color-bg-subtle) 90%, transparent);
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  line-height: 1.3;
+}
+
+.reactionChip:hover:not(:disabled) {
+  border-color: var(--color-accent);
+}
+
+.reactionChipMine {
+  border-color: color-mix(in srgb, var(--color-accent) 45%, var(--color-border));
+  background: color-mix(in srgb, var(--color-accent) 12%, var(--color-bg-subtle));
+}
+
+.reactionCount {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+/* ─── Поповер «кто прочитал» ─────────────────────────────────────────────── */
+
+.readersPopoverOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-lightbox-elevated);
+}
+
+.readersPopover {
+  position: fixed;
+  z-index: var(--z-lightbox-elevated);
+  width: min(220px, calc(100vw - 32px));
+  box-sizing: border-box;
+  max-height: 240px;
+  overflow-y: auto;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+  font-size: 13px;
+  color: var(--color-text-primary);
+}
+
+.readersPopoverTitle {
+  font-weight: 600;
+  margin-bottom: 6px;
+  opacity: 0.7;
+}
+
+.readersPopoverEmpty {
+  opacity: 0.5;
+}
+
+.readersPopoverRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 0;
+  min-width: 0;
+}
+
+.readersPopoverName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.readersPopoverTime {
+  opacity: 0.5;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.reactorsToggleBtn {
+  margin-top: var(--space-sm);
+  width: 100%;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+}
+
+.reactorsToggleError {
+  margin-top: var(--space-sm);
+  font-size: 12px;
+  color: var(--color-danger);
+}
+
+.reactorsToggleBtn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-accent) 12%, var(--color-bg-subtle));
+}
+
+.reactorsToggleBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Голосовое сообщение (компактный плеер, стилистика мессенджеров) */
+.voiceAttach {
+  position: relative;
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+  max-width: min(100%, 260px);
+  padding: 8px 10px 6px;
+  border-radius: 12px;
+}
+
+.voiceAttachMine {
+  background: color-mix(in srgb, var(--color-on-accent) 12%, transparent);
+}
+
+.voiceAttachOther {
+  background: color-mix(in srgb, var(--color-bg-surface) 55%, transparent);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.voiceAttachMain {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.voicePlayMine,
+.voicePlayOther {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  font-family: inherit;
+  color: inherit;
+}
+
+.voicePlayMine {
+  background: color-mix(in srgb, var(--color-on-accent) 22%, transparent);
+  color: var(--color-on-accent);
+}
+
+.voicePlayOther {
+  background: color-mix(in srgb, var(--color-accent) 15%, var(--color-bg-subtle));
+  color: var(--color-accent);
+}
+
+.voicePlayTri {
+  display: block;
+  width: 0;
+  height: 0;
+  margin-left: 3px;
+  border-style: solid;
+  border-width: 7px 0 7px 11px;
+  border-color: transparent transparent transparent currentColor;
+}
+
+.voicePauseBars {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+.voicePauseBar {
+  width: 4px;
+  height: 14px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.voiceWave {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1px;
+  height: 30px;
+}
+
+.voiceBarLit,
+.voiceBarDim {
+  flex-shrink: 0;
+  width: 3px;
+  min-height: 4px;
+  border-radius: 2px;
+  align-self: flex-end;
+}
+
+.voiceAttachMine .voiceBarLit {
+  background: color-mix(in srgb, var(--color-on-accent) 88%, transparent);
+}
+
+.voiceAttachMine .voiceBarDim {
+  background: color-mix(in srgb, var(--color-on-accent) 30%, transparent);
+}
+
+.voiceAttachOther .voiceBarLit {
+  background: color-mix(in srgb, var(--color-accent) 72%, var(--color-text-muted));
+}
+
+.voiceAttachOther .voiceBarDim {
+  background: color-mix(in srgb, var(--color-border) 88%, transparent);
+}
+
+.voiceMetaMine,
+.voiceMetaOther {
+  margin-top: 4px;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.voiceMetaMine {
+  color: color-mix(in srgb, var(--color-on-accent) 78%, transparent);
+}
+
+.voiceMetaOther {
+  color: var(--color-text-muted);
+}
+
+.voiceAttachAudioHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.voiceTranscribeBtn {
+  margin-top: 6px;
+  padding: 3px 8px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  font-family: inherit;
+  line-height: 1.3;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.voiceAttachMine .voiceTranscribeBtn {
+  background: color-mix(in srgb, var(--color-on-accent) 16%, transparent);
+  color: var(--color-on-accent);
+}
+
+.voiceAttachOther .voiceTranscribeBtn {
+  background: color-mix(in srgb, var(--color-accent) 12%, var(--color-bg-subtle));
+  color: var(--color-accent);
+}
+
+.voiceTranscribeBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.voiceTranscribeSpinner {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  border-right-color: transparent;
+  animation: voiceTranscribeSpin 0.7s linear infinite;
+}
+
+@keyframes voiceTranscribeSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.voiceTranscript {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent);
+  font-size: 12px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+}

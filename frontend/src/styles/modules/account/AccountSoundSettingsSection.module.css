@@ -1,0 +1,57 @@
+.soundControl {
+  margin-bottom: var(--space-sm);
+}
+
+.controlRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-xs);
+}
+
+.soundSelect {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.fieldLabel {
+  color: var(--color-text-label);
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+}
+
+.previewBtn {
+  flex: 0 0 auto;
+}
+
+.volumeBlock {
+  margin-bottom: var(--space-lg);
+  max-width: 520px;
+}
+
+.volumeLabel {
+  display: block;
+  width: 100%;
+}
+
+.volumeRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  margin-top: var(--space-xs);
+}
+
+.range {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0;
+  height: 1.25rem;
+}
+
+.volumePct {
+  flex: 0 0 auto;
+  min-width: 2.75rem;
+  text-align: right;
+  font-size: var(--font-size-body);
+  font-variant-numeric: tabular-nums;
+}

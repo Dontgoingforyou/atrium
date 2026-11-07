@@ -1,0 +1,493 @@
+.kanbanColumn {
+  flex: 1 0 calc((100% - 3 * var(--space-md)) / 4);
+  min-width: 0;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  border-top-width: 3px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.kanbanColumnTitle {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kanbanColumnTitleGroup {
+  flex: 1;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.kanbanColumnTitleGroup .kanbanColumnTitle {
+  flex: 0 1 auto;
+}
+
+.kanbanColumnCount {
+  flex-shrink: 0;
+  min-width: 1.25rem;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--color-bg-panel);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.kanbanColumnBody {
+  padding: var(--space-sm);
+  flex: 1;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* ─── Inline-редактирование колонки ──────────────────────────────── */
+
+.kanbanColumnHeader {
+  padding: var(--space-sm) var(--space-compact);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+/* Область «⋮⋮ + заголовок»: вне её кнопки ✎/✕ — не перехватывают старт drag у заголовка. */
+.kanbanColumnDragRegion {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+
+.kanbanColumnDragRegion .kanbanColumnTitleGroup {
+  flex: 1;
+  min-width: 0;
+}
+
+.kanbanColumnDragRegion .kanbanColumnTitle {
+  flex: 0 1 auto;
+}
+
+.kanbanColumnGrip {
+  flex-shrink: 0;
+  font-size: var(--font-size-caption);
+  line-height: 1;
+  letter-spacing: var(--letter-spacing-grip);
+  color: var(--color-text-muted);
+}
+
+.kanbanColumnDragRegion:hover .kanbanColumnGrip {
+  color: var(--color-text-primary);
+}
+
+.kanbanColumnHeaderDragging {
+  cursor: grabbing;
+}
+
+.kanbanEditBtn,
+.kanbanDeleteBtn,
+.kanbanExportBtn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px 4px;
+  font-size: 14px;
+  color: var(--color-text-muted);
+  border-radius: var(--radius-sm);
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.kanbanColumn:hover .kanbanEditBtn,
+.kanbanColumn:hover .kanbanDeleteBtn,
+.kanbanColumn:hover .kanbanExportBtn {
+  opacity: 1;
+}
+
+.kanbanEditBtn:hover,
+.kanbanExportBtn:hover {
+  color: var(--color-accent);
+  background: var(--color-bg-subtle);
+}
+
+.kanbanExportBtn:disabled {
+  opacity: 0.4;
+  cursor: wait;
+}
+
+.kanbanDeleteBtn:hover {
+  color: var(--color-danger-ui);
+  background: var(--color-bg-subtle);
+}
+
+.kanbanColumnEditRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.kanbanColumnEditActions {
+  display: flex;
+  gap: var(--space-sm);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.kanbanColumnKpiToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.kanbanColumnKpiToggle input {
+  margin: 0;
+}
+
+.kanbanColumnKpiToggleLabel {
+  white-space: nowrap;
+}
+
+.kanbanColumnEditInput {
+  flex: 1 1 100%;
+  min-width: 0;
+  padding: 3px 6px;
+  font: inherit;
+  font-size: var(--font-size-small);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  outline: none;
+}
+
+.kanbanColumnColorPicker {
+  width: 26px;
+  height: 26px;
+  padding: 1px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.kanbanEditSaveBtn,
+.kanbanEditCancelBtn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.kanbanEditSaveBtn {
+  background: var(--color-success);
+  color: var(--color-on-accent);
+}
+
+.kanbanEditSaveBtn:hover {
+  opacity: 0.85;
+}
+
+.kanbanEditCancelBtn {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+
+.kanbanEditCancelBtn:hover {
+  background: var(--color-bg-muted);
+}
+
+.kanbanFormSaveBtn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 var(--space-md);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font: inherit;
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  white-space: nowrap;
+  background: var(--color-success);
+  color: var(--color-on-accent);
+}
+
+.kanbanFormSaveBtn:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.kanbanFormSaveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.kanbanFormCancelBtn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  min-width: 32px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font: inherit;
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+
+.kanbanFormCancelBtn:hover:not(:disabled) {
+  background: var(--color-bg-muted);
+}
+
+.kanbanFormCancelBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ─── Инлайн-создание задачи в колонке ──────────────────────────────────────── */
+
+.kanbanAddTaskHeaderBtn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+}
+
+.kanbanColumn:hover .kanbanAddTaskHeaderBtn {
+  opacity: 0.7;
+}
+
+.kanbanAddTaskHeaderBtn:hover {
+  color: var(--color-accent);
+  opacity: 1 !important;
+}
+
+.kanbanColumnAddTaskForm {
+  margin-bottom: 6px;
+  padding: var(--space-sm);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-elev-1);
+}
+
+.kanbanColumnAddTaskInput {
+  width: 100%;
+  padding: var(--space-xs) var(--space-sm);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-small);
+  font-weight: 500;
+  background: transparent;
+  color: var(--color-text-primary);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.kanbanColumnAddTaskInput::placeholder {
+  color: var(--color-text-muted);
+}
+
+.kanbanColumnAddTaskInput:focus {
+  outline: none;
+}
+
+/* ─── Карточка «Добавить колонку» ──────────────────────────────── */
+
+.addColumnCard {
+  flex: 1 0 calc((100% - 3 * var(--space-md)) / 4);
+  align-self: flex-start;
+  min-height: 3.5rem;
+  background: var(--color-bg-surface);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: var(--font-size-small);
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.addColumnCard:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.addColumnCardOpen {
+  align-self: flex-start;
+  min-height: unset;
+  height: auto;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding: 12px;
+  gap: 8px;
+  cursor: default;
+}
+
+.addColumnCard.addColumnCardOpen {
+  flex: 0 1 260px;
+  align-self: flex-start;
+  min-height: unset;
+  height: auto;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+
+.addColumnTitleInput {
+  width: 100%;
+  min-width: 0;
+  padding: 3px 6px;
+  font: inherit;
+  font-size: var(--font-size-small);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  outline: none;
+  box-sizing: border-box;
+}
+
+.addColumnCardOpen:hover {
+  border-color: var(--color-accent);
+  color: var(--color-text-primary);
+}
+
+.addColumnPlus {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-accent);
+}
+
+.addColumnFormTitle {
+  margin: 0 0 4px;
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.addColumnColorRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.addColumnColorLabel {
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+}
+
+.addColumnButtons {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.kanbanCtxMenu {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-elev-2);
+  z-index: var(--z-dropdown);
+  overflow: hidden;
+  width: max-content;
+}
+
+.kanbanCtxMenuItem {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: var(--space-sm) var(--space-md);
+  background: transparent;
+  border: none;
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: var(--font-size-small);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.kanbanCtxMenuItem:hover {
+  background: var(--color-bg-muted);
+}
+
+.kanbanCtxMenuDelete {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: var(--space-sm) var(--space-md);
+  background: transparent;
+  border: none;
+  color: var(--color-danger-ui);
+  font: inherit;
+  font-size: var(--font-size-small);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.kanbanCtxMenuDelete:hover {
+  background: var(--color-bg-muted);
+}
+
+@media (max-width: 768px) {
+  .kanbanColumn {
+    flex-basis: 16rem;
+    min-width: 16rem;
+  }
+}

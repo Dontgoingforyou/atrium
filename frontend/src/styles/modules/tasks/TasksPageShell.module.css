@@ -1,0 +1,172 @@
+.pageRoot {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.boardHost {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.lead {
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-lg);
+  max-width: 720px;
+}
+
+.pageHeader {
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.pageHeader :global(.page-title) {
+  min-width: 0;
+}
+
+.headerCreateBtn {
+  margin-left: auto;
+}
+
+@media (max-width: 768px) {
+  .headerCreateBtn {
+    margin-left: 0;
+  }
+
+  .pageHeader :global(.page-title) {
+    overflow-wrap: anywhere;
+  }
+}
+
+.taskListColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.controls {
+  --tasks-filter-control-height: 2.125rem;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: var(--space-md) var(--space-xl);
+  margin-bottom: var(--space-lg);
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding-bottom: 2px;
+  scrollbar-width: thin;
+}
+
+.controlsMain {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: var(--space-md) var(--space-xl);
+  flex: 1 0 auto;
+  min-width: max-content;
+  width: auto;
+  max-width: none;
+  overflow: visible;
+}
+
+.scopeToggle,
+.priorityFilterBtns {
+  flex-shrink: 0;
+}
+
+/* Кнопки фильтра по приоритету */
+.priorityFilterBtns {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  align-items: center;
+  min-height: var(--tasks-filter-control-height);
+}
+
+.priorityFilterBtn {
+  height: var(--tasks-filter-control-height);
+  padding: 0 var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-panel);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-small);
+  cursor: pointer;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  transition: background 0.1s, color 0.1s, border-color 0.1s;
+}
+
+.priorityFilterBtn:hover {
+  border-color: var(--color-border);
+  background: var(--color-bg-subtle);
+}
+
+.priorityFilterBtnActive {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border-color: var(--color-accent);
+}
+
+.priorityFilterBtnActive:hover {
+  color: var(--color-on-accent);
+}
+
+.viewToggle {
+  display: inline-flex;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.viewToggleBtn,
+.viewToggleActive {
+  padding: 6px var(--portal-doc-row-padding);
+  font: inherit;
+  font-size: var(--font-size-small);
+  border: none;
+  background: var(--color-bg-surface);
+  cursor: pointer;
+}
+
+.viewToggleActive {
+  background: var(--color-search-action-bg);
+  color: var(--color-search-action-fg);
+}
+
+.viewToggleBtn:hover {
+  background: var(--color-bg-muted);
+}
+
+/* ─── Переключатель «Мои задачи» / «Задачи команды» ─────────────────────────── */
+
+.scopeToggle {
+  display: inline-flex;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.scopeToggleBtn,
+.scopeToggleActive {
+  padding: 6px var(--portal-doc-row-padding);
+  font: inherit;
+  font-size: var(--font-size-small);
+  border: none;
+  background: var(--color-bg-surface);
+  cursor: pointer;
+}
+
+.scopeToggleActive {
+  background: var(--color-search-action-bg);
+  color: var(--color-search-action-fg);
+}
+
+.scopeToggleBtn:hover {
+  background: var(--color-bg-muted);
+}

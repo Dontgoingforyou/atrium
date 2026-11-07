@@ -1,0 +1,1 @@
+export const DOCUMENT_TRASH_TTL_DAYS = 90

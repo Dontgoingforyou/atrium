@@ -1,0 +1,73 @@
+/* Ссылки специалиста (SpecialistLinksSection) */
+
+.linkList {
+  list-style: none;
+  margin: 0 0 10px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.linkRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.linkAnchor {
+  flex: 1;
+  font-size: var(--font-size-small);
+  color: var(--color-accent);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.linkAnchor:hover {
+  text-decoration: underline;
+}
+
+.linkAnchor:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.linkMeta {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.deleteLinkBtn {
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  padding: 2px 4px;
+  font-size: 0.75rem;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.deleteLinkBtn:hover {
+  color: var(--color-danger);
+}
+
+.deleteLinkBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.addLinkForm {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin-top: 8px;
+}
+
+.addLinkForm :global(.form-input) {
+  flex: 1;
+  min-width: 120px;
+}

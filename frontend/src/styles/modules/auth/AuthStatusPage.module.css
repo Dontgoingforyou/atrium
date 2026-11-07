@@ -1,0 +1,23 @@
+.panel {
+  padding: var(--space-xl);
+}
+
+.panelWide {
+  max-width: 36rem;
+  padding: var(--space-xl);
+  line-height: 1.5;
+}
+
+.bridgePanel {
+  max-width: 480px;
+  margin: 4rem auto;
+  padding: var(--space-xl);
+}
+
+.bridgeError {
+  color: var(--color-danger-strong);
+}
+
+.bridgeMuted {
+  color: var(--color-text-muted);
+}

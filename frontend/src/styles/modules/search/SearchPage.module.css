@@ -1,0 +1,283 @@
+.searchInput {
+  flex: 1;
+  min-width: 0;
+  max-width: 480px;
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-body);
+  font-family: inherit;
+  background: var(--color-bg-surface);
+}
+
+.searchInput:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* Размерные отличия переключателя режима на странице (база — SearchModeToggle.module.css). */
+.modeToggle {
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.modeBtn {
+  padding: 6px var(--space-md);
+  font-size: var(--font-size-small);
+}
+
+.searchSubmitBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--font-size-body);
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.searchSubmitBtn:hover {
+  background: var(--color-accent-hover);
+}
+
+.searchSubmitBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.resetFiltersBtn {
+  padding: 6px var(--space-md);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  font-family: inherit;
+  color: var(--color-text-muted);
+  align-self: center;
+}
+
+.resetFiltersBtn:hover {
+  color: var(--color-heading);
+}
+
+.resetFiltersBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.typeFilters {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-lg);
+}
+
+.typeBtn {
+  padding: 4px var(--space-md);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-surface);
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  font-family: inherit;
+  color: var(--color-heading);
+}
+
+.typeBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.typeBtnActive {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border-color: var(--color-accent);
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-compact);
+}
+
+.resultCard {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.resultTypeBadge {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  font-size: var(--font-size-caption);
+  line-height: 1.25;
+  background: var(--color-bg-subtle);
+  color: var(--color-text-muted);
+  border-radius: var(--radius-sm);
+  padding: 2px 7px;
+}
+
+.resultSnippet {
+  font-size: var(--font-size-small);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.resultCardHighlighted {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.resultCardHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.resultCardHeaderMain {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex: 1;
+  min-width: 0;
+}
+
+.resultTitleLink {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 500;
+  color: var(--color-link);
+  font-size: var(--font-size-body);
+  line-height: 1.25;
+  min-width: 0;
+}
+
+.resultTitleLink:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.similarityBadge {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: auto;
+  font-size: var(--font-size-caption);
+  line-height: 1.25;
+  color: var(--color-text-muted);
+  background: var(--color-bg-subtle);
+  border-radius: var(--radius-sm);
+  padding: 2px 6px;
+}
+
+/* ─── Фильтр по тегам ─────────────────────────────────────────────────────── */
+
+.tagFilterSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.tagFilterRow {
+  --search-tag-filter-control-height: 2.125rem;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.tagFilterLabel {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+  height: var(--search-tag-filter-control-height);
+  display: inline-flex;
+  align-items: center;
+}
+
+.tagFilterPicker :global(.form-input) {
+  min-height: var(--search-tag-filter-control-height);
+}
+
+.tagFilterPicker {
+  flex: 1;
+  min-width: 200px;
+  max-width: 360px;
+}
+
+.tagChipsRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.tagChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px 2px var(--space-sm);
+  border-radius: var(--radius-lg);
+  border: 1px solid;
+  font-size: var(--font-size-caption);
+  line-height: 1.4;
+}
+
+.tagChipLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 160px;
+}
+
+.tagChipRemove {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 2px;
+  font-size: 1rem;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.65;
+}
+
+.tagChipRemove:hover {
+  opacity: 1;
+}
+
+.tagChipRemove:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* ─── Заголовок/подсказки/пагинация (вместо inline-стилей) ─────────────────── */
+
+.semanticHint {
+  margin: 0 0 var(--space-md);
+  color: var(--color-text-muted);
+}
+
+.resultsCount {
+  margin: 0 0 var(--space-sm);
+}
+
+.paginationRow {
+  display: flex;
+  gap: var(--space-sm);
+  margin-top: var(--space-md);
+}

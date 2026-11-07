@@ -1,0 +1,182 @@
+/* Общая модалка настроек группового чата (страница /chats и плавающий виджет). */
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, var(--color-bg-page) 78%, black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal);
+  padding: 16px;
+}
+
+.modal {
+  width: min(420px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--color-bg-surface);
+  isolation: isolate;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.22);
+}
+
+.modalTitle {
+  margin: 0 0 16px;
+  font-size: 18px;
+}
+
+.groupLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.groupTitleInput {
+  padding: 8px 10px;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 14px;
+}
+
+.modalSection {
+  margin: 16px 0 8px;
+  font-size: 14px;
+}
+
+.memberList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.memberRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--color-border-subtle);
+  font-size: 14px;
+}
+
+.memberNameCell {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.badgeCreator {
+  font-size: 11px;
+  color: var(--color-text-muted);
+}
+
+.modalPrimaryBtn,
+.modalDangerBtn,
+.modalCloseBtn,
+.inviteBtn {
+  font-family: inherit;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.modalPrimaryBtn {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  border: none;
+}
+
+.modalDangerBtn {
+  padding: 4px 10px;
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid var(--color-danger);
+  color: var(--color-danger);
+}
+
+.modalCloseBtn {
+  margin-top: 16px;
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-subtle);
+}
+
+.inviteList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.inviteBtn {
+  width: 100%;
+  text-align: left;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  border: 1px dashed var(--color-border-subtle);
+  background: transparent;
+}
+
+.inviteBtnLine {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px 12px;
+  width: 100%;
+}
+
+.avatarSection {
+  margin-top: 4px;
+}
+
+.avatarFileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.avatarRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.avatarActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.modalSecondaryBtn {
+  padding: 8px 12px;
+  border: 1px solid var(--color-border-subtle);
+  background: var(--color-bg-subtle);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.modalSecondaryBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

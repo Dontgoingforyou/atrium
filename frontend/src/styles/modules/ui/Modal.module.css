@@ -1,0 +1,114 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: color-mix(in srgb, #000 50%, transparent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  overflow-y: auto;
+  scrollbar-gutter: stable both-edges;
+  animation: overlayFadeIn 0.18s ease-out 40ms;
+  animation-fill-mode: backwards;
+}
+
+.overlayClosing {
+  animation: overlayFadeOut 0.15s ease-in forwards;
+}
+
+.dialog {
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 16px;
+  box-shadow: var(--shadow-elev-3, 0 8px 40px rgba(0, 0, 0, 0.28));
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 32px);
+  overflow: hidden;
+  animation: dialogSlideIn 0.2s var(--ease-out, cubic-bezier(0.25, 0.46, 0.45, 0.94)) 40ms;
+  animation-fill-mode: backwards;
+  will-change: opacity, transform;
+}
+
+.dialogClosing {
+  animation: dialogSlideOut 0.15s ease-in forwards;
+}
+
+@keyframes overlayFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes overlayFadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+@keyframes dialogSlideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dialogSlideOut {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .overlayClosing,
+  .dialog,
+  .dialogClosing {
+    animation: none;
+    animation-fill-mode: none;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 0;
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-heading);
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: var(--color-text-muted);
+  padding: 4px 8px;
+  border-radius: 6px;
+  line-height: 1;
+  transition: background 0.12s, color 0.12s;
+  font-family: inherit;
+}
+
+.closeBtn:hover {
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+
+.closeBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.body {
+  padding: 16px 24px 24px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-height: 0;
+  scrollbar-gutter: stable;
+}

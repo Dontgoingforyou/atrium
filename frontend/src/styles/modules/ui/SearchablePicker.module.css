@@ -1,0 +1,245 @@
+.wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-height: 100%;
+}
+
+.invalidWrap {
+  outline: 2px solid var(--color-danger);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm, 4px);
+}
+
+/* Вариант с чипами справа от поля ввода */
+.wrapperRow {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: nowrap;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.wrapperRow .inputRow {
+  flex: 0 1 auto;
+  min-width: min(160px, 100%);
+  max-width: 100%;
+}
+
+/* Чипы в строчном (right) варианте — без grid-анимации */
+.chipsInlineRight {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.chipsWrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.18s ease;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.chipsWrap[data-open='true'] {
+  grid-template-rows: 1fr;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.chipsInner {
+  overflow: hidden;
+  min-height: 0;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.chipsWrap[data-open='true'] .chipsInner {
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-top: 6px;
+  margin-bottom: 0;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.chipsInlineRight .chips {
+  margin-top: 0;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  box-sizing: border-box;
+  min-height: 24px;
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-muted);
+  font-size: var(--font-size-caption);
+  line-height: 1.25;
+  max-width: 100%;
+  flex-shrink: 0;
+}
+
+.chipLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: min(280px, 70vw);
+  line-height: 1.25;
+}
+
+.chipRemove {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-caption);
+  line-height: 1;
+}
+
+.chipRemove:hover {
+  color: var(--color-danger-ui);
+}
+
+.chipRemove:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.readOnlyEmpty {
+  color: var(--color-text-secondary);
+  cursor: default;
+  pointer-events: none;
+  background: var(--color-bg-subtle);
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  flex-shrink: 0;
+}
+
+.input {
+  flex: 1;
+  width: 100%;
+  min-width: 140px;
+}
+
+.dropdown {
+  position: fixed;
+  z-index: var(--z-popover);
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm, 4px);
+  box-shadow: var(--shadow-elev-2);
+  overflow-x: auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+  box-sizing: border-box;
+}
+
+.option {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: var(--font-size-small);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.optionText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+}
+
+.option:last-of-type {
+  border-bottom: none;
+}
+
+.option:hover,
+.option[data-active] {
+  background: var(--color-bg-subtle);
+}
+
+.optionName {
+  font-weight: 500;
+}
+
+.optionSecondary {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-small);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.emptyHint {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+}
+
+.loadMore {
+  display: block;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg-muted);
+  font: inherit;
+  font-size: var(--font-size-small);
+  color: var(--color-accent);
+  cursor: pointer;
+  text-align: center;
+}
+
+.loadMore:hover {
+  background: var(--color-bg-subtle);
+}
+
+.loadMore:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}

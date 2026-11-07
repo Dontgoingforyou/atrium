@@ -1,0 +1,308 @@
+.triggerWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Обёртка кнопки колокола — якорь для бейджа непрочитанных */
+.bellWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.bellBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  box-shadow: var(--shadow-elev-1);
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s,
+    box-shadow 0.15s,
+    transform var(--duration-normal, 0.2s) var(--ease-out, ease-out);
+}
+
+.bellBtn:hover {
+  background: var(--color-bg-subtle);
+  transform: scale(1.1) translateZ(0);
+  color: var(--color-text-primary);
+  border-color: var(--color-border-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bellBtn {
+    transition: background 0.15s, border-color 0.15s, color 0.15s, box-shadow 0.15s;
+  }
+
+  .bellBtn:hover {
+    transform: translateZ(0);
+  }
+}
+
+.bellBtn:focus-visible {
+  outline: none;
+  box-shadow: var(--input-focus-shadow, 0 0 0 0.2rem rgba(97, 49, 207, 0.2));
+}
+
+.bellBtnActive {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: var(--color-bg-selected);
+}
+
+.unreadBadge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  box-sizing: border-box;
+  border-radius: 9px;
+  background: var(--color-danger);
+  color: var(--color-on-accent);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  box-shadow: var(--shadow-elev-1);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: min(420px, calc(100vw - 32px));
+  min-width: min(280px, calc(100vw - 32px));
+  max-height: 440px;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-elev-3);
+  z-index: var(--z-dropdown);
+  overflow: hidden;
+}
+
+.popoverHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  flex-shrink: 0;
+}
+
+.popoverTitle {
+  flex: 1 1 auto;
+  min-width: min(11em, 100%);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: 0.01em;
+}
+
+.popoverHeaderActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.soundToggleBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.soundToggleBtn:hover {
+  background: var(--color-border-subtle);
+  color: var(--color-text-primary);
+}
+
+.soundToggleBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.soundToggleBtn[aria-pressed='true'] {
+  color: var(--color-accent);
+}
+
+.clearBtn {
+  border: none;
+  background: transparent;
+  color: var(--color-accent);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 3px 8px;
+  border-radius: 6px;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.clearBtn:hover {
+  background: var(--color-bg-selected);
+}
+
+.clearBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.list {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.empty {
+  padding: 28px 14px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 13px;
+}
+
+.itemAvatarCell {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 8px 0 8px 12px;
+}
+
+.itemRow {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.itemRow:last-child {
+  border-bottom: none;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  gap: 3px;
+  padding: 10px 4px 10px 14px;
+  cursor: pointer;
+  background: transparent;
+  text-align: left;
+  border: none;
+  border-radius: 0;
+  transition: background 0.1s;
+}
+
+.item:hover {
+  background: var(--color-bg-muted);
+}
+
+.item:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: -2px;
+}
+
+.itemRead .itemAuthor,
+.itemRead .itemTime,
+.itemRead .itemMeta {
+  opacity: 0.8;
+}
+
+.itemRead .itemTask {
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.itemDismiss {
+  flex-shrink: 0;
+  width: 40px;
+  min-height: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.1s, color 0.1s;
+}
+
+.itemDismiss:hover:not(:disabled) {
+  background: var(--color-border-subtle);
+  color: var(--color-text-primary);
+}
+
+.itemDismiss:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: -2px;
+}
+
+.itemDismiss:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.itemAuthor {
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.itemTask {
+  font-size: 13px;
+  color: var(--color-text-primary);
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itemMeta {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.itemTime {
+  font-size: 11px;
+  color: var(--color-text-muted);
+  margin-top: 1px;
+}

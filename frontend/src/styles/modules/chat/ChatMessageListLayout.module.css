@@ -1,0 +1,401 @@
+.container {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px 20px 28px;
+  scrollbar-color: var(--color-border) transparent;
+  scrollbar-width: thin;
+}
+
+/* Внутренний positioned-контейнер для @tanstack/react-virtual */
+.virtualInner {
+  position: relative;
+  width: 100%;
+}
+
+/* Каждый виртуальный элемент; padding-bottom создаёт визуальный gap между пузырями */
+.virtualItem {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding-bottom: 6px;
+  box-sizing: border-box;
+}
+
+.virtualItemLeaving {
+  overflow: hidden;
+  animation: chatRowExit 0.32s ease forwards;
+}
+
+@keyframes chatRowExit {
+  from {
+    opacity: 1;
+    max-height: min(900px, 70vh);
+    margin-bottom: 0;
+  }
+  to {
+    opacity: 0;
+    max-height: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+}
+
+/* Подсветка deeplink: только фон, без пульсирующей 3px-обводки (она визуально раздувала пузырь). */
+.bubbleHighlighted {
+  animation: messageHighlight 1.6s ease-out forwards;
+}
+
+@keyframes messageHighlight {
+  0%   { background-color: inherit; }
+  15%  { filter: brightness(1.08); }
+  50%  { filter: brightness(1.04); }
+  100% { filter: brightness(1); }
+}
+
+.bubbleMine.bubbleHighlighted {
+  animation-name: messageHighlightMine;
+}
+
+@keyframes messageHighlightMine {
+  0%   { filter: brightness(1); }
+  15%  { filter: brightness(1.12); }
+  50%  { filter: brightness(1.06); }
+  100% { filter: brightness(1); }
+}
+
+/* Страница /chats: полноширинная колонка на десктопе */
+.containerThread {
+  gap: 4px;
+  padding: 16px 24px 28px;
+}
+
+.containerThread .bubble {
+  max-width: min(68%, 680px);
+  border-radius: 18px;
+}
+
+.containerThread .bubbleMine {
+  border-radius: 18px 18px 6px 18px;
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--color-accent) 35%, transparent),
+    0 4px 14px color-mix(in srgb, var(--color-accent) 22%, transparent);
+}
+
+.containerThread .bubbleOther {
+  border-radius: 18px 18px 18px 6px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-bg-surface) 80%, transparent);
+}
+
+.containerThread .dayDividerLabel {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+  background: color-mix(in srgb, var(--color-bg-subtle) 92%, transparent);
+}
+
+.container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.container::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+.empty {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  text-align: center;
+  margin-top: 24px;
+}
+
+.actionError {
+  margin: 0 0 8px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 8%, transparent);
+  border-radius: var(--radius-sm, 4px);
+}
+
+.dayDivider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 6px 0 8px;
+}
+
+.containerThread .dayDivider {
+  margin: 2px 0 6px;
+}
+
+.dayDividerLabel {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  padding: 3px 12px;
+  border-radius: 10px;
+  background: var(--color-bg-subtle);
+}
+
+.messageRow {
+  display: flex;
+  flex-direction: column;
+}
+
+.messageRowOther {
+  align-items: flex-start;
+}
+
+.messageRowMine {
+  align-items: flex-end;
+}
+
+/* Горизонтальный ряд: пузырь + кнопка ⋯ рядом */
+.bubbleRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+
+.bubbleRowMine {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.bubbleRowOther {
+  align-self: flex-start;
+}
+
+.msgSideAvatar {
+  align-self: flex-end;
+  margin-bottom: 2px;
+}
+
+/* Кнопка ⋯ для клавиатурного доступа к меню сообщения */
+.msgActionsBtn {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--color-text-muted);
+  opacity: 0;
+  transition: opacity 0.12s;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bubbleRow:hover .msgActionsBtn,
+.msgActionsBtn:focus-visible {
+  opacity: 1;
+}
+
+.bubble {
+  max-width: 72%;
+  border-radius: 16px;
+  padding: 9px 14px 7px;
+  word-break: break-word;
+  box-shadow: var(--shadow-elev-1);
+  line-height: 1.45;
+}
+
+/* Внутри bubbleRow align-self задаётся через bubbleRow; сбрасываем у пузырей */
+.bubbleRow .bubbleMine,
+.bubbleRow .bubbleOther {
+  align-self: auto;
+}
+
+
+.bubbleMine {
+  align-self: flex-end;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.bubbleOther {
+  align-self: flex-start;
+  background: var(--color-bubble-other);
+  color: var(--color-heading);
+}
+
+.bubbleBody {
+  margin-top: 0;
+  font-size: var(--font-size-body);
+  line-height: 1.45;
+}
+
+.emojiOnlyBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: var(--space-xs);
+  border: none;
+  background: transparent;
+  font-size: var(--font-size-emoji-bubble);
+  line-height: 1.1;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+  color: inherit;
+}
+
+.emojiOnlyBtn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+.authorName {
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 3px;
+  opacity: 0.85;
+}
+
+.bubbleEdit {
+  min-width: 200px;
+  max-width: 100%;
+}
+
+.editTextarea {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+  padding: 6px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  resize: vertical;
+  min-height: 64px;
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  margin-top: 4px;
+}
+
+.editActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  justify-content: flex-end;
+}
+
+.editSave,
+.editCancel {
+  font: inherit;
+  font-size: 12px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-subtle);
+  color: var(--color-text-primary);
+}
+
+.meta {
+  font-size: 11px;
+  margin-top: 5px;
+}
+
+/** Счёт emoji-pong — тем же кеглем/цветом, что дата в пузыре. */
+.scoreCaption {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.35;
+  opacity: 0.9;
+  font-weight: var(--font-weight-regular);
+}
+
+.metaRowMine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px 6px;
+  text-align: right;
+}
+
+.receipt {
+  display: inline-block;
+  flex-shrink: 0;
+  color: var(--color-text-on-dark-muted);
+  opacity: 0.9;
+  font-size: 12px;
+  line-height: 1;
+  user-select: none;
+}
+
+.receiptBtn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.receiptReadMark {
+  letter-spacing: -0.2em;
+  margin-left: 1px;
+  padding-right: 2px;
+  opacity: 0.95;
+}
+
+.editedMark {
+  opacity: 0.9;
+  font-size: 10px;
+}
+
+.metaMine {
+  color: var(--color-text-on-dark-muted);
+}
+
+.metaOther {
+  color: var(--color-text-muted);
+}
+
+/* Вложения */
+.attachments {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.attachmentImageWrap {
+  display: block;
+  max-width: 280px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: zoom-in;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.attachmentImage {
+  display: block;
+  max-width: 100%;
+  max-height: 240px;
+  object-fit: cover;
+  border-radius: 8px;
+}

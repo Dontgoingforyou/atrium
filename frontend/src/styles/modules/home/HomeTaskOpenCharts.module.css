@@ -1,0 +1,333 @@
+.chartsWrap {
+  margin-bottom: 0;
+}
+
+.chartsTitle {
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin: 0 0 var(--space-md);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.chartsTitleText {
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .chartsTitleText {
+    animation: homeChartTitleIn 0.4s ease;
+  }
+
+  .chartsGrid,
+  .chartsStack {
+    animation: homeChartBodyIn 0.35s ease;
+  }
+}
+
+@keyframes homeChartTitleIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes homeChartBodyIn {
+  from {
+    opacity: 0.85;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 20px var(--space-xl);
+  align-items: start;
+}
+
+.chartsStack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-md);
+}
+
+@media (max-width: 640px) {
+  .chartsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.donutCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.donut {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .donut {
+    transition: background 0.12s linear;
+  }
+}
+
+.donut::after {
+  content: '';
+  position: absolute;
+  inset: var(--space-lg);
+  border-radius: 50%;
+  background: var(--color-bg-surface);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 12%);
+}
+
+.donutLegend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: var(--font-size-caption);
+  color: var(--color-text-secondary);
+}
+
+.donutLegend li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.donutLegend li:not(:last-child) {
+  margin-bottom: var(--space-xs);
+}
+
+.legendEntry {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-xs);
+  min-width: 0;
+}
+
+.legendOverdueLink {
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+}
+
+.legendOverdueLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.legendOverdueLink:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+.legendValue {
+  font-variant-numeric: tabular-nums;
+}
+
+.legendSwatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.swatchDanger {
+  background: var(--color-danger-ui);
+}
+
+.swatchSuccess {
+  background: var(--color-success);
+}
+
+.emptyPriority {
+  font-size: var(--font-size-small);
+  margin: 0;
+}
+
+.stackedBar {
+  display: flex;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--color-bg-subtle);
+  margin-top: var(--space-sm);
+  max-width: 200px;
+}
+
+.stackedOverdue {
+  background: var(--color-danger-ui);
+  min-width: 0;
+}
+
+.stackedOnTrack {
+  background: var(--color-success);
+  min-width: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stackedOverdue,
+  .stackedOnTrack,
+  .priorityBarFill,
+  .timesheetBarFill,
+  .weeklyBar {
+    transition: width 0.48s cubic-bezier(0.4, 0, 0.2, 1), height 0.48s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .donutLegend strong,
+  .priorityValue {
+    transition: opacity 0.2s ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stackedOverdue,
+  .stackedOnTrack,
+  .priorityBarFill,
+  .timesheetBarFill,
+  .weeklyBar {
+    transition: none;
+  }
+}
+
+.priorityCard {
+  min-width: 0;
+}
+
+.priorityRows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.priorityRow {
+  display: grid;
+  grid-template-columns: 72px 1fr 28px;
+  gap: var(--space-sm);
+  align-items: center;
+  font-size: var(--font-size-caption);
+}
+
+.priorityLabel {
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.priorityBarTrack {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--color-bg-subtle);
+  overflow: hidden;
+}
+
+.priorityBarFill {
+  height: 100%;
+  border-radius: 4px;
+  min-width: 2px;
+}
+
+.priorityFillHigh {
+  background: var(--color-danger-ui);
+}
+
+.priorityFillMedium {
+  background: var(--color-warning);
+}
+
+.priorityFillLow {
+  background: var(--color-text-disabled);
+}
+
+.priorityValue {
+  text-align: right;
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.timesheetBarWrap {
+  margin-top: var(--space-xs);
+}
+
+.timesheetBarLabel {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-xs);
+}
+
+.timesheetBarTrack {
+  height: 10px;
+  border-radius: 5px;
+  background: var(--color-bg-subtle);
+  overflow: hidden;
+}
+
+.timesheetBarFill {
+  height: 100%;
+  border-radius: 5px;
+  background: var(--color-accent);
+  min-width: 0;
+}
+
+/* ─── Мини-бар-чарт по неделям ─────────────────────────────────── */
+
+.weeklyBarsWrap {
+  margin-top: var(--space-md);
+}
+
+.weeklyBarsLabel {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2xs);
+}
+
+.weeklyBars {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2xs);
+  height: 56px;
+}
+
+.weeklyBarCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+  justify-content: flex-end;
+  gap: 3px;
+}
+
+.weeklyBar {
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  background: var(--color-accent);
+  min-height: 4px;
+}
+
+.weeklyBarTick {
+  font-size: 9px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  letter-spacing: 0;
+}

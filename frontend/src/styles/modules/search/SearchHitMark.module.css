@@ -1,0 +1,52 @@
+.hit {
+  background: color-mix(in srgb, var(--color-accent) 35%, var(--color-search-hit-warm));
+  color: inherit;
+  border-radius: var(--radius-xs);
+  padding: 0 1px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+/* Цитата ответа: без padding; длительность — --duration-reply-quote-hit. */
+.hitExact {
+  color: inherit;
+  border-radius: var(--radius-xs);
+  padding: 0;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  background-color: transparent;
+  animation: replyQuoteHit var(--duration-reply-quote-hit) var(--ease-out) both;
+}
+
+@keyframes replyQuoteHit {
+  0% {
+    background-color: transparent;
+  }
+  10% {
+    background-color: color-mix(in srgb, var(--color-accent) 48%, var(--color-search-hit-warm));
+  }
+  18% {
+    background-color: color-mix(in srgb, var(--color-accent) 35%, var(--color-search-hit-warm));
+  }
+  78% {
+    background-color: color-mix(in srgb, var(--color-accent) 35%, var(--color-search-hit-warm));
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hitExact {
+    animation: none;
+    background-color: color-mix(in srgb, var(--color-accent) 35%, var(--color-search-hit-warm));
+  }
+}
+
+/* Санитизированный HTML (без CSS-modules class) — только токенный hit, не exact. */
+:global(mark[data-search-hit='1']) {
+  background: color-mix(in srgb, var(--color-accent) 35%, var(--color-search-hit-warm));
+  color: inherit;
+  border-radius: var(--radius-xs);
+  padding: 0 1px;
+}

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon 16х16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon 32х32.png" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon 48х48.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicon 512х512.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/favicon 192х192.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- CSP задаётся nginx-заголовком в web-spa.conf (HTTP-header имеет приоритет над meta).
+         Мета-тег удалён — дублирование порождало расхождения при обновлении политики. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <title>Cosmolet</title>
+    <script>
+      (function () {
+        try {
+          var raw = localStorage.getItem('cosmolet-theme')
+          if (raw) {
+            var p = JSON.parse(raw)
+            var t = p.state && p.state.theme
+            if (t === 'light' || t === 'dark') {
+              document.documentElement.setAttribute('data-theme', t)
+            }
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light')
+          }
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light')
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

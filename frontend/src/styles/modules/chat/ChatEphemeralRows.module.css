@@ -1,0 +1,44 @@
+.wrap {
+  flex-shrink: 0;
+  padding: 4px 24px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(68%, 680px);
+}
+
+.avatar {
+  flex-shrink: 0;
+}
+
+.bubble {
+  padding: 8px 14px;
+  border-radius: 18px 18px 18px 6px;
+  background: var(--color-bg-muted);
+  border: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent);
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  line-height: 1.35;
+}
+
+.dots {
+  display: inline-block;
+  min-width: 1.2em;
+  animation: ephemeralDots 1.2s ease-in-out infinite;
+}
+
+@keyframes ephemeralDots {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}

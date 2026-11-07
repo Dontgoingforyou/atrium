@@ -1,0 +1,64 @@
+<script>
+(function () {
+  var SELF_SUB   = {{ request.session.get("admin_sub",       "") | tojson }};
+  var SELF_EMAIL = {{ request.session.get("admin_email",     "") | tojson }};
+  var SELF_NAME  = {{ request.session.get("admin_full_name", "") | tojson }};
+
+  if (!SELF_SUB) return;
+
+  /**
+   * Кнопка «Выбрать себя» добавляется ТОЛЬКО к AJAX-полям выбора пользователя
+   * (по соглашению их имена заканчиваются на _user: creator_user, author_user, …).
+   */
+  function isUserPickerField(select) {
+    return /_user$/.test(select.getAttribute("name") || "");
+  }
+
+  function attachButton(select) {
+    if (!isUserPickerField(select)) return;
+    if (select.dataset.selfBtn) return;
+    select.dataset.selfBtn = "1";
+
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = "Выбрать себя";
+    btn.className = "btn btn-sm btn-outline-secondary mt-1";
+
+    btn.addEventListener("click", function () {
+      var url  = select.dataset.url;
+      var name = select.getAttribute("name");
+      if (!url) return;
+
+      /* Ищем по email (уникален); fallback — имени, последний fallback — sub */
+      var term = SELF_EMAIL || SELF_NAME || SELF_SUB;
+
+      fetch(url + "?name=" + encodeURIComponent(name) + "&term=" + encodeURIComponent(term))
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          var results = (data.results || []);
+          /* Точное совпадение по id (sub), иначе первый результат */
+          var user = results.find(function (r) { return r.id === SELF_SUB; });
+          if (!user) user = results[0];
+          if (!user) {
+            alert("Текущий пользователь не найден. Войдите в портал и повторите.");
+            return;
+          }
+          var $sel = $(select);
+          $sel.empty()
+              .append(new Option(user.text, user.id, true, true))
+              .trigger("change");
+        })
+        .catch(function (err) { console.error("self-picker error", err); });
+    });
+
+    var wrapper = select.closest(".col-sm-10") || select.parentNode;
+    wrapper.appendChild(btn);
+  }
+
+  $(document).ready(function () {
+    setTimeout(function () {
+      document.querySelectorAll('select[data-role="select2-ajax"]').forEach(attachButton);
+    }, 50);
+  });
+})();
+</script>

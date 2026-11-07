@@ -1,0 +1,99 @@
+.pageRoot {
+  max-width: 40rem;
+  margin: 0;
+}
+
+:global(html[data-guided-tour='1']) .pageRoot {
+  padding-bottom: var(--tour-anchor-scroll-pad);
+}
+
+.tourRestartBtn {
+  scroll-margin-bottom: var(--tour-anchor-scroll-pad);
+}
+
+.pageTitle {
+  margin: 0 0 var(--space-lg);
+  font-size: var(--font-size-title-page);
+  color: var(--color-heading);
+}
+
+.section {
+  margin-top: var(--space-xl);
+  max-width: 520px;
+}
+
+.section :global(.section-heading) {
+  margin-bottom: var(--space-sm);
+}
+
+.sectionFirst {
+  margin-top: var(--space-lg);
+}
+
+.lead {
+  margin: 0;
+  font-size: var(--font-size-body);
+  line-height: 1.45;
+  color: var(--color-text-muted);
+}
+
+.section > .lead {
+  margin-bottom: var(--space-md);
+}
+
+.bodyText {
+  margin: 0;
+  font-size: var(--font-size-body);
+  line-height: 1.45;
+  color: var(--color-text-primary);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  align-items: stretch;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.row:last-child {
+  margin-bottom: 0;
+}
+
+.actionBtn {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--font-size-body);
+  line-height: 1.45;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.checkboxLabel input {
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.metaText {
+  margin: 0;
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
+.feedbackError {
+  margin: 0;
+  font-size: var(--font-size-body);
+  color: var(--color-danger);
+}

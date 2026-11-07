@@ -1,0 +1,55 @@
+/*
+ * Общие классы детальной карточки специалиста, используемые сразу несколькими
+ * секциями (emptyHint, fetchingHint, fieldPlaceholder, fieldInputReadonly) и
+ * danger-зоной самой модалки (specialistDangerZone, deleteSpecialistBtn).
+ *
+ * Специфичные стили секций вынесены в отдельные модули:
+ *   SpecialistProfileFields.module.css — профиль
+ *   SpecialistManagers.module.css       — менеджеры
+ *   SpecialistLinks.module.css          — ссылки
+ *   SpecialistNotes.module.css          — комментарии
+ *   SpecialistJira.module.css           — Jira
+ */
+
+/* Readonly поля — стилизованы как form-input, но не кликабельны */
+.fieldInputReadonly {
+  color: var(--color-text-secondary);
+  cursor: default;
+  opacity: 0.85;
+  user-select: text;
+}
+
+.fieldPlaceholder {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+/* Вспомогательные подсказки (вместо inline-стиилей) */
+.emptyHint {
+  font-size: var(--font-size-small);
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.fetchingHint {
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+
+/* Danger-зона модалки (удаление специалиста из портала) */
+.deleteSpecialistBtn {
+  color: var(--color-danger);
+  border-color: color-mix(in srgb, var(--color-danger) 55%, var(--color-border));
+}
+
+.deleteSpecialistBtn:hover:not(:disabled) {
+  background: var(--color-bg-danger-soft);
+  color: var(--color-danger);
+}
+
+.specialistDangerZone {
+  margin-top: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-border);
+}

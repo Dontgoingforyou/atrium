@@ -1,0 +1,245 @@
+.overlayRoot {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-popover);
+  pointer-events: none;
+}
+
+.overlayRootInteractive {
+  pointer-events: auto;
+}
+
+:global([data-tour-reveal] [data-tour-hover-action]),
+:global([data-tour-hover-action][data-tour-reveal]) {
+  opacity: 1 !important;
+}
+
+:global([data-guided-tour='1'] [data-ctx-message-menu]),
+:global([data-guided-tour='1'] [data-tour-chat-ctx-menu]) {
+  z-index: calc(var(--z-popover) + 1000) !important;
+}
+
+.spotlightRoot {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.dimPanel {
+  position: absolute;
+  background: rgb(15 23 42 / 0.45);
+  pointer-events: none;
+}
+
+/* Вырез + затемнение через box-shadow — без щелей 4-панельного dim. */
+.holeCutout {
+  position: absolute;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-accent);
+  box-sizing: border-box;
+  box-shadow: 0 0 0 9999px rgb(15 23 42 / 0.45);
+  background: transparent;
+  pointer-events: none;
+  transition:
+    top 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    left 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    height 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.popover {
+  position: fixed;
+  z-index: calc(var(--z-popover) + 1);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  /* 400px совпадает с POPOVER_W в guidedTourLayout.ts */
+  width: min(400px, calc(100vw - var(--space-2xl)));
+  max-width: calc(100vw - var(--space-2xl));
+  max-height: min(360px, calc(100vh - var(--space-2xl)));
+  overflow: hidden;
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-elevated);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-elev-4);
+  font-family: var(--font-family);
+  pointer-events: auto;
+  transition:
+    top 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    left 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.22s ease,
+    transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  transform: translateY(6px) scale(0.98);
+}
+
+.popoverVisible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.popoverHidden {
+  opacity: 0;
+  transform: translateY(6px) scale(0.98);
+  pointer-events: none;
+}
+
+.popoverContent {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+  animation: tourContentIn 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.popoverScroll {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  flex: 1 1 auto;
+}
+
+@keyframes tourContentIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.popoverTitle {
+  margin: 0 0 var(--space-sm);
+  font-size: var(--font-size-b2);
+  font-weight: var(--font-weight-heading);
+  color: var(--color-heading);
+}
+
+.popoverBody {
+  margin: 0 0 var(--space-md);
+  min-width: 0;
+  font-size: var(--font-size-body);
+  line-height: 1.45;
+  white-space: pre-line;
+  color: var(--color-text-primary);
+}
+
+.popoverProgress {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--font-size-caption);
+  color: var(--color-text-muted);
+}
+
+.popoverHint {
+  margin: 0 0 var(--space-compact);
+  font-size: var(--font-size-caption);
+  line-height: 1.35;
+  color: var(--color-text-muted);
+}
+
+.popoverActions {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  gap: var(--space-xs);
+  align-items: center;
+}
+
+.popoverActions button {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.popoverActionsSpacer {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-popover);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-lg);
+  background: rgb(15 23 42 / 0.55);
+  animation: tourBackdropIn 0.22s ease;
+}
+
+.modalCard {
+  width: min(420px, calc(100vw - var(--space-2xl)));
+  max-width: calc(100vw - var(--space-2xl));
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  background: var(--color-bg-elevated);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-elev-4);
+  font-family: var(--font-family);
+  animation: tourModalIn 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes tourBackdropIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes tourModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modalTitle {
+  margin: 0 0 var(--space-compact);
+  font-size: var(--font-size-h4);
+  font-weight: var(--font-weight-heading);
+  color: var(--color-heading);
+}
+
+.modalBody {
+  margin: 0 0 var(--space-lg);
+  font-size: var(--font-size-body);
+  line-height: 1.5;
+  color: var(--color-text-primary);
+}
+
+.modalActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: flex-end;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .holeCutout,
+  .popover,
+  .popoverContent,
+  .modalBackdrop,
+  .modalCard {
+    transition: none;
+    animation: none;
+  }
+
+  .popoverVisible,
+  .popoverHidden {
+    transform: none;
+  }
+}

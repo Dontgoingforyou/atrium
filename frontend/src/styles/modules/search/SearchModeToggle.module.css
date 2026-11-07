@@ -1,0 +1,35 @@
+/* Общий переключатель режима поиска (fulltext/semantic) — шапка и страница.
+   Размерные отличия задаются классами-модификаторами в каждом потребителе. */
+
+.modeToggle {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.modeBtn {
+  border: 1px solid var(--color-search-action-muted-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-search-action-muted-bg);
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--color-search-action-muted-fg);
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.modeBtn:hover:not(.modeBtnActive) {
+  background: var(--color-search-action-muted-hover-bg);
+  border-color: var(--color-search-action-muted-border);
+  color: var(--color-search-action-muted-fg);
+}
+
+.modeBtnActive {
+  background: var(--color-search-action-bg);
+  color: var(--color-search-action-fg);
+  border-color: var(--color-search-action-bg);
+}
+
+.modeBtn:focus-visible {
+  outline: 2px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}

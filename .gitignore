@@ -1,0 +1,78 @@
+# Cursor: локальные настройки не коммитить; правила — да
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**
+
+# Легаси под docs/ — не коммитить; Softgen product/api — в репозитории
+docs/*
+!docs/product/
+!docs/product/**
+!docs/api/
+!docs/api/**
+
+# Python
+.venv/
+.venv-ci/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.tmp/
+backend/pytest-of-*/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+build/
+
+# Локальные дампы бенч с персональными данными
+backend/app/portal_bench/data/*.local.json
+
+# Переменные окружения и секреты
+.env
+.env.local
+.env.*.local
+*.env
+!.env.example
+!**/.env.example
+.env.staging
+.env.production
+CREDENTIALS.env
+tests/integration/.env
+
+# Node (SPA)
+node_modules/
+
+# Playwright integration (стенд)
+tests/reports/
+tests/integration/test-results/
+tests/integration/playwright-report/
+tests/integration/blob-report/
+tests/integration/.auth/
+
+# IDE и редакторы
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ОС
+.DS_Store
+Thumbs.db
+
+# Логи и отчёты покрытия
+*.log
+htmlcov/
+.coverage
+coverage.xml
+coverage/
+frontend/coverage/
+
+# Softgen: локальный кеш и редирект-заглушка (конфиг в .softgen/)
+.softgen/
+/config.json
+
+# AmneziaWG-клиент для Telegram (секреты только на сервере)
+deploy/awg/*.conf
+!deploy/awg/*.conf.example
+!deploy/awg/wg0.conf.example

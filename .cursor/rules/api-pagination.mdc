@@ -1,0 +1,108 @@
+---
+description: Стандарт постраничных ответов API (пагинация)
+globs: "**/*.py"
+alwaysApply: false
+---
+
+# Пагинация API — соглашения
+
+## Когда применять
+
+**Обязательно** — для любого list-эндпоинта, если потенциальное число строк **> 100** (рост со временем).
+**Не обязательно** (допустим `list[T]` без обёртки) — если набор заведомо ограничен (статусы, роли,
+участники одного чата, теги документа и т.п. ≤ 100 элементов; сделать явный комментарий в роутере).
+
+## Стандартная обёртка `PagedResponse[T]`
+
+Для list-эндпоинтов с пагинацией использовать общую схему из `app/schemas/pagination.py`:
+
+```python
+# app/schemas/pagination.py
+from __future__ import annotations
+from pydantic import BaseModel, Field
+
+class PagedResponse[T](BaseModel):
+    """Стандартный постраничный ответ API."""
+    items: list[T]
+    total: int = Field(description="Общее число записей (без пагинации)")
+    skip: int = Field(description="Смещение текущей страницы")
+    limit: int = Field(description="Размер страницы")
+```
+
+Синтаксис обобщённых классов — PEP 695 (Python 3.12), без `TypeVar`/`typing.Generic`.
+
+Пример роутера:
+
+```python
+@router.get("/portal/documents", response_model=PagedResponse[PortalDocumentRead])
+async def list_documents(
+    user: CurrentUser,
+    db: DbSession,
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=50, ge=1, le=200),
+) -> PagedResponse[PortalDocumentRead]:
+    items, total = await svc.list_documents(db, user, skip=skip, limit=limit)
+    return PagedResponse(items=items, total=total, skip=skip, limit=limit)
+```
+
+## Два режима пагинации
+
+### Limit / Offset (по умолчанию)
+
+Использовать для: таблиц с сортировкой, поиска, административных списков.
+
+```python
+stmt = select(Entity).order_by(Entity.created_at.desc()).offset(skip).limit(limit)
+```
+
+- Параметры: `skip: int = Query(ge=0)`, `limit: int = Query(ge=1, le=<max>)`
+- Максимальный `limit` устанавливается в роутере (`le=200`); типичный дефолт — 50 или 100.
+- Для `total` — отдельный `select(func.count())` с теми же фильтрами (без `.offset/.limit`).
+
+### Keyset / Cursor (для бесконечной прокрутки)
+
+Использовать для: ленты сообщений, уведомлений, активности — там, где пользователь «скроллит вниз»
+и важна стабильность позиции при вставке новых записей.
+
+```python
+# before_id: UUID последнего загруженного элемента
+stmt = select(Message).where(
+    Message.created_at < anchor_dt,
+).order_by(Message.created_at.desc()).limit(limit)
+```
+
+Ответ не содержит `total` — вместо этого поле `next_cursor: str | None` (опционально).
+
+## Чего не делать
+
+- **Запрещено** возвращать `list[T]` без пагинации для эндпоинтов с неограниченным ростом данных
+  (история сообщений, список документов, список задач и т.п.).
+- **Запрещено** `limit=10000` или отсутствие ограничения — всегда задавать `le=<max>` в `Query`.
+- **Запрещено** делать `SELECT *` без `LIMIT` и оборачивать результат в `PagedResponse` «для вида» —
+  тогда `items` всё равно содержит все строки, а `total` бессмысленен.
+
+## Индексы
+
+Столбцы, используемые в `ORDER BY` для пагинации (`created_at`, `updated_at`, `id`), должны
+быть индексированы. Добавлять индексы через миграции Alembic при вводе нового list-эндпоинта.
+
+## Текущие эндпоинты чата, задач и уведомлений (исключение из правила `PagedResponse`)
+
+Чат-эндпоинты (`/portal/chats`, `/portal/chats/{id}/messages`), collab-списки
+(`/portal/tasks`, `/portal/agreements`, `/portal/notifications`, история и комментарии задачи),
+списки документа (`GET .../history`, `GET .../comments`, `GET .../children`)
+избранное (`GET /portal/favorites`)
+часть финансов (`GET /portal/finance/contracts`, `.../invoices`, `.../payments`, `.../procurement-requests`, `.../counterparties`)
+и обучение (`GET /portal/learning/materials`, `.../checklists`, `.../quizzes`)
+возвращают `list[T]` при клиентских `skip`/`limit` — осознанное упрощение контракта SPA.
+`total` в обёртке `PagedResponse` не отдаём, чтобы не ломать фронт. Часть этих списков
+(задачи, уведомления, обучающие материалы) объективно растёт без верхней границы «по смыслу
+сущности» (не ограничена ролями/статусами) — тем не менее решение то же самое: жёсткий `le=500`
+в `Query` как страховка от неограниченной выборки, без `PagedResponse`/`total`, пока в UI нет
+постраничной навигации. При появлении постраничной навигации в UI перевести на `PagedResponse`.
+Дерево навигации (`GET /portal/navigation-tree`) — не list: capped snapshot с `LIMIT` в SQL
+(`_MAX_NAV_TREE_DOCS`), без `skip`/`limit` в query и без `PagedResponse`.
+Column-export задач — отдельный TXT с жёстким LIMIT в сервисе, не list-API.
+Доска и заметки специалистов (`GET /portal/specialists/board`, `GET .../notes`) —
+`list[T]` + SQL safety cap в сервисе (доска менеджера мала; directory/notes могут вырасти),
+без `PagedResponse`, чтобы не ломать SPA.

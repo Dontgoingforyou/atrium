@@ -1,0 +1,18 @@
+.avatarRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  margin-top: var(--space-sm);
+}
+
+.avatarHint {
+  margin: var(--space-xs) 0 0;
+}
+
+.changeBtn {
+  margin-top: var(--space-sm);
+}
+
+.hiddenFileInput {
+  display: none;
+}

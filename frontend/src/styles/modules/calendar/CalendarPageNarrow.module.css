@@ -1,0 +1,130 @@
+.calendarsToggle {
+  display: none;
+}
+
+.calendarsBlock,
+.calendarsPanel,
+.calendarsPanelInner {
+  display: contents;
+}
+
+@media (max-width: 768px) {
+  .calendarsBlock {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    gap: var(--space-sm);
+  }
+
+  .calendarsToggle {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    min-height: 32px;
+    padding: 0 var(--space-md);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-bg-surface);
+    color: var(--color-text-primary);
+    font: inherit;
+    font-size: var(--font-size-small);
+    cursor: pointer;
+  }
+
+  .calendarsToggle:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+
+  .calendarsPanel {
+    display: grid;
+    grid-template-rows: 0fr;
+    min-width: 0;
+    transition: grid-template-rows 0.22s ease;
+  }
+
+  .calendarsPanelOpen {
+    grid-template-rows: 1fr;
+  }
+
+  .calendarsPanelInner {
+    display: block;
+    overflow: hidden;
+    min-height: 0;
+    min-width: 0;
+  }
+
+  .toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 0;
+  }
+
+  .toolbarLeft {
+    flex-wrap: wrap;
+    min-width: 0;
+  }
+
+  .toolbarRight {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .monthLabel {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .createEventBtn {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .peerPicker,
+  .searchWrap {
+    flex: 1 1 100%;
+    max-width: none;
+    min-width: 0;
+  }
+
+  .grid {
+    grid-auto-rows: minmax(2.75rem, auto);
+  }
+
+  .dayCell:not(.dayCellExpanded) .dayEvents {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    gap: var(--space-xs);
+  }
+
+  .dayCell:not(.dayCellExpanded) .eventChip {
+    width: 0.5rem;
+    height: 0.5rem;
+    min-height: 0;
+    padding: 0;
+    border-radius: 999px;
+    font-size: 0;
+    line-height: 0;
+    flex: 0 0 auto;
+  }
+
+  .dayCell:not(.dayCellExpanded) .dayMore {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 768px) and (prefers-reduced-motion: reduce) {
+  .calendarsPanel {
+    transition: none;
+  }
+}

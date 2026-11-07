@@ -1,0 +1,293 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap');
+
+:root {
+  --cosmolet-font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --cosmolet-accent: #6131cf;
+  --cosmolet-accent-hover: #49239f;
+  --cosmolet-on-accent: #fefefc;
+  --cosmolet-text: #1e293b;
+  --cosmolet-text-muted: #64748b;
+  --cosmolet-surface-hover: #f1f5f9;
+
+  --tblr-primary: #6131cf;
+  --tblr-primary-rgb: 97, 49, 207;
+  --bs-primary: #6131cf;
+  --bs-primary-rgb: 97, 49, 207;
+}
+
+body,
+.page,
+.antialiased {
+  font-family: var(--cosmolet-font-family);
+  color: var(--cosmolet-text);
+}
+
+.page-title,
+.navbar-brand h3 {
+  font-family: var(--cosmolet-font-family);
+  font-weight: 600;
+  color: var(--cosmolet-accent);
+}
+
+/* Tabler центрирует бренд — выравниваем влево, как меню и логотип портала */
+.navbar-vertical.navbar-expand-md .navbar-brand,
+.navbar-vertical.navbar-expand-lg .navbar-brand {
+  justify-content: flex-start;
+  filter: none;
+}
+
+/* autodark инвертирует SVG в белую — оставляем цветную иконку портала */
+.theme-dark .navbar-brand-autodark,
+.theme-dark-auto .navbar-brand-autodark {
+  filter: none;
+}
+
+.navbar-brand a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  filter: none;
+}
+
+.navbar-brand .admin-brand-icon {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  filter: none;
+}
+
+.navbar-brand h3 {
+  margin: 0;
+}
+
+/* Primary CTA — единственное место с заливкой акцентом */
+.btn-primary {
+  --bs-btn-bg: var(--cosmolet-accent) !important;
+  --bs-btn-border-color: var(--cosmolet-accent) !important;
+  --bs-btn-hover-bg: var(--cosmolet-accent-hover) !important;
+  --bs-btn-hover-border-color: var(--cosmolet-accent-hover) !important;
+  --bs-btn-active-bg: var(--cosmolet-accent-hover) !important;
+  --bs-btn-active-border-color: var(--cosmolet-accent-hover) !important;
+  --bs-btn-color: var(--cosmolet-on-accent) !important;
+  --bs-btn-hover-color: var(--cosmolet-on-accent) !important;
+  --bs-btn-active-color: var(--cosmolet-on-accent) !important;
+  background-color: var(--cosmolet-accent) !important;
+  border-color: var(--cosmolet-accent) !important;
+  color: var(--cosmolet-on-accent) !important;
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus-visible {
+  background-color: var(--cosmolet-accent-hover) !important;
+  border-color: var(--cosmolet-accent-hover) !important;
+  color: var(--cosmolet-on-accent) !important;
+}
+
+/* Мышь: не оставлять hover-цвет после клика (липкий :focus) */
+.btn-primary:focus:not(:focus-visible) {
+  background-color: var(--cosmolet-accent) !important;
+  border-color: var(--cosmolet-accent) !important;
+  color: var(--cosmolet-on-accent) !important;
+  box-shadow: none;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--cosmolet-accent);
+  box-shadow: 0 0 0 0.2rem rgb(97 49 207 / 0.15);
+}
+
+/*
+ * Сайдбар: Tabler navbar-dark на светлом фоне даёт бледный текст при hover.
+ * Явно тёмный текст + читаемый hover; active — без заливки (только цвет/вес).
+ */
+.navbar-vertical .nav-link,
+.navbar-vertical .nav-link-title,
+.navbar-vertical .dropdown-item {
+  color: var(--cosmolet-text) !important;
+}
+
+.navbar-vertical .nav-link-icon,
+.navbar-vertical .nav-link-icon i,
+.navbar-vertical .nav-link .icon {
+  color: var(--cosmolet-text-muted) !important;
+}
+
+.navbar-vertical .nav-link:hover,
+.navbar-vertical .nav-link:focus-visible,
+.navbar-vertical .dropdown-item:hover,
+.navbar-vertical .dropdown-item:focus-visible {
+  color: var(--cosmolet-text) !important;
+  background-color: var(--cosmolet-surface-hover) !important;
+}
+
+.navbar-vertical .nav-link:focus:not(:focus-visible),
+.navbar-vertical .dropdown-item:focus:not(:focus-visible) {
+  background-color: transparent !important;
+  box-shadow: none;
+}
+
+.navbar-vertical .nav-link:hover .nav-link-icon,
+.navbar-vertical .nav-link:hover .nav-link-icon i,
+.navbar-vertical .nav-link:hover .icon,
+.navbar-vertical .nav-link:focus-visible .nav-link-icon,
+.navbar-vertical .nav-link:focus-visible .nav-link-icon i,
+.navbar-vertical .nav-link:focus-visible .icon,
+.navbar-vertical .dropdown-item:hover .nav-link-icon,
+.navbar-vertical .dropdown-item:focus-visible .nav-link-icon {
+  color: var(--cosmolet-accent) !important;
+}
+
+.navbar-vertical .nav-link.active,
+.navbar-vertical .dropdown-item.active,
+.navbar-vertical .dropdown-item:active {
+  color: var(--cosmolet-accent) !important;
+  background-color: transparent !important;
+  font-weight: 600;
+}
+
+.navbar-vertical .nav-link.active:hover,
+.navbar-vertical .dropdown-item.active:hover {
+  background-color: var(--cosmolet-surface-hover) !important;
+}
+
+.navbar-vertical .nav-link.active .nav-link-icon,
+.navbar-vertical .nav-link.active .nav-link-icon i,
+.navbar-vertical .nav-link.active .icon,
+.navbar-vertical .dropdown-item.active .nav-link-icon {
+  color: var(--cosmolet-accent) !important;
+}
+
+/* Таблица/ссылки контента — обычный цвет текста, не заливка акцентом */
+.page-wrapper a:not(.btn):not(.page-link) {
+  color: var(--cosmolet-text);
+}
+
+.page-wrapper a:not(.btn):not(.page-link):hover {
+  color: var(--cosmolet-accent);
+}
+
+.table a {
+  color: var(--cosmolet-text) !important;
+  text-decoration: none;
+}
+
+.table a:hover {
+  color: var(--cosmolet-accent) !important;
+  text-decoration: underline;
+}
+
+/* Список: перенос длинных ячеек вместо горизонтального скролла */
+.table.card-table td,
+.table.card-table th {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* Иконки действий в строках — приглушённые, не сплошной фиолет */
+.table .btn-icon,
+.table a.btn,
+.me-1.text-decoration-none {
+  color: var(--cosmolet-text-muted) !important;
+}
+
+.table .btn-icon:hover,
+.table a.btn:hover,
+.me-1.text-decoration-none:hover {
+  color: var(--cosmolet-accent) !important;
+}
+
+/* Пагинация: видимые кнопки с рамкой */
+.pagination .page-link {
+  color: var(--cosmolet-text) !important;
+  background-color: #fff !important;
+  border: 1px solid #cbd5e1 !important;
+  min-width: 2.25rem;
+  text-align: center;
+}
+
+.pagination .page-link:hover {
+  color: var(--cosmolet-accent) !important;
+  background-color: var(--cosmolet-surface-hover) !important;
+  border-color: var(--cosmolet-accent) !important;
+}
+
+.pagination .page-item.active .page-link {
+  color: var(--cosmolet-on-accent) !important;
+  background-color: var(--cosmolet-accent) !important;
+  border-color: var(--cosmolet-accent) !important;
+}
+
+.pagination .page-item.disabled .page-link {
+  color: #94a3b8 !important;
+  background-color: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+.navbar-vertical.navbar-expand-md,
+.navbar-vertical.navbar-expand-lg {
+  width: 16rem;
+}
+
+.navbar-expand-md.navbar-vertical ~ .page-wrapper,
+.navbar-expand-lg.navbar-vertical ~ .page-wrapper {
+  margin-left: 16rem;
+}
+
+.page-wrapper > .container-fluid,
+.page-wrapper .page-body > .container-fluid {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.navbar-vertical.navbar-expand-md > .container-fluid,
+.navbar-vertical.navbar-expand-lg > .container-fluid {
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.navbar-vertical .nav-item,
+.navbar-vertical .nav-link,
+.navbar-vertical .nav-link-title {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.navbar-vertical.navbar-expand-md .navbar-collapse .navbar-nav .nav-link,
+.navbar-vertical.navbar-expand-lg .navbar-collapse .navbar-nav .nav-link {
+  white-space: normal;
+  align-items: center;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.navbar-vertical .nav-link-title {
+  flex: 1;
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+/* Tabler: caret у правого края колонки; не прижимать к тексту */
+.navbar-vertical.navbar-expand-md .navbar-collapse .navbar-nav .dropdown-toggle::after,
+.navbar-vertical.navbar-expand-lg .navbar-collapse .navbar-nav .dropdown-toggle::after {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.navbar-vertical .admin-exit-form {
+  margin: 0.75rem 0 0;
+  width: 100%;
+  padding: 0;
+}
+
+.navbar-vertical .admin-exit-form .btn {
+  width: 100%;
+  max-width: none;
+  justify-content: center;
+}

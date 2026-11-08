@@ -63,7 +63,7 @@ export async function dismissRunningTourOrHint(page: Page, timeoutMs = 8_000): P
 /**
  * Закрыть welcome guided tour, если он автостартовал.
  * Иначе smoke-клики по сайдбару упираются в modalBackdrop.
- * После пройденного тура всё равно закрываем контекстные плашки (AUTASKS-344).
+ * После пройденного тура всё равно закрываем контекстные плашки (TASKS-344).
  */
 export async function dismissGuidedTourAfterPrefs(
   page: Page,
@@ -122,7 +122,7 @@ async function markGuidedTourCompletedInBrowser(page: Page): Promise<boolean> {
   return page.evaluate(async () => {
     let clientId = "";
     try {
-      const raw = localStorage.getItem("cosmolet-auth");
+      const raw = localStorage.getItem("atrium-auth");
       if (raw) {
         const parsed = JSON.parse(raw) as { state?: { oauthClientId?: string | null } };
         clientId = parsed.state?.oauthClientId?.trim() ?? "";

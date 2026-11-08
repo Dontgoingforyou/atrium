@@ -70,7 +70,7 @@ class PresenceBeaconBody(BaseModel):
 class AvatarUploadRead(BaseModel):
     """Результат загрузки аватара текущего пользователя."""
 
-    avatar_url: str | None = Field(default=None, description="Signed proxy URL фото из Effective Admin")
+    avatar_url: str | None = Field(default=None, description="Signed proxy URL фото из сервиса профилей")
     avatar_focal_x: float | None = Field(
         default=None,
         description="Устарело: фокус кадра больше не используется для user-аватара",

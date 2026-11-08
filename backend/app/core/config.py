@@ -12,7 +12,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    app_name: str = "Cosmolet API"
+    app_name: str = "Atrium API"
     debug: bool = Field(
         default=False,
         description="Режим отладки: отключает строгие проверки секретов и разрешает HTTP для admin cookie",
@@ -24,7 +24,7 @@ class Settings(BaseSettings):
             "(DOCS_ENABLED=false): с WAN не должно быть UI и спецификации"
         ),
     )
-    database_url: str = "postgresql+asyncpg://user:password@localhost:5432/cosmolet"
+    database_url: str = "postgresql+asyncpg://user:password@localhost:5432/atrium"
     cors_origins: str = "http://127.0.0.1:5173,http://localhost:5173"
     log_level: str = "INFO"
     sqlalchemy_echo: bool = Field(
@@ -82,7 +82,7 @@ class Settings(BaseSettings):
     )
     calendar_kafka_topic: str = Field(default="calendar", description="Топик фактов календаря")
     calendar_kafka_group: str = Field(
-        default="cosmolet-calendar",
+        default="atrium-calendar",
         description="Группа читателя фактов календаря",
     )
 
@@ -175,20 +175,20 @@ class Settings(BaseSettings):
         default=604800,
         description="TTL presigned URL для аватарок групп чата в MinIO (по умолчанию 7 дней)",
     )
-    effective_admin_base_url: str = Field(
+    profile_directory_base_url: str = Field(
         default="",
-        description="Базовый URL Effective Admin (фото сотрудников); пусто — интеграция выключена",
+        description="Базовый URL сервиса профилей (фото сотрудников); пусто — интеграция выключена",
     )
-    effective_admin_service_token: str = Field(
+    profile_directory_service_token: str = Field(
         default="",
         description=(
-            "Сервисный Bearer Effective Admin: чужие фото и POST /api/v1/emails/check. "
+            "Сервисный Bearer сервиса профилей: чужие фото и POST /api/v1/emails/check. "
             "Пусто — фото только с токеном пользователя, сверка почт выключена"
         ),
     )
-    effective_admin_timeout_seconds: float = Field(
+    profile_directory_timeout_seconds: float = Field(
         default=15.0,
-        description="Таймаут HTTP к Effective Admin photo API (секунды)",
+        description="Таймаут HTTP к сервису профилей photo API (секунды)",
     )
     user_photo_url_ttl_seconds: int = Field(
         default=3600,
@@ -466,8 +466,11 @@ class Settings(BaseSettings):
         default="",
         description="Personal Access Token Jira; только в окружении",
     )
-    jira_project_key: str = Field(default="BASE", description="Ключ проекта Jira (База сотрудников)")
-    jira_board_id: int = Field(default=68, description="ID доски Jira (rapidView)")
+    jira_project_key: str = Field(
+        default="",
+        description="Ключ проекта Jira для карточек специалистов. Пусто — проверка ключа выключена",
+    )
+    jira_board_id: int = Field(default=0, description="ID доски Jira специалистов (rapidView). 0 — не задан")
     jira_webhook_secret: str = Field(
         default="",
         description="Секрет webhook Jira; только в окружении",
@@ -488,16 +491,16 @@ class Settings(BaseSettings):
         description="Debounce webhook по issue_key (секунды)",
     )
     jira_tasks_project_key: str = Field(
-        default="AUTASKS",
-        description="Ключ Jira-проекта для зеркала задач портала (outbound)",
+        default="",
+        description="Ключ Jira-проекта для зеркала задач портала (outbound). Пусто — не задан",
     )
     jira_tasks_board_id: int = Field(
-        default=86,
-        description="ID доски Jira задач портала (rapidView)",
+        default=0,
+        description="ID доски Jira задач портала (rapidView). 0 — не задан",
     )
     jira_tasks_sync_enabled: bool = Field(
         default=False,
-        description="Outbound Cosmolet→Jira задач; включать только на production",
+        description="Outbound Atrium→Jira задач; включать только на production",
     )
     jira_tasks_issue_type: str = Field(
         default="Задача",
@@ -551,7 +554,7 @@ class Settings(BaseSettings):
     sso_client_secret_5173: str = Field(default="")
     sso_client_id_9088: str = Field(default="", description="SSO-клиент для SPA на порту 9088 (Docker/шлюз)")
     sso_client_secret_9088: str = Field(default="")
-    sso_client_id_stage: str = Field(default="", description="SSO-клиент для stage (cosmolet.stage.*)")
+    sso_client_id_stage: str = Field(default="", description="SSO-клиент для stage (atrium.stage.*)")
     sso_client_secret_stage: str = Field(default="")
     sso_client_id_prod: str = Field(default="", description="SSO-клиент для production-хоста")
     sso_client_secret_prod: str = Field(default="")
@@ -713,16 +716,16 @@ class Settings(BaseSettings):
 
     @property
     def jira_tasks_outbound_enabled(self) -> bool:
-        """Live/backfill задач в AUTASKS: нужен флаг + настроенный Jira."""
+        """Live/backfill задач в TASKS: нужен флаг + настроенный Jira."""
         return self.jira_tasks_sync_enabled and self.jira_enabled
 
     @property
-    def effective_admin_photos_enabled(self) -> bool:
-        return bool(self.effective_admin_base_url.strip())
+    def profile_directory_photos_enabled(self) -> bool:
+        return bool(self.profile_directory_base_url.strip())
 
     @property
-    def effective_admin_emails_check_enabled(self) -> bool:
-        return bool(self.effective_admin_base_url.strip() and self.effective_admin_service_token.strip())
+    def profile_directory_emails_check_enabled(self) -> bool:
+        return bool(self.profile_directory_base_url.strip() and self.profile_directory_service_token.strip())
 
     def jira_browse_url(self, issue_key: str) -> str:
         base = self.jira_base_url.rstrip("/")
@@ -737,10 +740,9 @@ class Settings(BaseSettings):
         """Сообщение для HTTP 503, если SSO выключен (sso_enabled ложен)."""
         if not self.sso_client_credential_pairs():
             return (
-                "SSO не настроен: нет полной пары client_id/client_secret "
-                "(SSO_CLIENT_ID или SSO_CLIENT_ID_5173 / _9088 / _STAGE / _PROD)."
+                "Внешний вход не настроен: нет пары client_id и client_secret."
             )
-        return "SSO не настроен: задайте SSO_SERVICE_URL."
+        return "Внешний вход не настроен: не задан адрес шлюза."
 
     def effective_redis_url(self) -> str:
         """URL для подключения к Redis с учётом ``REDIS_PASSWORD``."""

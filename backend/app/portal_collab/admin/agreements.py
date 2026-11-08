@@ -6,7 +6,7 @@ from sqladmin import ModelView
 from wtforms.validators import DataRequired
 
 from app.admin.formatters import fmt_agreement_status, fmt_datetime
-from app.admin.model_converter import CosmoletAdminModelConverter
+from app.admin.model_converter import AtriumAdminModelConverter
 from app.admin.sqladmin_categories import SQLADMIN_CATEGORY_FINANCE
 from app.infrastructure.db.models.portal_agreement import PortalAgreement
 from app.infrastructure.db.models.portal_chat import PortalChatMessage
@@ -40,7 +40,7 @@ class PortalAgreementAdmin(ModelView, model=PortalAgreement):
     category = SQLADMIN_CATEGORY_FINANCE
     category_icon = "fa-solid fa-landmark"
 
-    form_converter = CosmoletAdminModelConverter
+    form_converter = AtriumAdminModelConverter
     form_excluded_columns = [
         "created_by_profile",
         "created_by_sub",

@@ -186,7 +186,7 @@ def _to_pdf(entries: list[PortalTimeEntry], display_label: str, month: str) -> b
 
     # Создаём собственный стиль вместо мутации глобального getSampleStyleSheet().
     style_normal = ParagraphStyle(
-        name="CosmoletNormal",
+        name="AtriumNormal",
         fontName=font_name,
         fontSize=10,
         leading=14,
@@ -258,7 +258,7 @@ async def export_specialist_time_entries(
     - менеджер может указать user_sub;
     - admin — любой.
 
-    Выборка без пагинации обоснована: это admin-export конкретного месяца (fastapi-backend.mdc).
+    Выборка без пагинации обоснована: это admin-export конкретного месяца.
     """
     ensure_timesheets_access(user)
 

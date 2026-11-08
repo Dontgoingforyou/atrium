@@ -1,5 +1,5 @@
 {
-  "name": "cosmolet-tests-integration",
+  "name": "atrium-tests-integration",
   "private": true,
   "type": "module",
   "scripts": {

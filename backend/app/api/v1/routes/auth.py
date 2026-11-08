@@ -20,6 +20,17 @@ from app.schemas.auth import (
     TokenResponse,
 )
 from app.services.auth_cookies import get_refresh_token_from_request, set_refresh_cookie
+from app.services.demo_accounts import (
+    DEMO_GROUPS_CLAIM,
+    DEMO_OAUTH_CLIENT_ID,
+    DemoAccount,
+    DemoTokenInvalid,
+    authenticate_demo,
+    demo_login_known,
+    demo_signing_secret,
+    issue_demo_tokens,
+    read_demo_refresh_account,
+)
 from app.services.sso.client_resolver import (
     SsoCredentialsNotFoundError,
     resolve_sso_credentials_for_client_id,
@@ -37,10 +48,7 @@ from app.services.user_profile import build_user_public
 
 logger = logging.getLogger(__name__)
 
-_SSO_UNAVAILABLE = (
-    "Сервис аутентификации (SSO) временно недоступен. "
-    "Проверьте, что из контейнера API достижим SSO_SERVICE_URL, и повторите."
-)
+_SSO_UNAVAILABLE = "Сервис входа временно недоступен. Повторите попытку через минуту."
 # Fallback TTL токена, если SSO-шлюз не вернул expires_in.
 _DEFAULT_TOKEN_EXPIRES_IN = 1800
 
@@ -76,7 +84,7 @@ def _token_grant_response(
     """Собирает JSON-ответ из payload и, при наличии refresh-токена, ставит httpOnly cookie.
 
     Возвращается ``JSONResponse`` напрямую (а не через ``response_model``): refresh-токен
-    уходит клиенту только через ``Set-Cookie`` (security.mdc), поэтому тело ответа и cookie
+    уходит клиенту только через ``Set-Cookie``, поэтому тело ответа и cookie
     собираются здесь одной функцией — переиспользуется в password_login/token_exchange/refresh_token.
     """
     resp = JSONResponse(content=payload.model_dump())
@@ -101,7 +109,7 @@ def _resolve_refresh_client_credentials(body: RefreshTokenRequest, s: Settings) 
             return resolve_sso_credentials_for_client_id(only, s)
         except SsoCredentialsNotFoundError as e:
             raise ServiceUnavailableError(s.sso_disabled_detail) from e
-    raise BadRequestError("Укажите client_id (в окружении задано несколько SSO-клиентов)")
+    raise BadRequestError("Укажите client_id")
 
 
 @router.get(
@@ -128,7 +136,7 @@ async def authorization_url(
     try:
         oauth_client_id, _ = resolve_sso_credentials_for_redirect(redirect_uri, s)
     except SsoCredentialsNotFoundError:
-        raise BadRequestError("Нет учётных данных SSO для этого redirect_uri; задайте пару в .env") from None
+        raise BadRequestError("Внешний вход не настроен для этого адреса") from None
     params = {
         "client_id": oauth_client_id,
         "response_type": "code",
@@ -158,9 +166,24 @@ def _resolve_password_login_redirect_uri(body: PasswordLoginRequest, s: Settings
     raise BadRequestError("Укажите redirect_uri")
 
 
+async def _demo_login_response(account: DemoAccount, db: DbSession, s: Settings) -> JSONResponse:
+    access, refresh, expires_in, claims = issue_demo_tokens(account, demo_signing_secret(s))
+    user = await build_user_public(db, claims, groups_claim_path=DEMO_GROUPS_CLAIM)
+    ensure_portal_login_allowed(user, s)
+    payload = TokenResponse(
+        access_token=access,
+        refresh_token=None,
+        expires_in=expires_in,
+        oauth_client_id=DEMO_OAUTH_CLIENT_ID,
+        user=user,
+        redirect_after_login="/",
+    )
+    return _token_grant_response(payload, refresh=refresh, secure=not s.debug)
+
+
 @router.post(
     "/login",
-    summary="Вход по email и паролю (прокси SSO)",
+    summary="Вход по email и паролю",
     response_model=TokenResponse,
 )
 async def password_login(
@@ -168,13 +191,19 @@ async def password_login(
     db: DbSession,
     http_client: HttpClient,
 ) -> JSONResponse:
-    _require_sso()
     s = get_settings()
+    if demo_login_known(body.email):
+        account = authenticate_demo(body.email, body.password)
+        if account is None:
+            raise UnauthorizedError("Неверный email или пароль")
+        return await _demo_login_response(account, db, s)
+
+    _require_sso()
     redirect_uri = _resolve_password_login_redirect_uri(body, s)
     try:
         oauth_client_id, _ = resolve_sso_credentials_for_redirect(redirect_uri, s)
     except SsoCredentialsNotFoundError:
-        raise BadRequestError("Нет учётных данных SSO для этого redirect_uri; задайте пару в .env") from None
+        raise BadRequestError("Внешний вход не настроен для этого адреса") from None
 
     try:
         login_status_code, raw = await login_with_password(
@@ -207,7 +236,7 @@ async def password_login(
         raise ServiceUnavailableError(_SSO_UNAVAILABLE) from exc
 
     if not gateway_payload:
-        raise UnauthorizedError("Не удалось получить профиль пользователя от SSO")
+        raise UnauthorizedError("Не удалось получить профиль пользователя")
 
     user = await build_user_public(
         db,
@@ -248,7 +277,7 @@ async def token_exchange(
     try:
         oauth_client_id, client_secret = resolve_sso_credentials_for_redirect(body.redirect_uri, s)
     except SsoCredentialsNotFoundError:
-        raise BadRequestError("Нет учётных данных SSO для этого redirect_uri; задайте пару в .env") from None
+        raise BadRequestError("Внешний вход не настроен для этого адреса") from None
     try:
         raw = await exchange_authorization_code(
             settings=s,
@@ -272,7 +301,7 @@ async def token_exchange(
         logger.warning("503: SSO userinfo недоступен (после token exchange): %s", exc)
         raise ServiceUnavailableError(_SSO_UNAVAILABLE) from exc
     if not gateway_payload or not gateway_payload.get("sub"):
-        raise UnauthorizedError("Не удалось получить профиль пользователя от SSO")
+        raise UnauthorizedError("Не удалось получить профиль пользователя")
     user = await build_user_public(
         db,
         gateway_payload,
@@ -301,11 +330,25 @@ async def refresh_token(
     body: RefreshTokenRequest,
     http_client: HttpClient,
 ) -> JSONResponse:
-    _require_sso()
     s = get_settings()
     rt = get_refresh_token_from_request(request, body.refresh_token)
     if not rt:
         raise UnauthorizedError("Refresh-токен не передан (ни в cookie 'rt', ни в теле запроса)")
+    try:
+        demo_account = read_demo_refresh_account(rt, demo_signing_secret(s))
+    except DemoTokenInvalid:
+        raise UnauthorizedError("Не удалось обновить токен") from None
+    if demo_account is not None:
+        access, new_refresh, expires_in, _claims = issue_demo_tokens(demo_account, demo_signing_secret(s))
+        payload = RefreshTokenResponse(
+            access_token=access,
+            refresh_token=None,
+            expires_in=expires_in,
+            oauth_client_id=DEMO_OAUTH_CLIENT_ID,
+        )
+        return _token_grant_response(payload, refresh=new_refresh, secure=not s.debug)
+
+    _require_sso()
     body_with_rt = body.model_copy(update={"refresh_token": rt})
     oauth_client_id, client_secret = _resolve_refresh_client_credentials(body_with_rt, s)
     try:

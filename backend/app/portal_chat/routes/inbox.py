@@ -65,7 +65,7 @@ async def inbox_websocket(
         """Фиксирует «был(а) только что» в Redis+БД и рассылает актуальный ``last_seen_at``.
 
         Без этого клиенты видят свежий ``status=offline``, но устаревший ``last_seen_at``
-        из первичной загрузки (см. general.mdc / dry.mdc — единый источник last seen:
+        из первичной загрузки (единый источник last seen:
         ``portal_presence.py`` + ``portal_last_seen.py``).
         """
         await record_presence(user_sub=user.sub, visible=False, active=False)

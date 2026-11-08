@@ -21,7 +21,7 @@
 --
 -- Запуск:
 --   docker compose -f docker-compose.staging.yml exec db \
---     psql -U cosmolet -d cosmolet_staging -f /path/to/this.sql
+--     psql -U atrium -d atrium_staging -f /path/to/this.sql
 -- =============================================================================
 
 BEGIN;

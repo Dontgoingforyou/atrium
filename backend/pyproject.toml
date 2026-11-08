@@ -3,7 +3,7 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "cosmolet-backend"
+name = "atrium-backend"
 version = "0.1.0"
 description = "Внутренний корпоративный портал — HTTP API (FastAPI)"
 readme = "README.md"

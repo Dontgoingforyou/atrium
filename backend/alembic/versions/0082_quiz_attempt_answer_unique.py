@@ -4,7 +4,7 @@ Revision ID: 0082_quiz_attempt_answer_unique
 Revises: 0081_drop_board_pref_scope_key
 Create Date: 2026-07-21
 
-Контекст: аудит app/portal_learning под обновлённые правила (services.mdc, «Гонки»).
+Один ответ попытки квиза не должен записаться дважды.
 `submit_attempt` проверяет `finished_at is None`, затем пишет ответы — без блокировки
 это допускает параллельный повторный submit одной попытки, который задваивает строки
 ответов на один и тот же вопрос. UNIQUE(attempt_id, question_id) превращает второй

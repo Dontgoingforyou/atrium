@@ -225,7 +225,7 @@ async def test_add_to_board_rejects_unknown_column_and_non_student(
             mgr,
             ManagerSpecialistAdd(specialist_sub="ghost-sub", column_key="new"),
         )
-    with pytest.raises(ValidationError, match="студента"):
+    with pytest.raises(ValidationError, match="специалиста"):
         await svc.add_to_board(
             session_with_board,
             mgr,

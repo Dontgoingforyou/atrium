@@ -12,7 +12,7 @@ export function AddColumnCard({
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const [title, setTitle] = useState('')
-  const [color, setColor] = useState('#6131cf')
+  const [color, setColor] = useState('#0f766e')
   const [excludeFromKpi, setExcludeFromKpi] = useState(false)
   const titleRef = useRef<HTMLInputElement>(null)
 
@@ -24,7 +24,7 @@ export function AddColumnCard({
   function handleCancel() {
     setIsOpen(false)
     setTitle('')
-    setColor('#6131cf')
+    setColor('#0f766e')
     setExcludeFromKpi(false)
   }
 

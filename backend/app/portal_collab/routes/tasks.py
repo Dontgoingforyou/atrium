@@ -293,7 +293,7 @@ async def list_task_history(
 
 @router.post(
     "/tasks/jira/backfill",
-    summary="Backfill задач в Jira AUTASKS (только portal_admin; jira_tasks_sync_enabled)",
+    summary="Backfill задач в Jira TASKS (только portal_admin; jira_tasks_sync_enabled)",
 )
 async def backfill_tasks_jira(
     user: CurrentUser,

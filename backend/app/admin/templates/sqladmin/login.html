@@ -30,7 +30,7 @@
             <h3 class="card-title mb-1">Панель администратора</h3>
             <p class="text-muted mb-4">
               Доступ разрешён только пользователям группы
-              <code>cosmolet_role_admin</code>
+              <code>atrium_role_admin</code>
             </p>
 
             {% set err = request.query_params.get("error") %}
@@ -46,7 +46,7 @@
                 </svg>
                 <div>
                   {% if err == "forbidden" %}
-                    Нет доступа. Войдите с аккаунтом группы <strong>cosmolet_role_admin</strong>.
+                    Нет доступа. Войдите с аккаунтом группы <strong>atrium_role_admin</strong>.
                   {% else %}
                     Ошибка входа: <code>{{ err }}</code>. Попробуйте ещё раз.
                   {% endif %}
@@ -65,7 +65,7 @@
               Войти через портал
             </a>
             <p class="text-muted small mt-3 mb-0">
-              Сначала войдите в портал с аккаунтом группы <code>cosmolet_role_admin</code>,
+              Сначала войдите в портал с аккаунтом группы <code>atrium_role_admin</code>,
               затем откроется переход в панель.
             </p>
 

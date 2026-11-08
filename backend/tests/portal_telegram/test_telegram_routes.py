@@ -22,7 +22,7 @@ async def test_bind_init_returns_code_and_url(
     assert res.status_code == 200
     data = res.json()
     assert "code" in data and data["code"].startswith("tgb_")
-    assert data["bot_url"].startswith("https://t.me/CosmoletTestBot?start=")
+    assert data["bot_url"].startswith("https://t.me/AtriumTestBot?start=")
 
 
 @pytest.mark.asyncio

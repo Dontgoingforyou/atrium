@@ -66,7 +66,7 @@ describe('readStoredOpen / persistOpen', () => {
     persistOpen('history', true)
     expect(readStoredOpen('links')).toBeUndefined()
     expect(readStoredOpen('history')).toBeUndefined()
-    expect(localStorage.getItem('cosmolet.taskDetail.panelOpen.v1')).toBeNull()
+    expect(localStorage.getItem('atrium.taskDetail.panelOpen.v1')).toBeNull()
   })
 
   it('spec-profile и произвольные панели сохраняются и читаются', () => {
@@ -81,7 +81,7 @@ describe('readStoredOpen / persistOpen', () => {
   })
 
   it('битый JSON не бросает, возвращает undefined', () => {
-    localStorage.setItem('cosmolet.taskDetail.panelOpen.v1', '{not json')
+    localStorage.setItem('atrium.taskDetail.panelOpen.v1', '{not json')
     expect(readStoredOpen('spec-profile')).toBeUndefined()
   })
 

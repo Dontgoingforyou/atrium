@@ -127,4 +127,4 @@
 
 - [../MODULES.md](../MODULES.md) — индекс модулей.
 - [../portal_chat/README.md](../portal_chat/README.md) — инбокс, события `dm_inbox_update` / `portal_notification_update`.
-- [`.cursor/rules/backend-websocket.mdc`](../../../.cursor/rules/backend-websocket.mdc) — Redis и WS (контекст инбокса).
+- Redis и WebSocket для инбокса.

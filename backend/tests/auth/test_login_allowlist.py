@@ -51,7 +51,7 @@ def test_allowlist_rejects_unknown_email() -> None:
     with pytest.raises(ForbiddenError) as exc:
         ensure_portal_login_allowed(_user(email="other@example.com"), s)
     assert exc.value.status_code == 403
-    assert exc.value.message == "Нет доступа к этому стенду"
+    assert exc.value.message == "Нет доступа"
 
 
 @pytest.mark.asyncio
@@ -89,7 +89,7 @@ async def test_verify_token_forbidden_when_email_not_in_allowlist(
     client = httpx.AsyncClient()
     with pytest.raises(ForbiddenError) as exc:
         await verify_access_token("tok", db, client)
-    assert exc.value.message == "Нет доступа к этому стенду"
+    assert exc.value.message == "Нет доступа"
     await client.aclose()
 
 
@@ -119,7 +119,7 @@ async def test_token_exchange_forbidden_when_email_not_in_allowlist(
         json={"code": "code", "redirect_uri": _CALLBACK, "code_verifier": "v" * 43},
     )
     assert response.status_code == 403
-    assert response.json()["message"] == "Нет доступа к этому стенду"
+    assert response.json()["message"] == "Нет доступа"
     assert "set-cookie" not in {k.lower() for k in response.headers}
 
 
@@ -150,5 +150,5 @@ async def test_password_login_forbidden_when_email_not_in_allowlist(
         json={"email": "other@example.com", "password": "secret", "redirect_uri": _CALLBACK},
     )
     assert response.status_code == 403
-    assert response.json()["message"] == "Нет доступа к этому стенду"
+    assert response.json()["message"] == "Нет доступа"
     assert "set-cookie" not in {k.lower() for k in response.headers}

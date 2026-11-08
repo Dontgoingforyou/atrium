@@ -183,7 +183,7 @@ export function SpecialistKanbanBoard({
     onAddColumn?.({
       key: data.status_key,
       title: data.title,
-      color: data.color ?? '#6131cf',
+      color: data.color ?? '#0f766e',
       position: displayColumns.length,
     })
   }

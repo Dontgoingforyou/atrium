@@ -13,7 +13,7 @@ class KeycloakAdminAuth(AuthenticationBackend):
 
     Пользователь сначала входит в SPA (единый OAuth PKCE и один client_id в IdP).
     Ссылка «Панель администратора» вызывает POST /api/v1/auth/admin-session с Bearer:
-    бэкенд проверяет группу cosmolet_role_admin и записывает admin_sub в сессию.
+    бэкенд проверяет группу atrium_role_admin и записывает admin_sub в сессию.
     Страница /admin/login предлагает перейти на портал для входа.
 
     SessionMiddleware — в главном приложении (единый источник сессии).

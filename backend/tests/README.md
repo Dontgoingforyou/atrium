@@ -1,8 +1,8 @@
 # Доменные чеклисты тестов
 
-Конкретные контракты по доменам и инфраструктуре: что закрывать HTTP/юнитом, какие файлы, какие кейсы. Вынесено из `.cursor/rules/testing.mdc` (там остались только принципы: пирамида, TDD, граница тестов, организация, ассерты, покрытие). Этот файл — справочник для ревью и онбординга, не cursor-rule.
+Что закрывать HTTP и юнитом, в каких файлах и какие кейсы.
 
-Общие принципы (граница тестов, запрет coverage-файлов, `dependency_overrides.clear()`, параллелизм, ассерты) — в [`.cursor/rules/testing.mdc`](../.cursor/rules/testing.mdc). При конфликте принципов и конкретного чеклиста — принцип приоритетнее.
+Граница тестов: не подменять `dependency_overrides` целиком, не гонять покрытие ради цифры, ассерты проверяют эффект.
 
 ## Инфраструктура
 
@@ -88,7 +88,7 @@
 
 ### Portal users HTTP (`/portal/users`, account, beacon)
 
-`status` + `code`; 401-матрица REST (`GET /users`, `/users/presence`, `/users/specialists`, `POST/DELETE /users/me/avatar`, `POST /users/me/presence`) через `client_sqlite_only`. Timesheet (`client_developer`) — **403** на все REST users (NON_DEVELOPER). Specialists list — manager/admin; `client_no_idp` → 403. Presence-beacon — без Authorization; invalid JWT / verify fail → **204** без side-effect; valid → `record_presence` + `set_last_seen_iso_now` + `finalize_last_seen_in_db` (`tests/api/test_presence_beacon.py`). Heartbeat `POST /me/presence` — wiring допустим только вместе с unit `portal_presence` / `portal_last_seen`. Signed photo proxy `GET /users/{sub}/photo`: **401** без токена; **403** битая подпись; **401** expired; **404** unknown sub; **503** EA disabled; success с mock EA bytes. Avatar: Bearer обязателен; **413** oversized — HTTP без mock `save_user_avatar` (validation в сервисе). Pagination 422 — `detail`. Chat-blocked students — не в `GET /users`, да в `/specialists` (manager). Ghost-sub без профиля — service или HTTP list, не дублировать оба. Redis last_seen_iso fallback — `tests/services/test_portal_presence.py` (`bulk_last_seen_iso`); SQL fallback — `test_portal_user.py` (`bulk_last_seen_from_profile`). `dependency_overrides.clear()` запрещён — teardown корневых client_* через targeted `pop`, см. «Организация» в testing.mdc.
+`status` + `code`; 401-матрица REST (`GET /users`, `/users/presence`, `/users/specialists`, `POST/DELETE /users/me/avatar`, `POST /users/me/presence`) через `client_sqlite_only`. Timesheet (`client_developer`) — **403** на все REST users (NON_DEVELOPER). Specialists list — manager/admin; `client_no_idp` → 403. Presence-beacon — без Authorization; invalid JWT / verify fail → **204** без side-effect; valid → `record_presence` + `set_last_seen_iso_now` + `finalize_last_seen_in_db` (`tests/api/test_presence_beacon.py`). Heartbeat `POST /me/presence` — wiring допустим только вместе с unit `portal_presence` / `portal_last_seen`. Signed photo proxy `GET /users/{sub}/photo`: **401** без токена; **403** битая подпись; **401** expired; **404** unknown sub; **503** EA disabled; success с mock EA bytes. Avatar: Bearer обязателен; **413** oversized — HTTP без mock `save_user_avatar` (validation в сервисе). Pagination 422 — `detail`. Chat-blocked students — не в `GET /users`, да в `/specialists` (manager). Ghost-sub без профиля — service или HTTP list, не дублировать оба. Redis last_seen_iso fallback — `tests/services/test_portal_presence.py` (`bulk_last_seen_iso`); SQL fallback — `test_portal_user.py` (`bulk_last_seen_from_profile`). `dependency_overrides.clear()` запрещён — teardown корневых client_* через targeted `pop`, фикстуры клиента снимаются точечно.
 
 ### Portal RBAC (shared)
 

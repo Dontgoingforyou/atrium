@@ -117,7 +117,7 @@ async def get_statuses(
     summary="Создать статус (менеджер или администратор)",
 )
 async def create_status(
-    # Намеренное отступление от security.mdc (раздел «мутации глобальных справочников»):
+    # Мутация глобального справочника колонок остаётся у администратора портала:
     # статусы создаются «на лету» при выборе, как теги — PortalAdminUser здесь избыточен.
     # Обновление и удаление статусов закрыты за PortalAdminUser (см. update_status / delete_status).
     user: CurrentUser,
@@ -309,7 +309,7 @@ async def remove_from_board(
     ),
 )
 async def list_managers_for_specialist(
-    specialist_sub: Annotated[str, Query(description="sub специалиста в Keycloak")],
+    specialist_sub: Annotated[str, Query(description="Идентификатор специалиста")],
     user: CurrentUser,
     session: DbSession,
 ) -> list[SpecialistManagerRef]:

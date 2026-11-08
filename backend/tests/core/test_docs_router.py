@@ -91,7 +91,7 @@ async def test_openapi_json_503_when_sso_no_service_url(
 
     r = await client.get("/openapi.json", headers={"Authorization": "Bearer t"})
     assert r.status_code == 503
-    assert "SSO_SERVICE_URL" in r.json()["message"]
+    assert "адрес шлюза" in r.json()["message"]
 
 
 async def test_openapi_json_401_invalid_token(

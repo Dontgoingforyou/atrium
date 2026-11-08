@@ -11,7 +11,7 @@ from app.core.exceptions import BadRequestError, PayloadTooLargeError
 from app.services.file_upload_validation import GENERIC_MAGIC_READ_BYTES, check_magic_bytes
 
 AVATAR_MAX_BYTES = 20 * 1024 * 1024
-# Читаем файл частями, а не всё тело сразу (security.mdc — вектор DoS при полном
+# Читаем файл частями, а не всё тело сразу (DoS при полном
 # await file.read() до проверки размера): чанк должен быть меньше лимита, чтобы
 # прерваться раньше, чем в память попадёт файл, ощутимо превышающий AVATAR_MAX_BYTES.
 _READ_CHUNK_BYTES = 1024 * 1024
@@ -47,7 +47,7 @@ async def _read_bounded(file: UploadFile, max_bytes: int) -> bytes:
 
     В отличие от ``await file.read()`` не буферизует в памяти тело, гораздо большее
     заявленного лимита, — оценка размера идёт по ходу чтения, не постфактум
-    (см. security.mdc, «Загрузка файлов»).
+    (, «Загрузка файлов»).
     """
     chunks: list[bytes] = []
     total = 0

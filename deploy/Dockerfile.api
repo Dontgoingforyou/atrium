@@ -1,5 +1,4 @@
-# Softgen stand-host / delivery: context = ./project (внутри — backend/).
-# Канон локального стенда Cosmolet — backend/Dockerfile (context ./backend).
+# Образ API для выкладки. Локальный compose собирает backend/Dockerfile (context ./backend).
 # syntax=docker/dockerfile:1
 FROM python:3.12-slim-bookworm
 

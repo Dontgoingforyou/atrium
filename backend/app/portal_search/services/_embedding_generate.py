@@ -1,6 +1,6 @@
-"""Генерация векторных эмбеддингов через OpenAI API.
+"""Генерация векторных эмбеддингов.
 
-Выделено из embedding.py по правилу general.mdc (не более 400 строк на файл).
+Без ключа модели вектор считается локально. С ключом — через API эмбеддингов.
 """
 
 from __future__ import annotations
@@ -11,6 +11,7 @@ from openai import AsyncOpenAI
 
 from app.core.config import get_settings
 from app.core.portal_search_constants import EMBEDDING_TEXT_MAX_CHARS
+from app.portal_search.services._embedding_local import local_embedding
 from app.services.openai_client import build_openai_client
 
 logger = logging.getLogger(__name__)
@@ -68,6 +69,8 @@ async def generate_embedding(text: str) -> list[float]:
         return [0.0] * s.embedding_dimension
 
     text = text[:_MAX_CHARS]
+    if not s.openai_api_key:
+        return local_embedding(text, s.embedding_dimension)
     client = _client_singleton()
     response = await client.embeddings.create(
         input=text,
@@ -89,8 +92,13 @@ async def generate_embeddings_batch(texts: list[str]) -> list[list[float]]:
     if not nonempty_idx:
         return result
 
-    client = _client_singleton()
     nonempty_texts = [texts[i][:_MAX_CHARS] for i in nonempty_idx]
+    if not s.openai_api_key:
+        for src_i, text in zip(nonempty_idx, nonempty_texts, strict=True):
+            result[src_i] = local_embedding(text, s.embedding_dimension)
+        return result
+
+    client = _client_singleton()
     embeddings: list[list[float]] = []
     for i in range(0, len(nonempty_texts), batch_size):
         batch = nonempty_texts[i : i + batch_size]

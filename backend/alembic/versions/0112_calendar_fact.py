@@ -4,7 +4,7 @@ Revision ID: 0112_calendar_fact
 Revises: 0111_spec_note_parent
 
 Событие живёт в микросервисе. Колокол хранит его id без внешнего ключа
-на portal_calendar_event: строки события в Космолете больше нет.
+на portal_calendar_event: строки события в Атриуме больше нет.
 """
 
 from __future__ import annotations

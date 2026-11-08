@@ -1,4 +1,4 @@
-"""Белый список email для входа на стенд (пустой список — без ограничения)."""
+"""Белый список email для входа (пустой список — без ограничения)."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from app.schemas.auth import UserPublic
 
 logger = logging.getLogger(__name__)
 
-_LOGIN_DENIED_MESSAGE = "Нет доступа к этому стенду"
+_LOGIN_DENIED_MESSAGE = "Нет доступа"
 
 
 def ensure_portal_login_allowed(user: UserPublic, settings: Settings) -> None:

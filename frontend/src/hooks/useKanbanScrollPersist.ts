@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, type RefObject } from 'react'
 
-const STORAGE_PREFIX = 'cosmolet.kanban.scroll.'
+const STORAGE_PREFIX = 'atrium.kanban.scroll.'
 
 /** Сохраняет горизонтальный scroll канбана в sessionStorage между перезагрузками. */
 export function useKanbanScrollPersist(

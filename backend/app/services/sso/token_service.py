@@ -50,7 +50,7 @@ def resolve_sso_user_sub(data: dict[str, Any]) -> str:
     """
     Стабильный ID пользователя из ответа SSO.
 
-    Предпочтительно ``public_id`` (ранее ``keycloak_id``) — UUID в Effective Mobile SSO.
+    Предпочтительно ``public_id`` (ранее ``keycloak_id``) — UUID в SSO.
     Поле ``sub`` сейчас часто содержит email; email-подобные значения пропускаем,
     пока есть не-email идентификатор.
     """

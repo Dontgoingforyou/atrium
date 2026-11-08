@@ -17,7 +17,7 @@ export type EnsureTourDemoSpecialistResult =
   | { ok: false; reason: string }
 
 const tourDemoSpecialistStorageKey = (userSub: string): string =>
-  `cosmolet.guidedTour.demoSpecialist:${userSub}`
+  `atrium.guidedTour.demoSpecialist:${userSub}`
 
 const rememberedByUser = new Map<string, string>()
 

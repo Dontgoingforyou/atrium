@@ -8,7 +8,7 @@ from typing import Any
 import pytest
 from app.admin.model_converter import (
     _ENUM_LABELS_BY_CLASS,
-    CosmoletAdminModelConverter,
+    AtriumAdminModelConverter,
     _coerce_to_enum_member,
 )
 from app.core.enums import AgreementStatus, TaskPriority
@@ -33,7 +33,7 @@ def test_enum_labels_cover_every_member() -> None:
 def test_conv_enum_builds_localized_select_field(enum_cls: type) -> None:
     labels = _ENUM_LABELS_BY_CLASS[enum_cls]
     expected_choices = [(m.name, labels[m.value]) for m in enum_cls]
-    converter = CosmoletAdminModelConverter()
+    converter = AtriumAdminModelConverter()
     field = converter.conv_enum(object, _fake_prop(enum_class=enum_cls, nullable=False), {})
 
     assert field.kwargs["choices"] == expected_choices
@@ -41,7 +41,7 @@ def test_conv_enum_builds_localized_select_field(enum_cls: type) -> None:
 
 
 def test_conv_enum_nullable_column_allows_blank() -> None:
-    converter = CosmoletAdminModelConverter()
+    converter = AtriumAdminModelConverter()
     field = converter.conv_enum(object, _fake_prop(enum_class=TaskPriority, nullable=True), {})
 
     assert field.kwargs["allow_blank"] is True
@@ -54,7 +54,7 @@ def test_conv_enum_unknown_enum_falls_back_to_base_converter(monkeypatch: pytest
 
     sentinel = object()
     monkeypatch.setattr(mc.ModelConverter, "conv_enum", lambda self, model, prop, kwargs: sentinel)
-    converter = mc.CosmoletAdminModelConverter()
+    converter = mc.AtriumAdminModelConverter()
     prop = _fake_prop(enum_class=AgreementStatus, nullable=False)
     monkeypatch.delitem(mc._ENUM_LABELS_BY_CLASS, AgreementStatus)
 
@@ -89,7 +89,7 @@ def test_coerce_to_enum_member_invalid_value_raises() -> None:
 
 
 def test_conv_enum_validator_rejects_foreign_enum_member() -> None:
-    converter = CosmoletAdminModelConverter()
+    converter = AtriumAdminModelConverter()
     field = converter.conv_enum(object, _fake_prop(enum_class=TaskPriority, nullable=False), {})
     any_of = field.kwargs["validators"][0]
     assert isinstance(any_of, validators.AnyOf)
@@ -102,7 +102,7 @@ def test_conv_enum_validator_rejects_foreign_enum_member() -> None:
 
 def test_conv_enum_agreement_status_from_mapper() -> None:
     mapper = class_mapper(PortalAgreement)
-    converter = CosmoletAdminModelConverter()
+    converter = AtriumAdminModelConverter()
     st_field = converter.conv_enum(PortalAgreement, mapper.get_property("status"), {})
     labels = _ENUM_LABELS_BY_CLASS[AgreementStatus]
     assert st_field.kwargs["choices"] == [(m.name, labels[m.value]) for m in AgreementStatus]

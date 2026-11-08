@@ -8,8 +8,8 @@
 |------|------|
 | API | [`backend/`](../backend/) — `backend/app/`, `backend/tests/`, `backend/pyproject.toml` |
 | SPA | [`frontend/`](../frontend/) — `frontend/src/`, `frontend/tests/` |
-| Локальный стенд | [`stand/`](../stand/) |
+| Локальный Docker | [`docker-compose.yml`](../docker-compose.yml) |
 | Деплой | [`deploy/`](../deploy/) |
-| Стендовые Playwright | [`tests/integration/`](../tests/integration/) |
+| Playwright | [`tests/integration/`](../tests/integration/) |
 | Требования и TC | [`docs/product/`](../docs/product/) |
-| Правила для агента | [`AGENTS.md`](../AGENTS.md) |
+| Карта репозитория | [`AGENTS.md`](../AGENTS.md) |

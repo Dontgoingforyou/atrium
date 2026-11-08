@@ -31,7 +31,7 @@ class PortalChecklistAdmin(ModelView, model=PortalChecklist):
     column_labels = {
         "title": "Название",
         "description": "Описание",
-        "idp_group": "Группа Keycloak (пусто = для всех)",
+        "idp_group": "Группа доступа (пусто = для всех)",
         "items": "Пункты шаблона",
         "user_checklists": "Запуски пользователями",
         "created_at": "Создан",

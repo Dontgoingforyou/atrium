@@ -138,7 +138,7 @@ class PortalHomeRead(BaseModel):
     search: PortalHomeSearchHint = Field(default_factory=PortalHomeSearchHint)
     admin: AdminHomeBlock | None = Field(
         default=None,
-        description="Только администратор портала (Keycloak)",
+        description="Только администратор портала",
     )
     manager: ManagerHomeBlock | None = Field(
         default=None,

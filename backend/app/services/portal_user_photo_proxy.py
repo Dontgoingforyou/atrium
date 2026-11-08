@@ -1,4 +1,4 @@
-"""Прокси байтов фото пользователя из Effective Admin."""
+"""Прокси байтов фото пользователя из сервиса профилей."""
 
 from __future__ import annotations
 
@@ -10,8 +10,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import get_settings
 from app.core.exceptions import NotFoundError, ServiceUnavailableError
 from app.infrastructure.db.models.portal_user_profile import PortalUserProfile
-from app.integrations.effective_admin.client import EffectiveAdminPhotoClient, PhotoBytes
-from app.integrations.effective_admin.username import username_from_email
+from app.integrations.profile_directory.client import ProfileDirectoryPhotoClient, PhotoBytes
+from app.integrations.profile_directory.username import username_from_email
 from app.services.user_photo_url import verify_user_photo_signature
 
 logger = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ async def fetch_user_photo_for_proxy(
     _ = viewer_sub  # совместимость сигнатуры роутера
     verify_user_photo_signature(user_sub=user_sub, exp=exp, sig=sig)
     settings = get_settings()
-    if not settings.effective_admin_photos_enabled:
+    if not settings.profile_directory_photos_enabled:
         raise ServiceUnavailableError("Интеграция фото не настроена")
 
     profile = await session.get(PortalUserProfile, user_sub)
@@ -46,8 +46,8 @@ async def fetch_user_photo_for_proxy(
     if username is None:
         raise NotFoundError("Фото недоступно: нет email")
 
-    client = EffectiveAdminPhotoClient(settings, http)
-    service = settings.effective_admin_service_token.strip()
+    client = ProfileDirectoryPhotoClient(settings, http)
+    service = settings.profile_directory_service_token.strip()
 
     if viewer_bearer:
         try:
@@ -66,5 +66,5 @@ async def fetch_user_photo_for_proxy(
         return await client.get_user_photo(username=username, bearer_token=service)
 
     raise ServiceUnavailableError(
-        "Задайте EFFECTIVE_ADMIN_SERVICE_TOKEN или откройте фото с Authorization Bearer",
+        "Задайте PROFILE_DIRECTORY_SERVICE_TOKEN или откройте фото с Authorization Bearer",
     )

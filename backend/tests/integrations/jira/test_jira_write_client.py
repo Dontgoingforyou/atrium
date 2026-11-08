@@ -42,7 +42,7 @@ def client(http: AsyncMock) -> JiraWriteClient:
 @pytest.mark.anyio
 async def test_add_watcher_sends_json_encoded_username(client: JiraWriteClient, http: AsyncMock) -> None:
     http.request.return_value = _mock_response(status_code=204)
-    await client.add_watcher("AUTASKS-1", 'user"name')
+    await client.add_watcher("TASKS-1", 'user"name')
     http.request.assert_awaited_once()
     kwargs = http.request.await_args.kwargs
     assert kwargs["content"] == json.dumps('user"name')
@@ -51,7 +51,7 @@ async def test_add_watcher_sends_json_encoded_username(client: JiraWriteClient, 
 @pytest.mark.anyio
 async def test_add_watcher_http_error_does_not_raise(client: JiraWriteClient, http: AsyncMock) -> None:
     http.request.return_value = _mock_response(status_code=403)
-    await client.add_watcher("AUTASKS-1", "bob")
+    await client.add_watcher("TASKS-1", "bob")
 
 
 @pytest.mark.anyio
@@ -107,47 +107,47 @@ async def test_create_issue_http_400_raises_unavailable(client: JiraWriteClient,
 async def test_update_issue_404_raises_not_found(client: JiraWriteClient, http: AsyncMock) -> None:
     http.request.return_value = _mock_response(status_code=404)
     with pytest.raises(NotFoundError, match="не найдена"):
-        await client.update_issue("AUTASKS-1", {"summary": "x"})
+        await client.update_issue("TASKS-1", {"summary": "x"})
 
 
 @pytest.mark.anyio
 async def test_update_issue_http_400_raises_unavailable(client: JiraWriteClient, http: AsyncMock) -> None:
     http.request.return_value = _mock_response(status_code=400)
     with pytest.raises(ServiceUnavailableError, match="не приняла обновление"):
-        await client.update_issue("AUTASKS-1", {"summary": "x"})
+        await client.update_issue("TASKS-1", {"summary": "x"})
 
 
 @pytest.mark.anyio
 async def test_get_transitions_missing_key_returns_empty(client: JiraWriteClient, http: AsyncMock) -> None:
     http.request.return_value = _mock_response(json_body={"expand": "transitions"})
-    assert await client.get_transitions("AUTASKS-1") == []
+    assert await client.get_transitions("TASKS-1") == []
 
 
 @pytest.mark.anyio
 async def test_transition_issue_http_400_raises_unavailable(client: JiraWriteClient, http: AsyncMock) -> None:
     http.request.return_value = _mock_response(status_code=400)
     with pytest.raises(ServiceUnavailableError, match="не приняла смену статуса"):
-        await client.transition_issue("AUTASKS-1", "21")
+        await client.transition_issue("TASKS-1", "21")
 
 
 @pytest.mark.anyio
 async def test_add_comment_success_returns_body(client: JiraWriteClient, http: AsyncMock) -> None:
     http.request.return_value = _mock_response(status_code=201, json_body={"id": "100", "body": "hi"})
-    assert await client.add_comment("AUTASKS-1", "hi") == {"id": "100", "body": "hi"}
+    assert await client.add_comment("TASKS-1", "hi") == {"id": "100", "body": "hi"}
 
 
 @pytest.mark.anyio
 async def test_add_comment_http_400_raises_unavailable(client: JiraWriteClient, http: AsyncMock) -> None:
     http.request.return_value = _mock_response(status_code=400)
     with pytest.raises(ServiceUnavailableError, match="не приняла комментарий"):
-        await client.add_comment("AUTASKS-1", "hi")
+        await client.add_comment("TASKS-1", "hi")
 
 
 @pytest.mark.anyio
 async def test_add_attachment_returns_list(client: JiraWriteClient, http: AsyncMock) -> None:
     http.request.return_value = _mock_response(status_code=200, json_body=[{"filename": "a.bin"}])
     assert await client.add_attachment(
-        "AUTASKS-1",
+        "TASKS-1",
         filename="a.bin",
         content=b"x",
         content_type="application/octet-stream",
@@ -159,7 +159,7 @@ async def test_add_attachment_http_400_raises_unavailable(client: JiraWriteClien
     http.request.return_value = _mock_response(status_code=400, json_body=[])
     with pytest.raises(ServiceUnavailableError, match="не приняла вложение"):
         await client.add_attachment(
-            "AUTASKS-1",
+            "TASKS-1",
             filename="a.bin",
             content=b"x",
             content_type="application/octet-stream",
@@ -169,18 +169,18 @@ async def test_add_attachment_http_400_raises_unavailable(client: JiraWriteClien
 @pytest.mark.anyio
 async def test_delete_issue_204_sends_delete(client: JiraWriteClient, http: AsyncMock) -> None:
     http.request.return_value = _mock_response(status_code=204)
-    await client.delete_issue("AUTASKS-1")
+    await client.delete_issue("TASKS-1")
     http.request.assert_awaited_once()
     args = http.request.await_args.args
     assert args[0] == "DELETE"
-    assert args[1].endswith("/rest/api/2/issue/AUTASKS-1")
+    assert args[1].endswith("/rest/api/2/issue/TASKS-1")
     assert "params" not in http.request.await_args.kwargs
 
 
 @pytest.mark.anyio
 async def test_delete_issue_404_is_success(client: JiraWriteClient, http: AsyncMock) -> None:
     http.request.return_value = _mock_response(status_code=404)
-    await client.delete_issue("AUTASKS-1")
+    await client.delete_issue("TASKS-1")
     assert http.request.await_args.args[0] == "DELETE"
 
 
@@ -188,7 +188,7 @@ async def test_delete_issue_404_is_success(client: JiraWriteClient, http: AsyncM
 async def test_delete_issue_403_raises_and_does_not_transition(client: JiraWriteClient, http: AsyncMock) -> None:
     http.request.return_value = _mock_response(status_code=403)
     with pytest.raises(ServiceUnavailableError, match="не приняла удаление"):
-        await client.delete_issue("AUTASKS-1")
+        await client.delete_issue("TASKS-1")
     http.request.assert_awaited_once()
     assert http.request.await_args.args[0] == "DELETE"
 
@@ -196,7 +196,7 @@ async def test_delete_issue_403_raises_and_does_not_transition(client: JiraWrite
 @pytest.mark.anyio
 async def test_delete_issue_with_subtasks_sends_query(client: JiraWriteClient, http: AsyncMock) -> None:
     http.request.return_value = _mock_response(status_code=204)
-    await client.delete_issue("AUTASKS-1", delete_subtasks=True)
+    await client.delete_issue("TASKS-1", delete_subtasks=True)
     assert http.request.await_args.kwargs["params"] == {"deleteSubtasks": "true"}
 
 
@@ -205,7 +205,7 @@ async def test_add_attachment_non_list_json_raises_unavailable(client: JiraWrite
     http.request.return_value = _mock_response(status_code=200, json_body={"id": "1"})
     with pytest.raises(ServiceUnavailableError, match="ошибку"):
         await client.add_attachment(
-            "AUTASKS-1",
+            "TASKS-1",
             filename="a.bin",
             content=b"x",
             content_type="application/octet-stream",

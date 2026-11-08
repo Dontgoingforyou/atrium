@@ -1,32 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&display=swap');
 
 :root {
-  --cosmolet-font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --cosmolet-accent: #6131cf;
-  --cosmolet-accent-hover: #49239f;
-  --cosmolet-on-accent: #fefefc;
-  --cosmolet-text: #1e293b;
-  --cosmolet-text-muted: #64748b;
-  --cosmolet-surface-hover: #f1f5f9;
+  --atrium-font-family: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --atrium-accent: #0f766e;
+  --atrium-accent-hover: #115e59;
+  --atrium-on-accent: #fefefc;
+  --atrium-text: #1e293b;
+  --atrium-text-muted: #64748b;
+  --atrium-surface-hover: #f1f5f9;
 
-  --tblr-primary: #6131cf;
-  --tblr-primary-rgb: 97, 49, 207;
-  --bs-primary: #6131cf;
-  --bs-primary-rgb: 97, 49, 207;
+  --tblr-primary: #0f766e;
+  --tblr-primary-rgb: 15, 118, 110;
+  --bs-primary: #0f766e;
+  --bs-primary-rgb: 15, 118, 110;
 }
 
 body,
 .page,
 .antialiased {
-  font-family: var(--cosmolet-font-family);
-  color: var(--cosmolet-text);
+  font-family: var(--atrium-font-family);
+  color: var(--atrium-text);
 }
 
 .page-title,
 .navbar-brand h3 {
-  font-family: var(--cosmolet-font-family);
+  font-family: var(--atrium-font-family);
   font-weight: 600;
-  color: var(--cosmolet-accent);
+  color: var(--atrium-accent);
 }
 
 /* Tabler центрирует бренд — выравниваем влево, как меню и логотип портала */
@@ -54,7 +54,6 @@ body,
   width: 28px;
   height: 28px;
   flex-shrink: 0;
-  filter: none;
 }
 
 .navbar-brand h3 {
@@ -63,39 +62,39 @@ body,
 
 /* Primary CTA — единственное место с заливкой акцентом */
 .btn-primary {
-  --bs-btn-bg: var(--cosmolet-accent) !important;
-  --bs-btn-border-color: var(--cosmolet-accent) !important;
-  --bs-btn-hover-bg: var(--cosmolet-accent-hover) !important;
-  --bs-btn-hover-border-color: var(--cosmolet-accent-hover) !important;
-  --bs-btn-active-bg: var(--cosmolet-accent-hover) !important;
-  --bs-btn-active-border-color: var(--cosmolet-accent-hover) !important;
-  --bs-btn-color: var(--cosmolet-on-accent) !important;
-  --bs-btn-hover-color: var(--cosmolet-on-accent) !important;
-  --bs-btn-active-color: var(--cosmolet-on-accent) !important;
-  background-color: var(--cosmolet-accent) !important;
-  border-color: var(--cosmolet-accent) !important;
-  color: var(--cosmolet-on-accent) !important;
+  --bs-btn-bg: var(--atrium-accent) !important;
+  --bs-btn-border-color: var(--atrium-accent) !important;
+  --bs-btn-hover-bg: var(--atrium-accent-hover) !important;
+  --bs-btn-hover-border-color: var(--atrium-accent-hover) !important;
+  --bs-btn-active-bg: var(--atrium-accent-hover) !important;
+  --bs-btn-active-border-color: var(--atrium-accent-hover) !important;
+  --bs-btn-color: var(--atrium-on-accent) !important;
+  --bs-btn-hover-color: var(--atrium-on-accent) !important;
+  --bs-btn-active-color: var(--atrium-on-accent) !important;
+  background-color: var(--atrium-accent) !important;
+  border-color: var(--atrium-accent) !important;
+  color: var(--atrium-on-accent) !important;
 }
 
 .btn-primary:hover,
 .btn-primary:active,
 .btn-primary:focus-visible {
-  background-color: var(--cosmolet-accent-hover) !important;
-  border-color: var(--cosmolet-accent-hover) !important;
-  color: var(--cosmolet-on-accent) !important;
+  background-color: var(--atrium-accent-hover) !important;
+  border-color: var(--atrium-accent-hover) !important;
+  color: var(--atrium-on-accent) !important;
 }
 
 /* Мышь: не оставлять hover-цвет после клика (липкий :focus) */
 .btn-primary:focus:not(:focus-visible) {
-  background-color: var(--cosmolet-accent) !important;
-  border-color: var(--cosmolet-accent) !important;
-  color: var(--cosmolet-on-accent) !important;
+  background-color: var(--atrium-accent) !important;
+  border-color: var(--atrium-accent) !important;
+  color: var(--atrium-on-accent) !important;
   box-shadow: none;
 }
 
 .form-control:focus,
 .form-select:focus {
-  border-color: var(--cosmolet-accent);
+  border-color: var(--atrium-accent);
   box-shadow: 0 0 0 0.2rem rgb(97 49 207 / 0.15);
 }
 
@@ -106,21 +105,21 @@ body,
 .navbar-vertical .nav-link,
 .navbar-vertical .nav-link-title,
 .navbar-vertical .dropdown-item {
-  color: var(--cosmolet-text) !important;
+  color: var(--atrium-text) !important;
 }
 
 .navbar-vertical .nav-link-icon,
 .navbar-vertical .nav-link-icon i,
 .navbar-vertical .nav-link .icon {
-  color: var(--cosmolet-text-muted) !important;
+  color: var(--atrium-text-muted) !important;
 }
 
 .navbar-vertical .nav-link:hover,
 .navbar-vertical .nav-link:focus-visible,
 .navbar-vertical .dropdown-item:hover,
 .navbar-vertical .dropdown-item:focus-visible {
-  color: var(--cosmolet-text) !important;
-  background-color: var(--cosmolet-surface-hover) !important;
+  color: var(--atrium-text) !important;
+  background-color: var(--atrium-surface-hover) !important;
 }
 
 .navbar-vertical .nav-link:focus:not(:focus-visible),
@@ -137,45 +136,45 @@ body,
 .navbar-vertical .nav-link:focus-visible .icon,
 .navbar-vertical .dropdown-item:hover .nav-link-icon,
 .navbar-vertical .dropdown-item:focus-visible .nav-link-icon {
-  color: var(--cosmolet-accent) !important;
+  color: var(--atrium-accent) !important;
 }
 
 .navbar-vertical .nav-link.active,
 .navbar-vertical .dropdown-item.active,
 .navbar-vertical .dropdown-item:active {
-  color: var(--cosmolet-accent) !important;
+  color: var(--atrium-accent) !important;
   background-color: transparent !important;
   font-weight: 600;
 }
 
 .navbar-vertical .nav-link.active:hover,
 .navbar-vertical .dropdown-item.active:hover {
-  background-color: var(--cosmolet-surface-hover) !important;
+  background-color: var(--atrium-surface-hover) !important;
 }
 
 .navbar-vertical .nav-link.active .nav-link-icon,
 .navbar-vertical .nav-link.active .nav-link-icon i,
 .navbar-vertical .nav-link.active .icon,
 .navbar-vertical .dropdown-item.active .nav-link-icon {
-  color: var(--cosmolet-accent) !important;
+  color: var(--atrium-accent) !important;
 }
 
 /* Таблица/ссылки контента — обычный цвет текста, не заливка акцентом */
 .page-wrapper a:not(.btn):not(.page-link) {
-  color: var(--cosmolet-text);
+  color: var(--atrium-text);
 }
 
 .page-wrapper a:not(.btn):not(.page-link):hover {
-  color: var(--cosmolet-accent);
+  color: var(--atrium-accent);
 }
 
 .table a {
-  color: var(--cosmolet-text) !important;
+  color: var(--atrium-text) !important;
   text-decoration: none;
 }
 
 .table a:hover {
-  color: var(--cosmolet-accent) !important;
+  color: var(--atrium-accent) !important;
   text-decoration: underline;
 }
 
@@ -191,18 +190,18 @@ body,
 .table .btn-icon,
 .table a.btn,
 .me-1.text-decoration-none {
-  color: var(--cosmolet-text-muted) !important;
+  color: var(--atrium-text-muted) !important;
 }
 
 .table .btn-icon:hover,
 .table a.btn:hover,
 .me-1.text-decoration-none:hover {
-  color: var(--cosmolet-accent) !important;
+  color: var(--atrium-accent) !important;
 }
 
 /* Пагинация: видимые кнопки с рамкой */
 .pagination .page-link {
-  color: var(--cosmolet-text) !important;
+  color: var(--atrium-text) !important;
   background-color: #fff !important;
   border: 1px solid #cbd5e1 !important;
   min-width: 2.25rem;
@@ -210,15 +209,15 @@ body,
 }
 
 .pagination .page-link:hover {
-  color: var(--cosmolet-accent) !important;
-  background-color: var(--cosmolet-surface-hover) !important;
-  border-color: var(--cosmolet-accent) !important;
+  color: var(--atrium-accent) !important;
+  background-color: var(--atrium-surface-hover) !important;
+  border-color: var(--atrium-accent) !important;
 }
 
 .pagination .page-item.active .page-link {
-  color: var(--cosmolet-on-accent) !important;
-  background-color: var(--cosmolet-accent) !important;
-  border-color: var(--cosmolet-accent) !important;
+  color: var(--atrium-on-accent) !important;
+  background-color: var(--atrium-accent) !important;
+  border-color: var(--atrium-accent) !important;
 }
 
 .pagination .page-item.disabled .page-link {

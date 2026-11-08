@@ -4,7 +4,7 @@ export type TaskDetailPanelId =
   | 'spec-profile' | 'spec-links' | 'spec-jira' | 'spec-comments' | 'spec-managers'
   | 'document-comments'
 
-const PANEL_STORAGE = 'cosmolet.taskDetail.panelOpen.v1'
+const PANEL_STORAGE = 'atrium.taskDetail.panelOpen.v1'
 
 const DEFAULT_COLLAPSED_PANELS: ReadonlySet<TaskDetailPanelId> = new Set([
   'modal-history',

@@ -25,9 +25,9 @@ SPECIALIST_CARD_READ_FORBIDDEN = "Доступ к карточке специа�
 
 
 def require_manager_or_admin(user: UserPublic, message: str | None = None) -> None:
-    """Проверить, что пользователь — менеджер АУ (gid_number) или администратор портала.
+    """Проверить, что пользователь — менеджер отдела (gid_number) или администратор портала.
 
-    Единая точка входа для RBAC-проверки в модуле portal_specialists (dry.mdc):
+    Единая точка входа для RBAC-проверки в модуле portal_specialists:
     не дублировать эту проверку локально в других сервисах модуля.
     """
     if is_manager_or_admin(user):
@@ -45,7 +45,7 @@ async def require_specialist_write_access(
     user: UserPublic,
     specialist_sub: str,
 ) -> None:
-    """Право на запись: admin или менеджер АУ, закрепивший данного специалиста.
+    """Право на запись: admin или менеджер отдела, закрепивший данного специалиста.
 
     Политика менеджера — ``is_manager_or_admin`` (``gid_number``), не группа Keycloak ``outstaff``.
     """
@@ -105,7 +105,7 @@ async def ensure_specialist_can_join_board(session: AsyncSession, specialist_sub
         select(PortalManagerSpecialist.id).where(PortalManagerSpecialist.specialist_sub == specialist_sub).limit(1),
     )
     if exists is None:
-        raise ValidationError("На доску можно добавить только студента без доступа к чатам портала")
+        raise ValidationError("На доску можно добавить только специалиста без доступа к чатам портала")
 
 
 def build_entry_read(row: Any, _settings: Any | None = None) -> ManagerSpecialistEntryRead:

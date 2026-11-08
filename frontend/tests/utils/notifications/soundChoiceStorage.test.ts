@@ -63,10 +63,10 @@ describe('soundChoiceStorage presets', () => {
   })
 
   it('неизвестный id уже в storage → дефолт и валидный URL', () => {
-    localStorage.setItem('cosmolet:notification_sound_choice', 'deleted-preset')
+    localStorage.setItem('atrium:notification_sound_choice', 'deleted-preset')
     expect(getResolvedNotificationSoundId()).toBe(DEFAULT_NOTIFICATION_SOUND_ID)
     expect(getNotificationSoundUrl()).toBe('/sounds/notification.wav')
-    localStorage.setItem('cosmolet:chat_dm_sound_choice', 'gone')
+    localStorage.setItem('atrium:chat_dm_sound_choice', 'gone')
     expect(getResolvedChatDmSoundId()).toBe(DEFAULT_CHAT_DM_SOUND_ID)
   })
 })

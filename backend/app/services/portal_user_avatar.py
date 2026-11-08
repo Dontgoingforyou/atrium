@@ -1,4 +1,4 @@
-"""Загрузка/удаление аватара пользователя через Effective Admin."""
+"""Загрузка/удаление аватара пользователя через сервис профилей."""
 
 from __future__ import annotations
 
@@ -11,8 +11,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import get_settings
 from app.core.exceptions import BadRequestError, ServiceUnavailableError
 from app.infrastructure.db.models.portal_user_profile import PortalUserProfile
-from app.integrations.effective_admin.client import EffectiveAdminPhotoClient, PhotoMeta
-from app.integrations.effective_admin.username import username_from_email
+from app.integrations.profile_directory.client import ProfileDirectoryPhotoClient, PhotoMeta
+from app.integrations.profile_directory.username import username_from_email
 from app.schemas.portal_user import AvatarUploadRead
 from app.services.avatar_upload_common import AVATAR_MAX_BYTES, read_and_validate_avatar_upload
 from app.services.user_photo_meta_cache import set_cached_photo_meta
@@ -33,15 +33,15 @@ async def save_user_avatar(
 ) -> AvatarUploadRead:
     """Загружает фото в EA ``/me/photo``; возвращает signed proxy URL."""
     settings = get_settings()
-    if not settings.effective_admin_photos_enabled:
-        raise ServiceUnavailableError("Загрузка аватара через Effective Admin не настроена")
+    if not settings.profile_directory_photos_enabled:
+        raise ServiceUnavailableError("Загрузка аватара через сервис профилей не настроена")
 
     profile = await session.get(PortalUserProfile, user_sub)
     if profile is None:
         raise BadRequestError("Профиль пользователя не найден — выполните вход заново")
 
     validated = await read_and_validate_avatar_upload(file)
-    client = EffectiveAdminPhotoClient(settings, http)
+    client = ProfileDirectoryPhotoClient(settings, http)
     await client.upload_my_photo(
         bearer_token=bearer_token,
         file_name=file.filename or f"avatar{validated.ext}",
@@ -70,12 +70,12 @@ async def clear_user_avatar(
     http: httpx.AsyncClient,
 ) -> None:
     settings = get_settings()
-    if not settings.effective_admin_photos_enabled:
-        raise ServiceUnavailableError("Удаление аватара через Effective Admin не настроено")
+    if not settings.profile_directory_photos_enabled:
+        raise ServiceUnavailableError("Удаление аватара через сервис профилей не настроено")
     profile = await session.get(PortalUserProfile, user_sub)
     if profile is None:
         return
-    client = EffectiveAdminPhotoClient(settings, http)
+    client = ProfileDirectoryPhotoClient(settings, http)
     await client.delete_my_photo(bearer_token=bearer_token)
     uname = username_from_email(profile.email)
     if uname:

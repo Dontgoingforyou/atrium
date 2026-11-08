@@ -156,7 +156,7 @@ async def report_time_entries(
     summary="Список специалистов с суммарными часами таймшитов за месяц",
     description=(
         "Все пользователи с записями таймшита в выбранном месяце: сумма минут и число записей. "
-        "Доступ: менеджер АУ (gid_number=10000) или portal_admin."
+        "Доступ: менеджер отдела (gid_number=10000) или portal_admin."
     ),
     response_model=PagedResponse[PortalSpecialistMonthlySummary],
 )

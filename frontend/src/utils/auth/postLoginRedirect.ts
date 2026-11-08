@@ -23,7 +23,7 @@ export function isDocsOrRedocPath(path: string): boolean {
 /**
  * Редирект после успешного логина / OAuth exchange.
  *
- * - `/docs`, `/redoc` — full reload + stash bearer (исключение security.mdc)
+ * - `/docs`, `/redoc` — полная перезагрузка и сохранение bearer
  * - `/admin`, `/admin/`… — SPA `/admin-bridge` (cookie-сессия), без stash
  * - остальное — SPA navigate
  */

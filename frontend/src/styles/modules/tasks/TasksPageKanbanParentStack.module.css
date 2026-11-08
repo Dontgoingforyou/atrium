@@ -1,5 +1,5 @@
 .kanbanSubtaskKindBadge {
-  /* Единственный шринкуемый элемент в строке — см. frontend-responsive.mdc. */
+  /* Единственный сжимаемый элемент в строке. */
   flex-shrink: 1;
   min-width: 0;
   overflow: hidden;

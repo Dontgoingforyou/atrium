@@ -3,24 +3,24 @@
 Пакет для HTTP-клиентов, нормализации данных и webhook-эндпоинтов сторонних систем.  
 Доменная бизнес-логика (привязка к карточке специалиста, RBAC, запись в БД) остаётся в **`portal_specialists`**; здесь — транспорт и общие константы Jira.
 
-Сейчас: **Jira** (BASE специалисты + write для outbound задач AUTASKS), **Effective Admin** (фото сотрудников и сверка почт), **Google Sheets** (снимок дашборда воронки) и **выгрузка документа «Бенч»** для сценария RAG.
+Сейчас: **Jira** (BASE специалисты + write для outbound задач TASKS), **сервис профилей** (фото сотрудников и сверка почт), **Google Sheets** (снимок дашборда воронки) и **выгрузка документа «Бенч»** для сценария RAG.
 
 | Пакет | Назначение |
 |-------|------------|
 | `integrations/jira/` | REST/Agile клиент, fields/normalize, webhook BASE |
 | `integrations/jira/write_client.py` | create/update/transition/comment/attachment |
-| `integrations/effective_admin/` | photo API (meta/get/upload/delete) и `POST /api/v1/emails/check` |
+| `integrations/profile_directory/` | photo API (meta/get/upload/delete) и `POST /api/v1/emails/check` |
 | `integrations/google_sheets/` | Sheets API v4 (httpx + JWT service account), только чтение |
 | `integrations/bench/` | Read-only CSV документа «Бенч» для RAG (`GET /api/v1/integrations/bench`) |
 
 Outbound задач портала (домен): `portal_collab/services/task_jira_*.py`, флаг `JIRA_TASKS_SYNC_ENABLED` (только prod).
-Комментарий и вложение задачи уходят в AUTASKS после **view**-доступа (`get_task`), не `user_can_edit_task` — как у коллаба в портале; write в Jira от сервисного PAT. Менять gate — отдельное продуктовое решение.
+Комментарий и вложение задачи уходят в TASKS после **view**-доступа (`get_task`), не `user_can_edit_task` — как у коллаба в портале; write в Jira от сервисного PAT. Менять gate — отдельное продуктовое решение.
 
 ---
 
 ## Jira — назначение
 
-Связь карточки специалиста Cosmolet с issue Jira (`BASE-xxxx`):
+Связь карточки специалиста Atrium с issue Jira (`BASE-xxxx`):
 
 - поиск и привязка issue по ФИО (`summary`);
 - импорт полей в профиль, ссылки и колонку воронки;
@@ -29,7 +29,7 @@ Outbound задач портала (домен): `portal_collab/services/task_ji
 - webhook для автообновления при изменении issue (Phase 2).
 
 **Источник правды по направлению, городу, Telegram и CV-ссылкам — Jira.**  
-В Cosmolet они отображаются в профиле/«Ссылки»; в секции Jira не дублируются (кроме **ФИО** — показывается явно с подписью «ФИО», а не «Тема» из локали Jira).
+В Atrium они отображаются в профиле/«Ссылки»; в секции Jira не дублируются (кроме **ФИО** — показывается явно с подписью «ФИО», а не «Тема» из локали Jira).
 
 ---
 
@@ -82,16 +82,16 @@ Webhook (без JWT, секрет обязателен):
 
 ---
 
-## Маппинг полей Jira → Cosmolet
+## Маппинг полей Jira → Atrium
 
 | Jira (custom field / native) | Куда в портале |
 |------------------------------|----------------|
 | `summary` | ФИО в секции Jira; в профиле — из SSO/`portal_user_profile` |
-| `customfield_10405` (Направление) | `portal_specialist_profile.direction` |
-| `customfield_10408` (Город) | `portal_specialist_profile.location` |
-| `customfield_10402` (Telegram) | `portal_specialist_profile.telegram` |
-| `customfield_10400` (Дата рождения) | `birthdate`, только если в портале ещё пусто |
-| CV / CV(ау) / Информация с собеседования | upsert в `portal_specialist_link` |
+| `customfield_10005` (Направление) | `portal_specialist_profile.direction` |
+| `customfield_10002` (Город) | `portal_specialist_profile.location` |
+| `customfield_10001` (Telegram) | `portal_specialist_profile.telegram` |
+| `customfield_10003` (Дата рождения) | `birthdate`, только если в портале ещё пусто |
+| CV / дополнительное CV / информация с собеседования | upsert в `portal_specialist_link` |
 | `status` | колонка воронки всех закреплений специалиста (`jira_status_id` → `column_key`) |
 | остальные поля из `JIRA_FIELD_SPECS` | JSON-снимок `portal_specialist_profile.jira_fields` для секции Jira |
 
@@ -162,14 +162,14 @@ Webhook (без JWT, секрет обязателен):
 
 Авторизация — service token в `Authorization: Bearer`, не JWT пользователя. Id документа только из `BENCH_EXPORT_DOCUMENT_ID` (не из query). Пустой `BENCH_EXPORT_SERVICE_TOKEN` → 503.
 
-Эндпоинт рассчитан на **production** (`https://cosmolet.example.com`). На staging токен не пробрасывается — ответ 503.
+Эндпоинт рассчитан на **production** (`https://atrium.example.com`). На staging токен не пробрасывается — ответ 503.
 
 Пример (токен не коммитить, подставить из секретов RAG):
 
 ```bash
 curl -sS -D - \
   -H 'Authorization: Bearer <BENCH_EXPORT_SERVICE_TOKEN>' \
-  'https://cosmolet.example.com/api/v1/integrations/bench' \
+  'https://atrium.example.com/api/v1/integrations/bench' \
   -o bench.csv
 ```
 

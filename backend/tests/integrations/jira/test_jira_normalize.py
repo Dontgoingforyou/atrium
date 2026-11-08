@@ -108,14 +108,14 @@ def test_extract_link_urls_skips_empty_and_non_string() -> None:
 
 
 def test_issue_key_regex_follows_project_key() -> None:
-    assert issue_key_regex("BASE") == r"^BASE-\d+$"
-    assert issue_key_regex("autasks") == r"^AUTASKS-\d+$"
+    assert issue_key_regex("demo") == r"^DEMO-\d+$"
+    assert issue_key_regex("tasks") == r"^TASKS-\d+$"
     import re
 
     assert re.compile(issue_key_regex("FOO.BAR")).match("FOO.BAR-9")
     assert re.compile(issue_key_regex("FOO.BAR")).match("FOOXBAR-9") is None
-    assert issue_key_regex("") == r"^BASE-\d+$"
-    assert issue_key_regex("   ") == r"^BASE-\d+$"
+    assert issue_key_regex("") == r"^(?!)$"
+    assert issue_key_regex("   ") == r"^(?!)$"
 
 
 def test_extract_link_urls_collects_only_http_urls() -> None:

@@ -4,8 +4,8 @@ from app.services.sso.groups import extract_groups_from_claim
 
 
 def test_groups_top_level_list() -> None:
-    payload = {"groups": ["cosmolet_role_admin", "outstaff"]}
-    assert extract_groups_from_claim(payload, "groups") == ["cosmolet_role_admin", "outstaff"]
+    payload = {"groups": ["atrium_role_admin", "outstaff"]}
+    assert extract_groups_from_claim(payload, "groups") == ["atrium_role_admin", "outstaff"]
 
 
 def test_realm_access_roles_nested() -> None:

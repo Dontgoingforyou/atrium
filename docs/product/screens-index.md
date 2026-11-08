@@ -1,10 +1,10 @@
-# Cosmolet — реестр экранов (SPA)
+# Atrium — реестр экранов (SPA)
 
-Канон UI — React. Ниже screen_id для Softgen FR/TC.
+Канон UI — React. Ниже screen_id экранов.
 
 | screen_id | Маршрут | Primary FR | Примечание |
 |-----------|---------|------------|------------|
-| login | `/login` | FR-001 | SSO |
+| login | `/login` | FR-001 | логин и пароль |
 | app-shell | (layout) | FR-002 | тихий refresh; FR-017 guided tour overlay |
 | home | `/` | FR-003 | шаги тура MVP |
 | tasks | `/tasks`, `/tasks/new` | FR-004 | шаги тура MVP |

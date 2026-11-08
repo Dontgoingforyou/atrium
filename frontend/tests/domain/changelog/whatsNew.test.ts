@@ -21,18 +21,18 @@ function changelogVersions(): string[] {
 }
 
 describe('whatsNew', () => {
-  it('первая порция — 1.3.23–1.3.14, вторая — 1.3.13–1.3.4, хвост — 1.3.3–1.3.1', () => {
+  it('первая порция — 1.3.25–1.3.16, вторая — 1.3.15–1.3.6, хвост — 1.3.5–1.3.1', () => {
     const first = whatsNewPage(WHATS_NEW_ENTRIES, 0)
     const second = whatsNewPage(WHATS_NEW_ENTRIES, 1)
     const tail = whatsNewPage(WHATS_NEW_ENTRIES, 2)
 
     expect(first).toHaveLength(WHATS_NEW_PAGE_SIZE)
-    expect(first[0]?.version).toBe('1.3.23')
-    expect(first.at(-1)?.version).toBe('1.3.14')
-    expect(second[0]?.version).toBe('1.3.13')
-    expect(second.at(-1)?.version).toBe('1.3.4')
+    expect(first[0]?.version).toBe('1.3.25')
+    expect(first.at(-1)?.version).toBe('1.3.16')
+    expect(second[0]?.version).toBe('1.3.15')
+    expect(second.at(-1)?.version).toBe('1.3.6')
     expect(second).toHaveLength(WHATS_NEW_PAGE_SIZE)
-    expect(tail.map((entry) => entry.version)).toEqual(['1.3.3', '1.3.2', '1.3.1'])
+    expect(tail.map((entry) => entry.version)).toEqual(['1.3.5', '1.3.4', '1.3.3', '1.3.2', '1.3.1'])
     expect(whatsNewPage(WHATS_NEW_ENTRIES, 3)).toEqual([])
   })
 

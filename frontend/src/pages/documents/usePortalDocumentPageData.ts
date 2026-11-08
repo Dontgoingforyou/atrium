@@ -28,7 +28,7 @@ export type PortalDocumentPageData = {
 
 /**
  * Запросы и производные флаги страницы документа (без UI-оркестрации редактирования).
- * См. react-frontend.mdc: оркестрация выносится в колоцированный хук рядом со страницей.
+ * Оркестрация страницы живёт в хуке рядом с ней.
  */
 export function usePortalDocumentPageData(documentId: string): PortalDocumentPageData {
   const qc = useQueryClient()

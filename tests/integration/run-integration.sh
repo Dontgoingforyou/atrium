@@ -64,8 +64,8 @@ collect_blocked_tc_ids() {
   fi
 }
 
-echo "== Проверка переменных стенда =="
-ASSERT_JS="$INT_DIR/helpers/stand-env-assert.mjs"
+echo "== Проверка переменных integration =="
+ASSERT_JS="$INT_DIR/helpers/integration-env-assert.mjs"
 if [ -f "$ASSERT_JS" ]; then
   set +e
   if command -v bun >/dev/null 2>&1; then
@@ -81,18 +81,18 @@ if [ -f "$ASSERT_JS" ]; then
   set -e
   if [ "$RC" -eq 2 ]; then
     BLOCKED=1
-    echo "blocked: не заданы обязательные переменные стенда"
+    echo "blocked: не заданы обязательные переменные integration"
   elif [ "$RC" -ne 0 ]; then
     FAILED=1
   fi
 else
-  echo "нет stand-env-assert.mjs"
+  echo "нет integration-env-assert.mjs"
   FAILED=1
 fi
 
 if [ "$BLOCKED" -eq 1 ]; then
   FINISHED_AT="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
-  MSG="Не заданы обязательные переменные стенда (contracts.json / stand_contract.required_env)"
+  MSG="Не заданы обязательные переменные integration (contracts.json / required_env)"
   RESULTS_JSON="["
   FIRST=1
   while IFS= read -r TC_ID; do
@@ -108,10 +108,10 @@ if [ "$BLOCKED" -eq 1 ]; then
   cat > "$REPORT_DIR/test-run-results.json" <<EOF
 {
   "version": "1.0",
-  "run_id": "integration-stand-blocked",
+  "run_id": "integration-blocked",
   "started_at": "$STARTED_AT",
   "finished_at": "$FINISHED_AT",
-  "source": "integration-stand",
+  "source": "integration",
   "results": $RESULTS_JSON,
   "unmapped": [],
   "summary": { "passed": 0, "failed": 0, "skipped": 0, "blocked": 1, "unmapped": 0 }
@@ -151,7 +151,7 @@ if [ -f "$ROOT/scripts/import-test-results.mjs" ]; then
     --reports-dir "$REPORT_DIR" \
     --output "$REPORT_DIR/test-run-results.json" \
     --started-at "$STARTED_AT" \
-    --source integration-stand || FAILED=$((FAILED + 1))
+    --source integration || FAILED=$((FAILED + 1))
 fi
 
 exit $(( FAILED > 0 ? 1 : 0 ))

@@ -420,7 +420,7 @@ def test_format_calendar_invite_appends_url_from_description_only() -> None:
 def test_format_calendar_reminder_keeps_location_and_adds_description_url() -> None:
     notif = _calendar_notif(
         notif_type="calendar_reminder",
-        title="стендап",
+        title="планёрка",
         location="Переговорка 3",
         description="ссылка https://zoom.us/j/555",
     )

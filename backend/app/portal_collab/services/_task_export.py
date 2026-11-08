@@ -3,8 +3,7 @@
 Исключение из правила «сервис возвращает ORM»: специализированный read-сценарий,
 возвращает (bytes, filename, content_type) — как portal_time_entries._export.
 
-Выборка без PagedResponse обоснована: column-export с жёстким LIMIT
-(api-pagination.mdc / fastapi-backend.mdc).
+Выборка без PagedResponse обоснована: column-export с жёстким LIMIT.
 """
 
 from __future__ import annotations

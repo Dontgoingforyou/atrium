@@ -180,7 +180,7 @@ async def test_jira_webhook_unknown_issue_key_returns_204(
         wh.side_effect = ValidationError("Некорректный ключ задачи Jira (ожидается BASE-123)")
         res = await client_sqlite_only.post(
             "/api/v1/integrations/jira/webhook",
-            json={"key": "AUTASKS-1"},
+            json={"key": "TASKS-1"},
             headers={"X-Jira-Webhook-Secret": "wh-secret"},
         )
     assert res.status_code == 204

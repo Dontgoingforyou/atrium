@@ -2,7 +2,7 @@
  * Форматирование записей истории документа для презентационного слоя.
  *
  * Вынесено из `components/documents/DocumentHistoryBlock.tsx`, чтобы:
- *  - чистая доменная логика жила в `domain/` (см. `react-frontend.mdc`, `testing.mdc`);
+ *  - чистая доменная логика жила в `domain/` (, );
  *  - на неё собирался coverage (слой `domain/` входит в порог Vitest);
  *  - убрать дублирование лейблов статусов/событий с `documentLabels.ts`.
  */
@@ -35,7 +35,7 @@ function truncateBody(s: string, max = MAX_BODY_PREVIEW): string {
 
 /**
  * Извлекает текст из HTML-тела для превью в истории.
- * Использует `DOMParser` (не `innerHTML`), согласно `security.mdc` — это безопасный способ
+ * Использует `DOMParser` (не `innerHTML`), согласно  — это безопасный способ
  * извлечения textContent. HTML-комментарии не попадают в textContent, поэтому отдельно
  * не вырезаются. Fallback на regex — для окружений без `document` (ssr/тесты).
  */

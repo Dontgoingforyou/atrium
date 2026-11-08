@@ -140,19 +140,49 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  z-index: 1;
 }
 
 .brandSymbol {
-  width: 70px;
-  height: auto;
+  width: 56px;
+  height: 56px;
   flex-shrink: 0;
 }
 
-.brandText {
-  width: 194px;
-  height: auto;
-  flex-shrink: 0;
+.brandName {
+  margin: 0;
+  font-size: 40px;
+  font-weight: var(--font-weight-heading);
+  letter-spacing: 0.04em;
+  color: #fefefc;
+  line-height: 1;
+}
+
+.demoHint {
+  margin: var(--space-md) 0 0;
+  color: var(--color-text-muted);
+}
+
+.demoTitle {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: var(--font-weight-heading);
+}
+
+.demoList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.demoList li {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr;
+  gap: 12px;
 }
 
 @media (max-width: 900px) {
@@ -182,11 +212,12 @@
   }
 
   .brandSymbol {
-    width: 48px;
+    width: 40px;
+    height: 40px;
   }
 
-  .brandText {
-    width: 140px;
+  .brandName {
+    font-size: 28px;
   }
 
   .formSide {

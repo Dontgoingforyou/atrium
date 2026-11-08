@@ -5,7 +5,7 @@
 Пакет даёт **глобальный поиск по порталу**:
 
 1. **Полнотекст** (`GET /portal/search`) — объединение результатов по типам `document`, `chat_message`, `task`, `specialist`, `calendar_event` (договорённости в глобальный полнотекст не входят); сортировка по дате при нескольких типах (календарь — по `starts_at`); делегирование фильтрации прав доменным сервисам. Документы сужаются тем же `readable_document_ids_for_user`, что и `GET /portal/documents`. Мультитиповой merge берёт с каждого источника не больше `merge_cap` (≤500) строк — глубокая пагинация приблизительная.
-2. **Семантический поиск** (`GET /portal/search/semantic`) — ближайшие векторы в таблице `portal_embedding` (pgvector), запрос эмбеддинга через OpenAI.
+2. **Семантический поиск** (`GET /portal/search/semantic`) — ближайшие векторы в таблице `portal_embedding` (pgvector). Без `OPENAI_API_KEY` вектор считается локально по словам; с ключом — через API эмбеддингов.
 3. **Переиндексация** (`POST /portal/admin/search/reindex`) — только администраторы портала; bulk-обновление эмбеддингов в фоне.
 
 Тексты для индексации и поля `meta` формируются в [`services/entity_text.py`](services/entity_text.py). Запись эмбеддингов при изменении сущностей выполняется из модулей документов, чата, collab и обучения; снятие — `delete_embedding` / `delete_embeddings_batch` в [`services/embedding.py`](services/embedding.py) (в т.ч. при purge документов и удалении чата). См. [политику удаления](../MODULES.md#политика-удаления-данных-сквозная).
@@ -21,7 +21,7 @@
 | Метод | Путь | Описание |
 |-------|------|----------|
 | GET | `/portal/search` | Полнотекст: `q`, опционально `types` (`document`, `chat_message`, `task`, `specialist`, `calendar_event`), `tag_slug`, `skip`, `limit` (≤500) |
-| GET | `/portal/search/semantic` | Семантика: `q`, `types` (дефолт без agreement, как SPA; явный `agreement` допустим), `tag_slug`, `status_ids`, `skip`, `limit` (≤100). `total_found` — после фильтров в пределах `top_k`, не полный count. Rate limit — middleware. Требуется `OPENAI_API_KEY` |
+| GET | `/portal/search/semantic` | Семантика: `q`, `types` (дефолт без agreement, как SPA; явный `agreement` допустим), `tag_slug`, `status_ids`, `skip`, `limit` (≤100). `total_found` — после фильтров в пределах `top_k`, не полный count. Rate limit — middleware. Без ключа модели порог похожести ниже (`LOCAL_SEMANTIC_MIN_SCORE`) |
 | POST | `/portal/admin/search/reindex` | Фоновая переиндексация; опционально `entity_types`. Ответ `202` |
 
 Реэкспорт: [`router.py`](router.py). Подключение в [../api/v1/router.py](../api/v1/router.py).
@@ -30,7 +30,7 @@
 
 Семантика и эмбеддинги (см. [`../core/config.py`](../core/config.py)): `openai_api_key`, `openai_base_url`, `embedding_model_name`, `embedding_dimension`, `embedding_batch_size`, `semantic_search_min_score` (порог 0–1), `semantic_search_top_k`, `semantic_search_rate_limit`.
 
-**Конфиденциальность:** строка запроса `q` для семантического поиска отправляется провайдеру эмбеддингов (OpenAI или совместимый endpoint по `openai_base_url`). Для внутреннего портала это должно быть учтено в политике данных и договоре с провайдером.
+**Конфиденциальность:** если задан `OPENAI_API_KEY`, строка запроса `q` уходит провайдеру эмбеддингов (`openai_base_url` или api.openai.com). Пустой ключ оставляет и запрос, и индекс на портале.
 
 Ограничения длины и допустимые значения `types` — [`../core/portal_search_constants.py`](../core/portal_search_constants.py).
 

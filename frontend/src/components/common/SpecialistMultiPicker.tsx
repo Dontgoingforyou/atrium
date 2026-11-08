@@ -15,7 +15,7 @@ interface SpecialistMultiPickerProps {
   chipsPosition?: 'below' | 'right'
 }
 
-/** Мультипикер специалистов (студенты портала) — тот же UX, что UserMultiPicker на задачах. */
+/** Мультипикер специалистов — тот же UX, что UserMultiPicker на задачах. */
 export function SpecialistMultiPicker({
   value,
   onChange,

@@ -2,7 +2,7 @@ export type ConversionLevel = 'high' | 'medium' | 'low'
 
 export const CONVERSION_LEVEL_COLORS: Record<ConversionLevel, string> = {
   high: '#e1e235',
-  medium: '#6131cf',
+  medium: '#0f766e',
   low: '#df4d12',
 }
 

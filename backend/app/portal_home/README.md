@@ -5,7 +5,7 @@
 Агрегирующий пакет: собирает данные для **главной страницы** из нескольких доменов (задачи, избранное) и возвращает единый ответ. Не хранит собственных таблиц — только логика сборки и сервисные вызовы к соседним модулям.
 
 **Ролевые блоки:**
-- `admin` (поле `PortalHomeRead`) — только для `is_portal_admin`: дашборд задач команды; сводки таймшитов и список студентов — вне главной (`/analytics/timesheets`, `/specialists`, `GET /portal/users/specialists`).
+- `admin` (поле `PortalHomeRead`) — только для `is_portal_admin`: дашборд задач команды; сводки таймшитов и список специалистов — вне главной (`/analytics/timesheets`, `/specialists`, `GET /portal/users/specialists`).
 - `manager` — зарезервировано: API всегда отдаёт `null`, `_build_manager_block` нет.
 - Запросы к БД на одной `AsyncSession` — **последовательно** (не `asyncio.gather`). Для админа с drill-down — много COUNT; сжимать SQL в `task_home` — отдельный рефакторинг.
 
@@ -31,7 +31,7 @@
 | Путь | Содержимое |
 |------|------------|
 | `routes/home.py` | Единственный эндпоинт `GET /portal/home`; делегирует в сервис |
-| `services/home.py` | `build_portal_home` — оркестрирует вызовы к `task_home_svc`, `favorite_svc`; превью задач через `tasks_to_reads`. Разбит на приватные `_build_admin_block` и `_build_assignee_drilldown`. Возврат Pydantic-агрегата напрямую — задокументированное исключение из «сервис возвращает ORM» (services.mdc), см. docstring |
+| `services/home.py` | `build_portal_home` — оркестрирует вызовы к `task_home_svc`, `favorite_svc`; превью задач через `tasks_to_reads`. Разбит на приватные `_build_admin_block` и `_build_assignee_drilldown`. Возврат Pydantic-агрегата напрямую — задокументированное исключение из «сервис возвращает ORM», см. docstring |
 | `schemas/home.py` | Pydantic DTO: `PortalHomeRead`, `AdminHomeBlock`, `ManagerHomeBlock`, `PortalHomeSearchHint`, вспомогательные |
 
 ---
@@ -72,4 +72,4 @@
 
 - [../MODULES.md](../MODULES.md) — индекс модулей, список пакетов, сервисный граф.
 - [../portal_collab/README.md](../portal_collab/README.md) — `task_home.py` и разделение `task.py` / `task_home.py`.
-- [../api/v1/routes/portal_users.py](../api/v1/routes/portal_users.py) — `GET /portal/users/specialists` (список студентов для раздела «Специалисты»).
+- [../api/v1/routes/portal_users.py](../api/v1/routes/portal_users.py) — `GET /portal/users/specialists` (список специалистов без чатов).

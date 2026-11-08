@@ -55,7 +55,7 @@ async def jira_webhook(
     try:
         updated = await jira_svc.apply_jira_webhook(session, http, issue_key)
     except ValidationError:
-        # Чужой проект (например AUTASKS) — не наша карточка, без ретраев Jira.
+        # Чужой проект (например TASKS) — не наша карточка, без ретраев Jira.
         logger.warning("Jira webhook: ключ не из проекта специалистов issue_key=%s", issue_key)
         return Response(status_code=status.HTTP_204_NO_CONTENT)
     except Exception as exc:

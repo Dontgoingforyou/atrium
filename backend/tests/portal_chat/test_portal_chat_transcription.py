@@ -1,6 +1,6 @@
 """Тесты транскрибации голосовых вложений через OpenAI Whisper.
 
-Покрытие (testing.mdc): успех, переиспользование готового транскрипта (без повторного
+Покрытие: успех, переиспользование готового транскрипта (без повторного
 вызова внешнего API), валидация (не голосовое сообщение), недоступность сервиса
 (нет ключа / ошибка OpenAI), 403 для не-участника чата — внешний API всегда мокается.
 """
@@ -29,7 +29,6 @@ from tests.helpers.portal_test_users import user_portal_admin, user_portal_regul
 
 _WEBM_MAGIC = b"\x1a\x45\xdf\xa3" + b"\x00" * 12
 
-
 async def _make_voice_attachment(
     session: AsyncSession,
     *,
@@ -54,14 +53,12 @@ async def _make_voice_attachment(
     await session.refresh(att)
     return att
 
-
 @pytest.fixture(autouse=True)
 def _reset_client_singleton() -> object:
     """Сбрасывает модульный singleton AsyncOpenAI между тестами."""
     transcription_svc._client = None
     yield
     transcription_svc._client = None
-
 
 async def test_transcribe_voice_attachment_success(
     sqlite_session: AsyncSession,
@@ -97,7 +94,6 @@ async def test_transcribe_voice_attachment_success(
     dl.assert_awaited_once_with(att.storage_key)
     fake_client.audio.transcriptions.create.assert_awaited_once()
 
-
 async def test_transcribe_voice_attachment_reuses_existing_transcript(
     sqlite_session: AsyncSession,
 ) -> None:
@@ -114,7 +110,6 @@ async def test_transcribe_voice_attachment_reuses_existing_transcript(
 
     assert result.voice_transcript == "уже есть"
     dl.assert_not_called()
-
 
 async def test_transcribe_non_voice_attachment_validation(
     sqlite_session: AsyncSession,
@@ -139,7 +134,6 @@ async def test_transcribe_non_voice_attachment_validation(
 
     with pytest.raises(ValidationError, match="только для голосовых"):
         await transcription_svc.transcribe_voice_attachment(sqlite_session, admin, chat.id, att.id)
-
 
 async def test_transcribe_rejects_duration_spoof_on_non_audio(
     sqlite_session: AsyncSession,
@@ -166,7 +160,6 @@ async def test_transcribe_rejects_duration_spoof_on_non_audio(
     with pytest.raises(ValidationError, match="только для голосовых"):
         await transcription_svc.transcribe_voice_attachment(sqlite_session, admin, chat.id, att.id)
 
-
 async def test_transcribe_rejects_oversized_audio(
     sqlite_session: AsyncSession,
     monkeypatch: pytest.MonkeyPatch,
@@ -191,7 +184,6 @@ async def test_transcribe_rejects_oversized_audio(
     with pytest.raises(ValidationError, match="слишком большое"):
         await transcription_svc.transcribe_voice_attachment(sqlite_session, admin, chat.id, att.id)
 
-
 async def test_transcribe_missing_api_key_service_unavailable(
     sqlite_session: AsyncSession,
     monkeypatch: pytest.MonkeyPatch,
@@ -213,7 +205,6 @@ async def test_transcribe_missing_api_key_service_unavailable(
         with pytest.raises(ServiceUnavailableError, match="OPENAI_API_KEY"):
             await transcription_svc.transcribe_voice_attachment(sqlite_session, admin, chat.id, att.id)
         dl.assert_not_called()
-
 
 async def test_transcribe_openai_error_raises_service_unavailable(
     sqlite_session: AsyncSession,
@@ -249,7 +240,6 @@ async def test_transcribe_openai_error_raises_service_unavailable(
         with pytest.raises(ServiceUnavailableError, match="Не удалось транскрибировать"):
             await transcription_svc.transcribe_voice_attachment(sqlite_session, admin, chat.id, att.id)
 
-
 async def test_transcribe_voice_attachment_non_member_forbidden(
     sqlite_session: AsyncSession,
 ) -> None:
@@ -262,11 +252,9 @@ async def test_transcribe_voice_attachment_non_member_forbidden(
     with pytest.raises(ForbiddenError):
         await transcription_svc.transcribe_voice_attachment(sqlite_session, user_b, chat.id, att.id)
 
-
 # ---------------------------------------------------------------------------
 # HTTP-уровень: POST /portal/chats/{id}/attachments/{aid}/transcribe
 # ---------------------------------------------------------------------------
-
 
 async def test_transcribe_route_success(
     client_admin: AsyncClient,
@@ -308,7 +296,6 @@ async def test_transcribe_route_success(
     assert r.status_code == 200, r.text
     assert r.json()["transcript"] == "текст записи"
 
-
 async def test_transcribe_route_403_non_member(
     sqlite_session: AsyncSession,
     patch_oidc_settings: Settings,
@@ -338,7 +325,6 @@ async def test_transcribe_route_403_non_member(
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_db_session, None)
 
-
 def test_whisper_client_uses_shared_key_and_base_url(monkeypatch: pytest.MonkeyPatch) -> None:
     """Whisper и эмбеддинги читают один OPENAI_API_KEY и один OPENAI_BASE_URL."""
     transcription_svc._client = None
@@ -356,7 +342,6 @@ def test_whisper_client_uses_shared_key_and_base_url(monkeypatch: pytest.MonkeyP
         assert client_cls.call_args.kwargs["timeout"] == 60.0
     finally:
         transcription_svc._client = None
-
 
 def test_whisper_client_uses_dedicated_timeout(monkeypatch: pytest.MonkeyPatch) -> None:
     """Whisper берёт openai_whisper_timeout_seconds, не общий http_client_timeout."""

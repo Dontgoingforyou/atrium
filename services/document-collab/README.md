@@ -1,6 +1,6 @@
 # document-collab (Hocuspocus)
 
-Self-hosted Yjs sync для body `portal_document`. Auth и CAS-snapshot — через Cosmolet
+Self-hosted Yjs sync для body `portal_document`. Auth и CAS-snapshot — через Atrium
 `/api/v1/internal/document-collab/*` и заголовок `X-Collab-Service-Token`.
 
 ## Env
@@ -8,7 +8,7 @@ Self-hosted Yjs sync для body `portal_document`. Auth и CAS-snapshot — ч�
 | Переменная | Описание |
 |---|---|
 | `PORT` | WS порт (по умолчанию 1234) |
-| `COSMOLET_API_BASE_URL` | `http://api:8000/api/v1` |
+| `ATRIUM_API_BASE_URL` | `http://api:8000/api/v1` |
 | `DOCUMENT_COLLAB_SERVICE_TOKEN` | Shared secret с API |
 | `DOCUMENT_COLLAB_STORE_DEBOUNCE_MS` | Debounce onStore (по умолчанию 2000) |
 

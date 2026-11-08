@@ -12,7 +12,7 @@ from wtforms.validators import DataRequired, Optional
 
 from app.admin.enum_labels import TASK_STATUS_LABELS_RU
 from app.admin.formatters import fmt_color, fmt_datetime, fmt_diff, fmt_task_priority, fmt_task_status
-from app.admin.model_converter import CosmoletAdminModelConverter
+from app.admin.model_converter import AtriumAdminModelConverter
 from app.admin.sqladmin_categories import SQLADMIN_CATEGORY_TASKS
 from app.admin.views.documents import ColorPickerWidget
 from app.infrastructure.db.models.portal_chat import PortalChat
@@ -26,7 +26,7 @@ from app.portal_collab.admin.formatters import (
     fmt_mentioned_names,
 )
 
-# PortalTask.status хранится как обычный String (не SQLAlchemy Enum) — CosmoletAdminModelConverter
+# PortalTask.status хранится как обычный String (не SQLAlchemy Enum) — AtriumAdminModelConverter
 # на такие колонки не срабатывает, поэтому подписи для формы берём из общего enum_labels вручную.
 # PortalTask.priority — настоящий SQLAlchemy Enum, его форму строит конвертер (form_converter ниже).
 _TASK_STATUS_CHOICES = list(TASK_STATUS_LABELS_RU.items())
@@ -55,7 +55,7 @@ class PortalTaskAdmin(ModelView, model=PortalTask):
     category = SQLADMIN_CATEGORY_TASKS
     category_icon = "fa-solid fa-clipboard-list"
 
-    form_converter = CosmoletAdminModelConverter
+    form_converter = AtriumAdminModelConverter
     form_excluded_columns = [
         "creator_profile",
         "assignee_profile",
@@ -69,7 +69,7 @@ class PortalTaskAdmin(ModelView, model=PortalTask):
         "updated_at",
         "version",
     ]
-    # priority — не здесь: SelectField для него строит CosmoletAdminModelConverter (это Enum-столбец)
+    # priority — не здесь: SelectField для него строит AtriumAdminModelConverter (это Enum-столбец)
     form_overrides = {
         "status": SelectField,
     }
@@ -346,7 +346,7 @@ class PortalTaskColumnAdmin(ModelView, model=PortalTaskColumn):
         "id": "Идентификатор",
         "title": "Заголовок",
         "status_key": "Статус",
-        "jira_status_id": "ID статуса Jira (AUTASKS)",
+        "jira_status_id": "ID статуса Jira (TASKS)",
         "color": "Цвет",
         "position": "Порядок",
         "exclude_from_kpi": "Исключить из KPI",
@@ -371,7 +371,7 @@ class PortalTaskColumnAdmin(ModelView, model=PortalTaskColumn):
         "color": {"widget": ColorPickerWidget(), "label": "Цвет"},
         "title": {"label": "Заголовок"},
         "status_key": {"label": "Ключ статуса"},
-        "jira_status_id": {"label": "ID статуса Jira (AUTASKS)"},
+        "jira_status_id": {"label": "ID статуса Jira (TASKS)"},
         "position": {"label": "Порядок"},
         "exclude_from_kpi": {"label": "Исключить из KPI"},
     }

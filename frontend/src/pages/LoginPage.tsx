@@ -11,7 +11,7 @@ import { goToPostLoginPath } from '../utils/auth/postLoginRedirect'
 import styles from '@/styles/modules/auth/LoginPage.module.css'
 
 /**
- * Кастомная форма входа (Figma): email + пароль через POST /auth/login (прокси SSO).
+ * Форма входа: email или логин и пароль через POST /auth/login.
  * Тихий refresh через cookie — если сессия жива, редирект без формы.
  */
 export function LoginPage() {
@@ -122,7 +122,7 @@ export function LoginPage() {
     <div className={styles.page} data-theme="light">
       <div className={styles.formSide}>
         <div className={styles.formInner}>
-          <h1 className={styles.title}>Войти в «Космолёт»</h1>
+          <h1 className={styles.title}>Войти в «Атриум»</h1>
           <form className={styles.form} onSubmit={(e) => void handleSubmit(e)}>
             <div className={styles.fields}>
               <label className={styles.field}>
@@ -163,14 +163,31 @@ export function LoginPage() {
             <button type="submit" className={styles.submitBtn} disabled={isSubmitting}>
               {isSubmitting ? 'Вход…' : 'Войти'}
             </button>
+            <div className={styles.demoHint}>
+              <p className={styles.demoTitle}>Демо-вход</p>
+              <ul className={styles.demoList}>
+                <li>
+                  <span>admin</span>
+                  <span>demo-admin</span>
+                </li>
+                <li>
+                  <span>manager</span>
+                  <span>demo-manager</span>
+                </li>
+                <li>
+                  <span>user</span>
+                  <span>demo-user</span>
+                </li>
+              </ul>
+            </div>
           </form>
         </div>
       </div>
       <aside className={styles.brandSide} aria-hidden>
         <div className={styles.brandPanel}>
           <div className={styles.brandLogo}>
-            <img src="/auth/gustaff-symbol.svg" alt="" className={styles.brandSymbol} />
-            <img src="/auth/gustaff-text.svg" alt="" className={styles.brandText} />
+            <img src="/logo-on-accent.svg" alt="" className={styles.brandSymbol} />
+            <p className={styles.brandName}>Atrium</p>
           </div>
         </div>
       </aside>

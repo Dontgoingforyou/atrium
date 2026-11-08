@@ -1,0 +1,295 @@
+# Пример системного nginx: stage и production в одном файле (sites-enabled/atrium).
+#
+# Этот nginx слушает HTTP :80; TLS можно завершать на внешнем прокси.
+# Не требует certbot и /etc/letsencrypt на этой машине.
+#
+# Скопировать на сервер:
+#   sudo cp deploy/nginx/atrium-server.vhost.conf.example /etc/nginx/sites-available/atrium
+#   sudo nginx -t && sudo systemctl reload nginx
+#
+# Если TLS нужен на этом же хосте — см. deploy/nginx/atrium-server.vhost.ssl-snippet.example
+#
+# Чеклист бэкенда: FORWARDED_ALLOW_IPS у API (см. backend/Dockerfile, .env.example).
+#
+# Порты Docker на localhost (пример двух окружений):
+#   stage      — статика 9080, API 9082, MinIO S3 9064
+#   production — статика 9081, API 9083, MinIO S3 9067
+#
+# Локальная машина: deploy/nginx/gateway.local.conf + docker-compose.yml → :9088
+#
+# Префиксы ниже ОБЯЗАТЕЛЬНО проксировать на API (до catch-all location / → SPA):
+#   /api/  /tg/  /admin/  /static/  /docs  /redoc  /openapi.json  /vendor/
+# Без /vendor/ страницы /docs и /redoc не загружают Swagger UI / ReDoc (MIME text/html).
+#
+# Telegram webhook шлёт X-Telegram-Bot-Api-Secret-Token — в имени есть underscores.
+# Без underscores_in_headers on nginx молча отбрасывает заголовок → API всегда 403.
+
+# WebSocket (Upgrade → Connection)
+map $http_upgrade $connection_upgrade {
+    default   keep-alive;
+    websocket upgrade;
+}
+
+# Схема для FastAPI/SQLAdmin за внешним HTTPS-прокси.
+map $http_x_forwarded_proto $forwarded_proto {
+    default $http_x_forwarded_proto;
+    ''      https;
+}
+
+
+# --- Staging ---
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name atrium.stage.example.com;
+
+    # Нужно для Telegram webhook secret header (underscores в имени).
+    underscores_in_headers on;
+
+    gzip on;
+    gzip_types text/css application/javascript application/json font/woff2 image/svg+xml;
+    gzip_min_length 1024;
+    gzip_vary on;
+    gzip_proxied any;
+
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "DENY" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Permissions-Policy "camera=(), microphone=(self), geolocation=()" always;
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:9082;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_read_timeout 86400s;
+        proxy_send_timeout 86400s;
+        client_max_body_size 2200m;
+    }
+
+    # TipTap/Yjs collab (Hocuspocus) — same-origin для CSP connect-src 'self'
+    location /collab {
+        proxy_pass http://127.0.0.1:9124;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_read_timeout 86400s;
+        proxy_send_timeout 86400s;
+    }
+
+    location /tg/ {
+        proxy_pass http://127.0.0.1:9082;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+        client_max_body_size 1m;
+    }
+
+    location /chat-attachments/ {
+        proxy_pass http://127.0.0.1:9064/chat-attachments/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+        client_max_body_size 2200m;
+    }
+
+    location = /admin {
+        return 301 /admin/;
+    }
+
+    location /admin/ {
+        proxy_pass http://127.0.0.1:9082;
+        proxy_http_version 1.1;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+    }
+
+    location ^~ /static/ {
+        proxy_pass http://127.0.0.1:9082;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+    }
+
+    location ~ ^/(openapi\.json|docs|redoc)(/.*)?$ {
+        proxy_pass http://127.0.0.1:9082;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+    }
+
+    # Swagger UI и ReDoc: /vendor/swagger-ui/*, /vendor/redoc/*
+    location ^~ /vendor/ {
+        proxy_pass http://127.0.0.1:9082;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+    }
+
+    location /assets/ {
+        proxy_pass http://127.0.0.1:9080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        expires 1y;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:9080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+    }
+}
+
+
+# --- Production ---
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name atrium.example.com;
+
+    # Нужно для Telegram webhook secret header (underscores в имени).
+    underscores_in_headers on;
+
+    gzip on;
+    gzip_types text/css application/javascript application/json font/woff2 image/svg+xml;
+    gzip_min_length 1024;
+    gzip_vary on;
+    gzip_proxied any;
+
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "DENY" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+    add_header Permissions-Policy "camera=(), microphone=(self), geolocation=()" always;
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:9083;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_read_timeout 86400s;
+        proxy_send_timeout 86400s;
+        client_max_body_size 2200m;
+    }
+
+    location /collab {
+        proxy_pass http://127.0.0.1:9125;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+        proxy_read_timeout 86400s;
+        proxy_send_timeout 86400s;
+    }
+
+    location /tg/ {
+        proxy_pass http://127.0.0.1:9083;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+        client_max_body_size 1m;
+    }
+
+    location /chat-attachments/ {
+        proxy_pass http://127.0.0.1:9067/chat-attachments/;
+        proxy_http_version 1.1;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+        client_max_body_size 2200m;
+    }
+
+    location = /admin {
+        return 301 /admin/;
+    }
+
+    location /admin/ {
+        proxy_pass http://127.0.0.1:9083;
+        proxy_http_version 1.1;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+    }
+
+    location ^~ /static/ {
+        proxy_pass http://127.0.0.1:9083;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+    }
+
+    location ~ ^/(openapi\.json|docs|redoc)(/.*)?$ {
+        proxy_pass http://127.0.0.1:9083;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+    }
+
+    location ^~ /vendor/ {
+        proxy_pass http://127.0.0.1:9083;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+    }
+
+    location /assets/ {
+        proxy_pass http://127.0.0.1:9081;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+        expires 1y;
+    }
+
+    location / {
+        proxy_pass http://127.0.0.1:9081;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
+    }
+}

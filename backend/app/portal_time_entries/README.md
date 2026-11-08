@@ -10,7 +10,7 @@
 |------|---------|--------|
 | Разработчик / «только ТШ» | Keycloak-группа `students` **или** должность SSO (claim `position`) из `TIMESHEET_ONLY_POSITIONS` (`student`, `au_specialist`) | Только свои записи: создание, просмотр, редактирование, удаление |
 | Менеджер | Основной отдел SSO «Аутстафф» (`gid_number=10000`), **и должность не входит** в `TIMESHEET_ONLY_POSITIONS` | Свои записи + просмотр чужих (фильтр `user_sub`); сводка часов по специалистам за месяц — `GET /portal/time-entries/specialists` |
-| Администратор портала | `is_portal_admin` (роль `cosmolet_role_admin`) | Полный доступ: все записи, фильтр `user_sub`, удаление чужих записей |
+| Администратор портала | `is_portal_admin` (роль `atrium_role_admin`) | Полный доступ: все записи, фильтр `user_sub`, удаление чужих записей |
 
 Пользователи **без** одной из трёх ролей получают **403** при любом обращении к таймшитам.
 
@@ -65,7 +65,7 @@
 ## Зависимости
 
 - **`app.infrastructure.db.models`** — модели `PortalTimeEntry`, `PortalUserProfile`
-- **`app.core.permissions`** — `is_manager_or_admin`, `is_timesheet_only` (единый источник RBAC-политики — не копировать в модуле, см. **dry.mdc**)
+- **`app.core.permissions`** — `is_manager_or_admin`, `is_timesheet_only` (единый источник RBAC-политики — не копировать в модуле, см.)
 - **`app.core.auth_constants`** — `IDP_GROUP_DEVELOPER`, `TIMESHEET_ONLY_POSITIONS` (должности SSO `student`/`au_specialist`)
 - **`app.schemas.auth.UserPublic`** — флаги ролей (`is_portal_admin`, `idp_groups`, `position`)
 - **`app.schemas.pagination.PagedResponse`** — постраничный ответ для списка записей и агрегата по специалистам (`/time-entries`, `/time-entries/specialists`)

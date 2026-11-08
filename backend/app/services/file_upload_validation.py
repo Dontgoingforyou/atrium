@@ -7,7 +7,7 @@
 там не применяется — используется только проверка magic bytes ниже (для известных форматов)
 и лимит размера (Settings.attachment_max_size_bytes).
 
-`check_magic_bytes` — единый источник проверки сигнатур для всех доменов (DRY, `dry.mdc`):
+`check_magic_bytes` — единый источник проверки сигнатур для всех доменов:
 узкие whitelist'ы изображений в `app/services/avatar_upload_common.py` и
 `app/services/rich_media_upload.py` (другие bounded context) вызывают эту же функцию с
 `reject_unknown=True`, не заводят собственную копию словаря/цикла проверки байт.

@@ -14,7 +14,6 @@ import sqlalchemy as sa
 from sqlalchemy import delete as sa_delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.config import get_settings
 from app.infrastructure.db.models.portal_embedding import PortalEmbedding
 from app.portal_search.services._embedding_background import (
     bulk_reindex_bg,
@@ -70,14 +69,6 @@ async def upsert_embedding(
     meta: dict[str, str],
 ) -> None:
     """Создаёт или обновляет эмбеддинг сущности в таблице portal_embedding."""
-    if not get_settings().openai_api_key:
-        logger.warning(
-            "OPENAI_API_KEY не задан — индексация семантического поиска пропущена для %s#%s",
-            entity_type,
-            entity_id,
-        )
-        return
-
     try:
         embedding = await generate_embedding(text)
         vec_str = vec_literal(embedding)

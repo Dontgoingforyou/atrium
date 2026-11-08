@@ -63,7 +63,7 @@ type SendChatMessageOptions = {
   currentUserSub: string | null | undefined
   /** Фабрика ключа кэша сообщений — у /chats может включать deep-link суффикс. */
   messagesQueryKey: (chatId: string) => QueryKey
-  /** Пользовательское сообщение при сбое отправки (канон react-frontend.mdc — не тихий rollback). */
+  /** Сообщение пользователю при сбое отправки, без тихого отката. */
   onErrorToast?: (message: string) => void
 }
 

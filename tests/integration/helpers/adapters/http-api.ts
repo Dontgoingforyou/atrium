@@ -1,7 +1,7 @@
 import { requireEnv } from "../env";
 
 /**
- * Скелет адаптера HTTP API / storage стенда (kind=http_api | storage).
+ * Скелет адаптера HTTP API / storage (kind=http_api | storage).
  * Пример: Nextcloud WebDAV — baseUrlEnv=NEXTCLOUD_BASE_URL, healthPath=/status.php.
  * Допишите пути и заголовки под конкретный сервис.
  */

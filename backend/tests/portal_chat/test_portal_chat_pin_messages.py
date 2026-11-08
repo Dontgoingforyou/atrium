@@ -1,6 +1,6 @@
 """Тесты закрепления сообщений чата.
 
-Покрытие (testing.mdc):
+Покрытие:
 - успешный сценарий pin/unpin/list на сервисном уровне
 - 403 для не-участника чата на уровне HTTP
 - валидация: удалённое сообщение, лимит закреплённых сообщений на чат
@@ -26,12 +26,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from tests.helpers.portal_test_users import user_portal_admin, user_portal_regular, user_portal_user_b
 
-
 async def _fresh(session: AsyncSession, msg: object) -> None:
     """post_message кладёт в ``attachments`` обычный список — без этого flush после падает."""
     msg.__dict__.pop("attachments", None)  # type: ignore[union-attr]
     await session.refresh(msg)  # type: ignore[arg-type]
-
 
 @pytest.fixture(autouse=True)
 def _mock_chat_and_inbox_publish() -> object:
@@ -42,7 +40,6 @@ def _mock_chat_and_inbox_publish() -> object:
         patch("app.infrastructure.ws.inbox_manager.get_inbox_manager", return_value=mgr),
     ):
         yield
-
 
 async def test_pin_message_success(sqlite_session: AsyncSession) -> None:
     """Закрепление сообщения устанавливает pinned_at и pinned_by_sub."""
@@ -56,7 +53,6 @@ async def test_pin_message_success(sqlite_session: AsyncSession) -> None:
 
     assert pinned.pinned_at is not None
     assert pinned.pinned_by_sub == other.sub
-
 
 async def test_pin_message_idempotent(sqlite_session: AsyncSession) -> None:
     """Повторное закрепление уже закреплённого сообщения не меняет pinned_by_sub."""
@@ -72,7 +68,6 @@ async def test_pin_message_idempotent(sqlite_session: AsyncSession) -> None:
     assert second.pinned_by_sub == first.pinned_by_sub == admin.sub
     assert second.pinned_at == first.pinned_at
 
-
 async def test_unpin_message_success(sqlite_session: AsyncSession) -> None:
     admin = user_portal_admin()
     other = user_portal_regular()
@@ -87,7 +82,6 @@ async def test_unpin_message_success(sqlite_session: AsyncSession) -> None:
     assert unpinned.pinned_at is None
     assert unpinned.pinned_by_sub is None
 
-
 async def test_unpin_message_not_pinned_is_noop(sqlite_session: AsyncSession) -> None:
     """Открепление уже незакреплённого сообщения не падает."""
     admin = user_portal_admin()
@@ -99,7 +93,6 @@ async def test_unpin_message_not_pinned_is_noop(sqlite_session: AsyncSession) ->
 
     assert unpinned.pinned_at is None
 
-
 async def test_pin_message_not_found(sqlite_session: AsyncSession) -> None:
     admin = user_portal_admin()
     other = user_portal_regular()
@@ -107,7 +100,6 @@ async def test_pin_message_not_found(sqlite_session: AsyncSession) -> None:
 
     with pytest.raises(NotFoundError, match="не найдено"):
         await pin_svc.pin_message(sqlite_session, admin, chat.id, uuid.uuid4())
-
 
 async def test_pin_deleted_message_validation(sqlite_session: AsyncSession) -> None:
     admin = user_portal_admin()
@@ -123,7 +115,6 @@ async def test_pin_deleted_message_validation(sqlite_session: AsyncSession) -> N
 
     with pytest.raises(ValidationError, match="удалённое"):
         await pin_svc.pin_message(sqlite_session, admin, chat.id, mid)
-
 
 async def test_pin_message_over_limit_raises_validation(
     sqlite_session: AsyncSession,
@@ -147,7 +138,6 @@ async def test_pin_message_over_limit_raises_validation(
     with pytest.raises(ValidationError, match="максимум"):
         await pin_svc.pin_message(sqlite_session, admin, chat.id, m3.id)
 
-
 async def test_pin_message_non_member_forbidden(sqlite_session: AsyncSession) -> None:
     admin = user_portal_admin()
     other = user_portal_regular()
@@ -157,7 +147,6 @@ async def test_pin_message_non_member_forbidden(sqlite_session: AsyncSession) ->
 
     with pytest.raises(ForbiddenError):
         await pin_svc.pin_message(sqlite_session, user_b, chat.id, msg.id)
-
 
 async def test_list_pinned_messages_recent_first(sqlite_session: AsyncSession) -> None:
     admin = user_portal_admin()
@@ -175,7 +164,6 @@ async def test_list_pinned_messages_recent_first(sqlite_session: AsyncSession) -
 
     assert [m.id for m in pinned] == [m2.id, m1.id]
 
-
 async def test_list_pinned_messages_empty(sqlite_session: AsyncSession) -> None:
     admin = user_portal_admin()
     other = user_portal_regular()
@@ -185,11 +173,9 @@ async def test_list_pinned_messages_empty(sqlite_session: AsyncSession) -> None:
 
     assert pinned == []
 
-
 # ---------------------------------------------------------------------------
 # HTTP-уровень: /portal/chats/{id}/messages/{mid}/pin, .../pin (DELETE), .../pinned
 # ---------------------------------------------------------------------------
-
 
 async def test_pin_unpin_routes_success(
     client_admin: AsyncClient,
@@ -225,7 +211,6 @@ async def test_pin_unpin_routes_success(
     r_list_after = await client_admin.get(f"/api/v1/portal/chats/{chat_id}/messages/pinned")
     assert r_list_after.json() == []
 
-
 async def test_pin_message_route_403_non_member(
     sqlite_session: AsyncSession,
     patch_oidc_settings: Settings,
@@ -257,7 +242,6 @@ async def test_pin_message_route_403_non_member(
 
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_db_session, None)
-
 
 async def test_list_pinned_messages_route_403_non_member(
     sqlite_session: AsyncSession,

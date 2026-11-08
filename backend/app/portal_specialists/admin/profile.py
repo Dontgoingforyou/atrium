@@ -97,8 +97,8 @@ class PortalSpecialistProfileAdmin(ModelView, model=PortalSpecialistProfile):
         "version",
     ]
     form_args = {
-        "birthdate": {"description": "Только из SSO (админка EM), вручную не редактируется."},
-        "telegram": {"description": "Только из SSO (админка EM), вручную не редактируется."},
+        "birthdate": {"description": "Подтягивается из профиля, вручную не редактируется."},
+        "telegram": {"description": "Подтягивается из профиля, вручную не редактируется."},
     }
     form_widget_args = {
         "birthdate": {"readonly": True},

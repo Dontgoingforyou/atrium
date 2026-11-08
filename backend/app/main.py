@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import sys
 from collections.abc import AsyncIterator, Awaitable
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -81,6 +82,8 @@ from app.portal_specialists.admin import (
 )
 from app.portal_telegram.bot.runner import init_telegram_bot, shutdown_telegram_bot
 from app.portal_telegram.webhook import build_telegram_webhook_router
+from app.services.demo_content import seed_demo_portal
+from app.services.demo_vectors import vectorize_portal_if_local
 
 logger = logging.getLogger(__name__)
 
@@ -235,6 +238,16 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         bench_sync_stop = asyncio.Event()
         bench_sync_task = asyncio.create_task(run_bench_sheets_sync_loop(bench_sync_stop, s))
 
+    if s.debug and "pytest" not in sys.modules:
+        try:
+            await seed_demo_portal()
+        except Exception:
+            logger.exception("Учебные данные не записаны")
+        try:
+            await vectorize_portal_if_local()
+        except Exception:
+            logger.exception("Векторы документов, задач и сообщений не посчитаны")
+
     async with httpx.AsyncClient(timeout=s.http_client_timeout_seconds, trust_env=False) as client:
         _app.state.http_client = client
         # Сессия MCP живёт в родителе: lifespan вложенного ASGI-приложения FastAPI не запускает.
@@ -262,7 +275,7 @@ def _setup_admin(application: FastAPI, session_secret: str) -> None:
         application,
         engine,
         authentication_backend=auth_backend,
-        title="Cosmolet Admin",
+        title="Atrium Admin",
         templates_dir=str(_ADMIN_TEMPLATES_DIR),
     )
 

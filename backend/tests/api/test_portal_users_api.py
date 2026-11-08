@@ -10,7 +10,7 @@ from urllib.parse import parse_qs, urlparse
 
 import pytest
 from app.infrastructure.db.models.portal_user_profile import PortalUserProfile
-from app.integrations.effective_admin.client import PhotoBytes
+from app.integrations.profile_directory.client import PhotoBytes
 from app.schemas.portal_user import AvatarUploadRead
 from app.services.user_photo_url import build_user_photo_proxy_url, verify_user_photo_signature
 from httpx import AsyncClient
@@ -416,8 +416,8 @@ async def test_post_my_avatar_too_large_returns_413(
     from app.services.avatar_upload_common import AVATAR_MAX_BYTES
 
     s = make_oidc_settings(
-        effective_admin_base_url="https://ea.example",
-        effective_admin_service_token="svc-token",
+        profile_directory_base_url="https://ea.example",
+        profile_directory_service_token="svc-token",
     )
     monkeypatch.setattr("app.services.portal_user_avatar.get_settings", lambda: s)
     big = b"x" * (AVATAR_MAX_BYTES + 1)
@@ -477,8 +477,8 @@ async def test_avatar_requires_bearer_even_with_current_user(client_user: AsyncC
 
 def _photo_settings(*, enabled: bool = True) -> object:
     return make_oidc_settings(
-        effective_admin_base_url="https://ea.example" if enabled else "",
-        effective_admin_service_token="svc-token",
+        profile_directory_base_url="https://ea.example" if enabled else "",
+        profile_directory_service_token="svc-token",
         admin_session_secret="dev-secret-change-me",
     )
 
@@ -564,7 +564,7 @@ async def test_user_photo_ok_other_sub_with_valid_signature(
     verify_user_photo_signature(user_sub="admin-sub", exp=int(q["exp"][0]), sig=q["sig"][0])
     photo = PhotoBytes(content=b"\xff\xd8\xff\xe0jpeg", content_type="image/jpeg")
     with patch(
-        "app.services.portal_user_photo_proxy.EffectiveAdminPhotoClient.get_user_photo",
+        "app.services.portal_user_photo_proxy.ProfileDirectoryPhotoClient.get_user_photo",
         new=AsyncMock(return_value=photo),
     ):
         r = await client_user.get(

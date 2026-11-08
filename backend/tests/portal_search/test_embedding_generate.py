@@ -43,12 +43,15 @@ async def test_generate_embedding_empty_text_returns_zeros(
 
 
 @pytest.mark.asyncio
-async def test_generate_embedding_missing_api_key_raises(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_generate_embedding_without_api_key_is_local(monkeypatch: pytest.MonkeyPatch) -> None:
     _reset_client_singleton()
-    s = make_oidc_settings(openai_api_key="")
+    s = make_oidc_settings(openai_api_key="", embedding_dimension=8)
     monkeypatch.setattr(eg, "get_settings", lambda: s)
-    with pytest.raises(RuntimeError, match="OPENAI_API_KEY"):
-        await generate_embedding("hello")
+    with patch("app.services.openai_client.AsyncOpenAI") as AO:
+        out = await generate_embedding("отпуск")
+    AO.assert_not_called()
+    assert len(out) == 8
+    assert any(value != 0.0 for value in out)
 
 
 @pytest.mark.asyncio

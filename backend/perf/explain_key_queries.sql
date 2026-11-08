@@ -1,7 +1,7 @@
 -- EXPLAIN с ANALYZE: реальное выполнение запросов, полный план. Локаль и (по необходимости) staging в тихое окно. Production — не запускать.
--- Локально: PGPASSWORD=dev psql -h 127.0.0.1 -p 5433 -U dev -d cosmolet -v ON_ERROR_STOP=1 -f backend/perf/explain_key_queries.sql
--- На сервере: PGPASSWORD=… psql -h … -p … -U … -d … "sslmode=require" -v ON_ERROR_STOP=1 -f /opt/cosmolet-staging/backend/perf/explain_key_queries.sql
--- (production: … -f /opt/cosmolet-prod/backend/perf/explain_key_queries.sql — только в тихое окно, лучше plan_only)
+-- Локально: PGPASSWORD=dev psql -h 127.0.0.1 -p 5433 -U dev -d atrium -v ON_ERROR_STOP=1 -f backend/perf/explain_key_queries.sql
+-- На сервере: PGPASSWORD=… psql -h … -p … -U … -d … "sslmode=require" -v ON_ERROR_STOP=1 -f /opt/atrium-staging/backend/perf/explain_key_queries.sql
+-- (production: … -f /opt/atrium-prod/backend/perf/explain_key_queries.sql — только в тихое окно, лучше plan_only)
 
 EXPLAIN (ANALYZE, BUFFERS, VERBOSE, WAL, SETTINGS, TIMING, SUMMARY, FORMAT JSON)
 SELECT t.id, t.title, t.status, t."position"

@@ -14,7 +14,6 @@ from httpx import ASGITransport, AsyncClient
 # redis_rate_check: sliding window через sorted set
 # ---------------------------------------------------------------------------
 
-
 def _make_pipeline(count: int) -> MagicMock:
     """Создать мок pipeline с заданным результатом zcard (индекс 2)."""
     pipe = MagicMock()
@@ -25,12 +24,10 @@ def _make_pipeline(count: int) -> MagicMock:
     pipe.expire = MagicMock()
     return pipe
 
-
 def _make_redis(pipe: MagicMock) -> MagicMock:
     redis = MagicMock()
     redis.pipeline = MagicMock(return_value=pipe)
     return redis
-
 
 async def test_sliding_window_allows_within_limit() -> None:
     """Запрос пропускается, если счётчик в окне не превышает лимит."""
@@ -45,7 +42,6 @@ async def test_sliding_window_allows_within_limit() -> None:
     pipe.zcard.assert_called_once()
     pipe.expire.assert_called_once()
 
-
 async def test_sliding_window_allows_at_exact_limit() -> None:
     """Ровно на пределе — запрос пропускается (count == limit)."""
     pipe = _make_pipeline(count=20)
@@ -55,7 +51,6 @@ async def test_sliding_window_allows_at_exact_limit() -> None:
 
     assert result is True
 
-
 async def test_sliding_window_blocks_over_limit() -> None:
     """Запрос блокируется, когда счётчик превышает лимит."""
     pipe = _make_pipeline(count=21)
@@ -64,7 +59,6 @@ async def test_sliding_window_blocks_over_limit() -> None:
     result = await redis_rate_check(redis, "rl:/api/v1/auth/token:1.2.3.4", limit=20, window_seconds=60)
 
     assert result is False
-
 
 @pytest.mark.parametrize("count", [100, 9999])
 async def test_sliding_window_blocks_far_over_limit(count: int) -> None:
@@ -76,7 +70,6 @@ async def test_sliding_window_blocks_far_over_limit(count: int) -> None:
 
     assert result is False
 
-
 async def test_memory_fallback_allows_first_request_when_redis_unavailable() -> None:
     """При ошибке Redis — in-memory fallback, первый запрос в пустом окне проходит."""
     redis = MagicMock()
@@ -85,7 +78,6 @@ async def test_memory_fallback_allows_first_request_when_redis_unavailable() -> 
     result = await redis_rate_check(redis, "rl:/api/v1/auth/token:1.2.3.4", limit=20, window_seconds=60)
 
     assert result is True
-
 
 async def test_memory_fallback_when_pipeline_execute_raises() -> None:
     """При ошибке pipeline.execute() — тот же in-memory fallback, не безлимитный fail-open."""
@@ -101,11 +93,9 @@ async def test_memory_fallback_when_pipeline_execute_raises() -> None:
 
     assert result is True
 
-
 # ---------------------------------------------------------------------------
 # AuthRateLimitMiddleware: пути и ответы
 # ---------------------------------------------------------------------------
-
 
 async def test_middleware_passes_non_limited_path() -> None:
     """Запросы на пути вне лимита проходят без обращения к Redis."""
@@ -122,7 +112,6 @@ async def test_middleware_passes_non_limited_path() -> None:
     rate_check.assert_not_called()
     app_mock.assert_called_once()
 
-
 async def test_middleware_passes_websocket_scope() -> None:
     """WS-соединения (type=websocket) не попадают под rate limit."""
     app_mock = AsyncMock()
@@ -137,7 +126,6 @@ async def test_middleware_passes_websocket_scope() -> None:
 
     rate_check.assert_not_called()
     app_mock.assert_called_once()
-
 
 async def test_middleware_returns_429_when_limit_exceeded() -> None:
     """Middleware отвечает 429 и Retry-After при превышении лимита."""
@@ -173,11 +161,10 @@ async def test_middleware_returns_429_when_limit_exceeded() -> None:
     retry_after = next((v.decode() for k, v in header_list if k.lower() == b"retry-after"), None)
     assert retry_after is not None
 
-
 async def test_rate_limited_response_has_request_id_and_security_headers() -> None:
     """Регрессия на порядок middleware в main.py: RequestId/SecurityHeaders обёрнуты
     снаружи AuthRateLimit/ApiRateLimit, поэтому 429 обязан их получать так же, как и
-    любой другой ответ (см. .cursor/rules/logging.mdc, error-handling.mdc)."""
+    любой другой ответ."""
     transport = ASGITransport(app=app)
     with patch("app.middleware.rate_limit.rate_limit_check", new=AsyncMock(return_value=False)):
         async with AsyncClient(transport=transport, base_url="http://test") as client:
@@ -193,7 +180,6 @@ async def test_rate_limited_response_has_request_id_and_security_headers() -> No
     assert r.headers.get("retry-after")
     assert r.headers.get("x-content-type-options") == "nosniff"
     assert r.headers.get("x-frame-options") == "DENY"
-
 
 async def test_middleware_uses_memory_fallback_when_redis_none() -> None:
     """Если клиент Redis None, middleware использует in-memory fallback и пропускает первый запрос."""
@@ -218,7 +204,6 @@ async def test_middleware_uses_memory_fallback_when_redis_none() -> None:
 
     app_mock.assert_called_once()
 
-
 async def test_memory_fallback_blocks_after_limit() -> None:
     from app.infrastructure.cache.rate_limit import _memory_windows
 
@@ -229,7 +214,6 @@ async def test_memory_fallback_blocks_after_limit() -> None:
     assert await redis_rate_check(redis, key, limit=2, window_seconds=60) is True
     assert await redis_rate_check(redis, key, limit=2, window_seconds=60) is True
     assert await redis_rate_check(redis, key, limit=2, window_seconds=60) is False
-
 
 async def test_ip_ceiling_blocks_unique_bearers_on_mutating_api(
     monkeypatch: pytest.MonkeyPatch,

@@ -69,7 +69,7 @@ def _too_many_requests_response(window: int) -> JSONResponse:
     """Тело/статус — по единому контракту `AppError` (`RateLimitError`), хоть и без raise.
 
     Чистый ASGI-middleware не прогоняет исключение через `exception_handler` FastAPI
-    (см. error-handling.mdc): ``raise RateLimitError`` здесь дал бы необработанный 500.
+    (): ``raise RateLimitError`` здесь дал бы необработанный 500.
     Формат ответа должен совпадать с тем, что отдаёт `app_error_handler` для `RateLimitError`.
     """
     err = RateLimitError()

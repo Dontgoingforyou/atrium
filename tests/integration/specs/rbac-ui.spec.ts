@@ -44,7 +44,7 @@ test.describe("RBAC UI", () => {
 
     if (isAdmin) {
       await expect(page).toHaveURL(/\/admin\/?/, { timeout: 30_000 });
-      await expect(page.getByText(/Cosmolet Admin|Административная панель/i).first()).toBeVisible({
+      await expect(page.getByText(/Atrium Admin|Административная панель/i).first()).toBeVisible({
         timeout: 15_000,
       });
     } else {

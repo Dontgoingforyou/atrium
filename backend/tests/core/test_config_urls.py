@@ -121,7 +121,7 @@ def test_sso_disabled_detail_messages() -> None:
         sso_client_secret="s",
         sso_service_url="",
     )
-    assert "SSO_SERVICE_URL" in s2.sso_disabled_detail
+    assert "адрес шлюза" in s2.sso_disabled_detail
 
 
 def test_effective_redis_url_injects_password() -> None:

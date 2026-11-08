@@ -16,7 +16,7 @@ from app.schemas.auth import UserPublic
 
 
 def is_manager_or_admin(user: UserPublic) -> bool:
-    """Вернуть True, если пользователь — менеджер АУ или администратор портала.
+    """Вернуть True, если пользователь — менеджер отдела или администратор портала.
 
     Менеджер: основной отдел SSO «Аутстафф» (``gid_number == 10000``).
     Группа Keycloak ``outstaff`` сама по себе менеджера не даёт.

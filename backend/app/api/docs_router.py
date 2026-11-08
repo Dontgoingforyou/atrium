@@ -27,7 +27,7 @@ _SWAGGER_HTML = """\
 <script src="/vendor/swagger-ui/swagger-ui-standalone-preset.js"></script>
 <script>
 var DOCS_TOKEN_KEY = 'portal_docs_token';
-var AUTH_STORAGE_KEY = 'cosmolet-auth';
+var AUTH_STORAGE_KEY = 'atrium-auth';
 var REFRESH_URL = '/api/v1/auth/refresh';
 
 function _readPersistedAuth() {{
@@ -112,7 +112,7 @@ _REDOC_HTML = """\
   <script src="/vendor/redoc/redoc.standalone.js"></script>
   <script>
   var DOCS_TOKEN_KEY = 'portal_docs_token';
-  var AUTH_STORAGE_KEY = 'cosmolet-auth';
+  var AUTH_STORAGE_KEY = 'atrium-auth';
   var REFRESH_URL = '/api/v1/auth/refresh';
 
   function _readPersistedAuth() {{
@@ -190,7 +190,7 @@ async def _verify_openapi_bearer(
 ) -> JSONResponse | None:
     """Проверить Bearer для доступа к OpenAPI; ``None`` — токен валиден.
 
-    Особый случай (не `AppError`/`HTTPException` — см. error-handling.mdc): ответ должен
+    Особый случай (не `AppError`/`HTTPException` — ): ответ должен
     нести заголовок ``WWW-Authenticate: Bearer`` (RFC 7235) для 401, а глобальный обработчик
     `AppError`/`HTTPException` (exception_handlers.py) кастомные заголовки не проставляет —
     поэтому `JSONResponse` собирается здесь вручную. Тело при этом приведено к единому
@@ -233,7 +233,7 @@ async def _verify_openapi_bearer(
 
 
 def _ensure_docs_enabled() -> None:
-    """Публичные стенды: UI и спецификация выключены (DEV-2715), не только SSO на JSON."""
+    """Если документация выключена, UI и спецификация отвечают 404."""
     if not get_settings().docs_enabled:
         raise NotFoundError("Документация API отключена")
 

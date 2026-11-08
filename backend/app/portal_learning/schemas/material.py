@@ -28,7 +28,7 @@ class LearningMaterialCreate(BaseModel):
     body: str | None = None
     material_type: LearningMaterialType = LearningMaterialType.ARTICLE
     status: LearningMaterialStatus = LearningMaterialStatus.DRAFT
-    idp_groups: list[str] = Field(default_factory=list, description="Группы Keycloak; пусто = для всех")
+    idp_groups: list[str] = Field(default_factory=list, description="Группы доступа; пусто = для всех")
 
 
 class LearningMaterialUpdate(BaseModel):

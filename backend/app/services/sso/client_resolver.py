@@ -21,11 +21,11 @@ def resolve_sso_credentials_for_redirect(redirect_uri: str, settings: Settings) 
     """
     ul = redirect_uri.strip().lower()
 
-    if "cosmolet.stage.example.com" in ul:
+    if "atrium.stage.example.com" in ul:
         p = _pair(settings.sso_client_id_stage, settings.sso_client_secret_stage)
         if p:
             return p
-    if "cosmolet.example.com" in ul and "cosmolet.stage." not in ul and ".stage." not in ul:
+    if "atrium.example.com" in ul and "atrium.stage." not in ul and ".stage." not in ul:
         p = _pair(settings.sso_client_id_prod, settings.sso_client_secret_prod)
         if p:
             return p

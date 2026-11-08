@@ -41,7 +41,7 @@
 
 .btn:focus-visible {
   outline: none;
-  box-shadow: var(--input-focus-shadow, 0 0 0 0.2rem rgba(97, 49, 207, 0.2));
+  box-shadow: var(--input-focus-shadow, 0 0 0 0.2rem rgba(15, 118, 110, 0.2));
 }
 
 /* 360° + лёгкий scale — без «ломающейся» дуги 180° */

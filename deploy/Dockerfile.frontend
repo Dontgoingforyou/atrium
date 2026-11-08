@@ -1,5 +1,4 @@
-# Softgen stand-host: context = ./project/frontend, dockerfile = ./deploy/Dockerfile.frontend
-# (путь dockerfile относительно корня бандла; context — только frontend).
+# Отдельная сборка фронтенда. Локальный compose использует deploy/docker/Dockerfile.web.
 # syntax=docker/dockerfile:1
 FROM node:22-bookworm AS build
 

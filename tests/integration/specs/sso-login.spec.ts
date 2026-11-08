@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 
 import { expectAuthenticatedShell, loginViaStandSso } from "../helpers/adapters/sso";
 
-test.describe("стендовый SSO логин", () => {
+test.describe("вход по логину и паролю", () => {
   test("после логина виден app-shell и refresh cookie", async ({ page, context }) => {
     test.info().annotations.push({ type: "tc", description: "TC-019" });
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 from unittest.mock import AsyncMock, patch
 
 import pytest
-from app.integrations.effective_admin.emails_check import EmailsCheckResult
+from app.integrations.profile_directory.emails_check import EmailsCheckResult
 from app.services.portal_user_visibility import (
     HIDDEN_DIRECTORY_EMAILS,
     hidden_emails_for_directory,
@@ -72,8 +72,8 @@ async def test_hidden_emails_always_hides_test_without_http() -> None:
 @pytest.mark.asyncio
 async def test_hidden_emails_adds_not_found_from_admin() -> None:
     settings = make_oidc_settings(
-        effective_admin_base_url="https://ea.example",
-        effective_admin_service_token="svc-token",
+        profile_directory_base_url="https://ea.example",
+        profile_directory_service_token="svc-token",
     )
     result = EmailsCheckResult(
         found=frozenset({"ivan@example.com"}),
@@ -92,7 +92,7 @@ async def test_hidden_emails_adds_not_found_from_admin() -> None:
         ),
         patch("app.services.portal_user_visibility.set_cached_email_active_bulk", new=AsyncMock()),
         patch(
-            "app.services.portal_user_visibility.EffectiveAdminEmailsClient.check_emails",
+            "app.services.portal_user_visibility.ProfileDirectoryEmailsClient.check_emails",
             new=AsyncMock(return_value=result),
         ),
     ):
@@ -110,8 +110,8 @@ async def test_hidden_emails_adds_not_found_from_admin() -> None:
 @pytest.mark.asyncio
 async def test_hidden_emails_fail_open_when_check_unavailable() -> None:
     settings = make_oidc_settings(
-        effective_admin_base_url="https://ea.example",
-        effective_admin_service_token="svc-token",
+        profile_directory_base_url="https://ea.example",
+        profile_directory_service_token="svc-token",
     )
     with (
         patch("app.services.portal_user_visibility.get_settings", return_value=settings),
@@ -120,7 +120,7 @@ async def test_hidden_emails_fail_open_when_check_unavailable() -> None:
             new=AsyncMock(return_value={"ivan@example.com": None}),
         ),
         patch(
-            "app.services.portal_user_visibility.EffectiveAdminEmailsClient.check_emails",
+            "app.services.portal_user_visibility.ProfileDirectoryEmailsClient.check_emails",
             new=AsyncMock(return_value=None),
         ),
     ):

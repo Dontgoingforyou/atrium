@@ -62,7 +62,7 @@ def _coerce_to_enum_member(py_enum: type[enum.Enum], value: Any) -> Any:
         raise ValueError(f"Недопустимое значение перечисления: {value!r}") from exc
 
 
-class CosmoletAdminModelConverter(ModelConverter):
+class AtriumAdminModelConverter(ModelConverter):
     """Подмена conv_enum для перечислений портала (иначе sqladmin показывает DRAFT без перевода)."""
 
     @converts("Enum")  # type: ignore[untyped-decorator]

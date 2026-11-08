@@ -1,6 +1,6 @@
 # Фоновые задачи API (`app/jobs/`)
 
-Лёгкие циклы внутри процесса FastAPI: **без** Celery/ARQ. Запуск и остановка — в `lifespan` (`app/main.py`): `asyncio.Event` + `asyncio.create_task`. Паттерн и запреты — **services.mdc**, раздел «Фоновые и периодические задачи».
+Лёгкие циклы внутри процесса FastAPI: **без** Celery/ARQ. Запуск и остановка — в `lifespan` (`app/main.py`): `asyncio.Event` + `asyncio.create_task`. Паттерн и запреты — раздел «Фоновые и периодические задачи».
 
 Одноразовые CLI-утилиты сюда не класть: они живут в `backend/scripts/` (например `purge_orphan_chat_attachments.py`).
 
@@ -22,5 +22,5 @@
 1. Модуль с `run_*_loop(stop_event, settings)` по образцу существующих.
 2. Флаг включения и параметры расписания — поля `Settings`, не константы в job.
 3. Регистрация в `lifespan` (`main.py`): task на старте; на стопе — `stop_event.set()` + `await task` (cancel только по таймауту).
-4. Если настройка нужна на сервере — `KEYS` / `OPTIONAL_CI_KEYS` в `deploy/ci-upload-env.sh` (см. **deploy-ci-env.mdc**).
+4. Если настройка нужна на сервере — `KEYS` / `OPTIONAL_CI_KEYS` в `deploy/ci-upload-env.sh` (см.).
 5. Тесты цикла — `backend/tests/jobs/`.

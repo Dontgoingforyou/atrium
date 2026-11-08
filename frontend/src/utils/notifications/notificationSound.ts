@@ -6,7 +6,7 @@ import {
   getNotificationSoundVolumePct,
 } from './soundChoiceStorage'
 
-const STORAGE_KEY = 'cosmolet:notification_sound_enabled'
+const STORAGE_KEY = 'atrium:notification_sound_enabled'
 
 export function getNotificationSoundEnabled(): boolean {
   try {

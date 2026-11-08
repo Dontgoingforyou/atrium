@@ -12,7 +12,7 @@ from app.core.auth_constants import SSO_GID_OUTSTAFF
 from app.core.config import get_settings
 from app.infrastructure.db.models.portal_specialist_profile import PortalSpecialistProfile
 from app.infrastructure.db.models.portal_user_profile import PortalUserProfile
-from app.integrations.effective_admin.emails_check import EffectiveAdminEmailsClient, normalize_email
+from app.integrations.profile_directory.emails_check import ProfileDirectoryEmailsClient, normalize_email
 from app.services.ea_email_active_cache import get_cached_email_active_bulk, set_cached_email_active_bulk
 
 # Явный список адресов, которые не показывать в пикерах. Учётки не удаляем.
@@ -44,7 +44,7 @@ def is_hidden_test_account_email(email: str | None) -> bool:
 
 
 def is_explicitly_hidden_directory_email(email: str | None) -> bool:
-    """Явный список AUTASKS-413 или тестовая учётка — скрыть без сверки EA."""
+    """Явный список скрытых адресов или тестовая учётка — скрыть без сверки сервиса профилей."""
     normalized = normalize_directory_email(email)
     if not normalized:
         return False
@@ -52,7 +52,7 @@ def is_explicitly_hidden_directory_email(email: str | None) -> bool:
 
 
 def directory_employee_visible_sql() -> ColumnElement[bool]:
-    """SQL: не тестовый, не явный список, не чужой отдел (gid известен и не АУ)."""
+    """SQL: не тестовый, не явный список, не чужой отдел (gid известен и это не основной отдел)."""
     profile = PortalUserProfile
     email_norm = func.lower(func.trim(profile.email))
     hidden_by_email = and_(
@@ -111,13 +111,13 @@ async def hidden_emails_for_directory(
     if not to_check or http is None:
         return hidden
     settings = get_settings()
-    if not settings.effective_admin_emails_check_enabled:
+    if not settings.profile_directory_emails_check_enabled:
         return hidden
 
     cached = await get_cached_email_active_bulk(to_check)
     missing = [email for email in to_check if cached[email] is None]
     if missing:
-        result = await EffectiveAdminEmailsClient(settings, http).check_emails(missing)
+        result = await ProfileDirectoryEmailsClient(settings, http).check_emails(missing)
         if result is not None:
             fetched = {email: email in result.found for email in missing}
             await set_cached_email_active_bulk(fetched)

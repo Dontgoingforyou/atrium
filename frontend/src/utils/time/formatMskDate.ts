@@ -3,7 +3,7 @@
  *
  * UTC-даты из API показываем пользователю в Europe/Moscow — единая конвенция
  * портала (см. историю коммитов про «время уведомлений в МСК»). На UI-границе
- * перевод из UTC в локальную зону допустим (general.mdc).
+ * перевод из UTC в локальную зону допустим.
  */
 export function formatMskDate(iso: string): string {
   const dt = new Date(iso)

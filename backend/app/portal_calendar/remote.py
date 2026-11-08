@@ -1,4 +1,4 @@
-"""Вызов микросервиса календаря. Экран Космолета остаётся на прежних адресах."""
+"""Вызов микросервиса календаря. Экран Атриума остаётся на прежних адресах."""
 
 from __future__ import annotations
 
@@ -42,7 +42,7 @@ _PAGE = 200
 # Страница больше 100 микросервис не принимает: отказ гасит весь поиск портала.
 _REMOTE_EVENT_SEARCH_QUERY_MAX = 200
 _REMOTE_EVENT_SEARCH_LIMIT_MAX = 100
-# SSO-sub, который микросервис пишет владельцем, а профиль Космолета помнит другим id.
+# SSO-sub, который микросервис пишет владельцем, а профиль Атриума помнит другим id.
 _learned_owners: dict[str, set[str]] = {}
 _STATUS = {
     400: BadRequestError,
@@ -241,7 +241,7 @@ def search_hit_from_remote(raw: dict[str, Any], calendar_title: str) -> Calendar
 
 
 async def attendee_bodies(session: AsyncSession, attendees: list[dict[str, Any]]) -> list[dict[str, str | None]]:
-    """Микросервис принимает почту. Sub Космолет достаёт из своего профиля."""
+    """Микросервис принимает почту. Sub Атриум достаёт из своего профиля."""
     subs = [str(item["user_sub"]) for item in attendees if item.get("user_sub")]
     if not subs:
         return []

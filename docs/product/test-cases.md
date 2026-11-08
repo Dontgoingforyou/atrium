@@ -1,18 +1,18 @@
-# Cosmolet — тест-кейсы
+# Atrium — тест-кейсы
 
-Critical path для brownfield Softgen. Автотесты: `backend/tests/`, `frontend/tests/`, `tests/integration/` (Playwright, стенд).
+Critical path портала. Автотесты: `backend/tests/`, `frontend/tests/`, `tests/integration/` (Playwright).
 
-## TC-001 — Успешный старт SSO
+## TC-001 — Вход демо-учёткой
 
 | Поле | Значение |
 |------|----------|
 | Связь | FR-001 |
 | Риск | A |
 | Экран | login |
-| Дано | пользователь не авторизован |
-| Когда | GET `/api/v1/auth/authorization-url` с redirect_uri |
-| Тогда | 200 и URL IdP с PKCE-параметрами |
-| Автотест | backend/tests/auth |
+| Дано | пользователь не авторизован, на форме есть admin / demo-admin |
+| Когда | POST `/api/v1/auth/login` с этими логином и паролем |
+| Тогда | 200, профиль администратора и refresh cookie |
+| Автотест | backend/tests/auth/test_demo_login.py |
 
 ## TC-002 — Health API отвечает 200
 
@@ -218,29 +218,29 @@ Critical path для brownfield Softgen. Автотесты: `backend/tests/`, `
 | Тогда | отказ в доступе |
 | Автотест | frontend RequireManagerOrAdmin, backend RBAC; tests/integration/specs/rbac-ui.spec.ts |
 
-## TC-019 — Стендовый вход через SSO
+## TC-019 — Вход на локальном Docker
 
 | Поле | Значение |
 |------|----------|
 | Связь | FR-001 |
 | Риск | A |
 | Экран | login |
-| Дано | стенд Softgen с SSO и E2E-пользователем |
-| Когда | полный login через IdP |
+| Дано | портал поднят, на форме демо-учётка |
+| Когда | вход логином и паролем с формы |
 | Тогда | сессия в портале, refresh cookie установлен |
 | Автотест | tests/integration/specs/sso-login.spec.ts |
 
-## TC-020 — Softgen GitLab pipeline smoke
+## TC-020 — Проверка локального Docker
 
 | Поле | Значение |
 |------|----------|
 | Связь | FR-016 |
 | Риск | B |
 | Экран | n/a |
-| Дано | delivery-репо Softgen `internal/cosmolet` |
-| Когда | pipeline на main |
-| Тогда | jobs lint/test/structure успешны |
-| Автотест | Softgen GitLab CI (Integration) |
+| Дано | локальный compose |
+| Когда | API и веб подняты |
+| Тогда | health отвечает, вход демо-учёткой открывает главную |
+| Автотест | ручная проверка compose |
 
 ## TC-021 — Автостарт guided tour
 

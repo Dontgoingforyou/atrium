@@ -27,7 +27,7 @@
 | `services/checklist.py` | Чек-листы и прогресс, видимость по одиночной группе Keycloak (`idp_group`) |
 | `services/quiz.py` | Квизы, видимость через материал (`_is_quiz_visible` и т.д.) |
 | `schemas/*.py` | Pydantic по трём вертикалям |
-| `admin/material.py`, `checklist.py`, `quiz.py` | SQLAdmin по сущностям; RU-подписи enum — из общего `app/admin/enum_labels.py` (не дублировать локально, см. `dry.mdc`) |
+| `admin/material.py`, `checklist.py`, `quiz.py` | SQLAdmin по сущностям; RU-подписи enum — из общего `app/admin/enum_labels.py` (не дублировать локально, ) |
 
 ## Вертикали (коротко)
 

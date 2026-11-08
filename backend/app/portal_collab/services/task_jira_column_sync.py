@@ -1,4 +1,4 @@
-"""Привязка portal_task_column.jira_status_id к статусам доски AUTASKS."""
+"""Привязка portal_task_column.jira_status_id к статусам доски TASKS."""
 
 from __future__ import annotations
 
@@ -31,9 +31,9 @@ def normalize_column_title(title: str) -> str:
     return _WS_RE.sub(" ", (title or "").strip()).casefold()
 
 
-def resolve_jira_lookup_key(cosmolet_title: str) -> str:
+def resolve_jira_lookup_key(atrium_title: str) -> str:
     """Ключ поиска в индексе колонок Jira с учётом алиасов."""
-    norm = normalize_column_title(cosmolet_title)
+    norm = normalize_column_title(atrium_title)
     return _TITLE_ALIASES_TO_JIRA.get(norm, norm)
 
 
@@ -53,7 +53,7 @@ def build_jira_status_index(board_config: dict[str, Any]) -> dict[str, str]:
     return index
 
 
-def status_id_for_cosmolet_title(title: str, jira_by_name: dict[str, str]) -> str | None:
+def status_id_for_atrium_title(title: str, jira_by_name: dict[str, str]) -> str | None:
     key = resolve_jira_lookup_key(title)
     return jira_by_name.get(key)
 
@@ -79,7 +79,7 @@ async def bind_column_jira_status_by_title(
     except ServiceUnavailableError:
         logger.warning("Jira column bind skipped: Jira недоступна title=%s", column.title)
         return False
-    sid = status_id_for_cosmolet_title(column.title, index)
+    sid = status_id_for_atrium_title(column.title, index)
     if sid is None:
         return False
     column.jira_status_id = sid
@@ -91,7 +91,7 @@ async def sync_task_column_jira_status_ids(
     user: UserPublic,
     http: httpx.AsyncClient,
 ) -> dict[str, Any]:
-    """Привязать все колонки канбана к статусам доски AUTASKS. Только portal_admin."""
+    """Привязать все колонки канбана к статусам доски TASKS. Только portal_admin."""
     if not user.is_portal_admin:
         raise ForbiddenError("Синхронизация маппинга колонок Jira — только для администратора портала")
 
@@ -104,7 +104,7 @@ async def sync_task_column_jira_status_ids(
     matched_jira_keys: set[str] = set()
 
     for col in columns:
-        sid = status_id_for_cosmolet_title(col.title, jira_by_name)
+        sid = status_id_for_atrium_title(col.title, jira_by_name)
         if sid is None:
             unbound_titles.append(col.title)
             continue

@@ -56,7 +56,7 @@ async def test_bulk_create_custom_weekdays_only_weekend(
             "date_to": "2026-06-07",
             "weekdays": [5, 6],
             "minutes": 30,
-            "note": "Обслуживание стендов",
+            "note": "Обслуживание серверов",
         },
     )
     assert r.status_code == 201, r.text

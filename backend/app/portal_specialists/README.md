@@ -59,7 +59,7 @@ ORM-модели (в `infrastructure/db/models/`):
 
 ## Jira (кратко)
 
-| Данные | Источник в Cosmolet |
+| Данные | Источник в Atrium |
 |--------|---------------------|
 | Направление | `profile.direction` ← Jira; на канбане — `status_title` из join профиля |
 | Город, Telegram | `profile.location`, `profile.telegram` |
@@ -83,12 +83,12 @@ Webhook/sync колонки — единая воронка по статусу 
 
 | Операция | Требуемая роль |
 |---|---|
-| GET /columns, GET/PUT pref | менеджер АУ (`gid_number=10000`) ИЛИ portal_admin |
+| GET /columns, GET/PUT pref | менеджер отдела (`gid_number=10000`) ИЛИ portal_admin |
 | POST/PATCH/DELETE /columns | только portal_admin |
-| GET /board, POST /board | менеджер АУ ИЛИ portal_admin |
+| GET /board, POST /board | менеджер отдела ИЛИ portal_admin |
 | PATCH/DELETE /board/{sub} | владелец записи ИЛИ portal_admin |
 | GET карточки (профиль/ссылки/заметки/Jira) | менеджер/admin; цель — студент (`portal_chat_allowed=False`) или уже на доске |
-| Jira link/sync/unlink, PATCH профиля | менеджер АУ с закреплением ИЛИ portal_admin |
+| Jira link/sync/unlink, PATCH профиля | менеджер отдела с закреплением ИЛИ portal_admin |
 | POST /columns/sync-from-jira | только portal_admin |
 | GET/POST /statuses | **legacy** API; GET — менеджер/admin; POST — менеджер/admin (исключение для справочника) |
 

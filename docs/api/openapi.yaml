@@ -1,6 +1,6 @@
 openapi: 3.1.0
 info:
-  title: Cosmolet API
+  title: Atrium API
   version: 0.1.0
 paths:
   /api/v1/health:
@@ -181,7 +181,7 @@ paths:
       description: 'Одна точка OAuth у SPA; панель /admin открывается по cookie после
         проверки
 
-        is_portal_admin (группа cosmolet_role_admin в профиле SSO, как у /auth/me).
+        is_portal_admin (группа atrium_role_admin в профиле SSO, как у /auth/me).
 
 
         Ответ JSON, а не HTTP-редирект: иначе fetch с redirect=follow получает 200
@@ -6405,9 +6405,9 @@ paths:
       tags:
       - Поиск
       summary: Семантический поиск по всему контенту портала
-      description: Поиск по смыслу (векторные эмбеддинги OpenAI). Возвращает результаты
-        из всех типов сущностей отсортированные по релевантности. Требует наличия
-        OPENAI_API_KEY в конфигурации и проиндексированных данных (запустите POST
+      description: Поиск по смыслу. Запрос и тексты сравниваются как векторы в pgvector.
+        Без ключа модели векторы считаются на портале по словам. С ключом запрос уходит
+        во внешнюю модель эмбеддингов. Нужен индекс (make seed или POST
         /portal/admin/search/reindex).
       operationId: portal_semantic_search_api_v1_portal_search_semantic_get
       parameters:
@@ -7712,9 +7712,9 @@ paths:
     get:
       tags:
       - Аккаунт
-      summary: 'Специалисты: список студентов портала'
-      description: 'Пользователи с профилем ``portal_chat_allowed=false`` (роль students
-        без чатов). Доступ: менеджер Keycloak (outstaff) или администратор портала.'
+      summary: Специалисты без доступа к чатам
+      description: 'Пользователи с профилем ``portal_chat_allowed=false``. Доступ: менеджер
+        или администратор портала.'
       operationId: list_portal_students_for_specialists_api_v1_portal_users_specialists_get
       parameters:
       - name: limit

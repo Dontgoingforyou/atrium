@@ -18,10 +18,10 @@
 | **`portal_bench`** | Дашборд отчётов и бенч (снимок воронки АУ, sync Google Таблицы, выгрузка). Только `portal_admin`. |
 | **`portal_learning`** | Обучение — материалы, чек-листы, квизы. **UI временно заморожен**. |
 | **`portal_specialists`** | Раздел «Мои специалисты»: Kanban-воронка, профиль/ссылки специалиста, интеграция Jira (см. [`integrations/README.md`](integrations/README.md)). |
-| **`integrations`** | Внешние системы: Jira (read + webhook BASE, `write_client` для outbound AUTASKS), Effective Admin (фото), Google Sheets (дашборд воронки) и выгрузка документа «Бенч» для RAG (`GET /integrations/bench`). Доменная логика — в `portal_specialists` / `portal_collab` / `portal_user_*` / `portal_bench` / `portal_documents`. |
+| **`integrations`** | Внешние системы: Jira (read + webhook BASE, `write_client` для outbound TASKS), сервис профилей (фото), Google Sheets (дашборд воронки) и выгрузка документа «Бенч» для RAG (`GET /integrations/bench`). Доменная логика — в `portal_specialists` / `portal_collab` / `portal_user_*` / `portal_bench` / `portal_documents`. |
 | **`portal_telegram`** | Привязка Telegram к аккаунту портала, доставка уведомлений и событий инбокса чатов в бот. |
 | **`portal_calendar`** | Календарь: события, RRULE, участники, peer-view + cross-create, legacy invite/share-token, напоминания (in-app / Telegram / email). |
-| **`portal_mcp`** | HTTP MCP `/api/v1/mcp` для админа и менеджера. Тулы зовут публичные фасады доменов, права не копируют (**backend-mcp.mdc**). |
+| **`portal_mcp`** | HTTP MCP `/api/v1/mcp` для админа и менеджера. Тулы зовут публичные фасады доменов, права не копируют. |
 
 **Расширенные README** (карта пакета, зона ответственности сервисов; сквозные политики — **в этом файле** выше и ниже): [portal_finance](portal_finance/README.md) · [portal_collab](portal_collab/README.md) · [portal_documents](portal_documents/README.md) · [portal_favorites](portal_favorites/README.md) · [portal_learning](portal_learning/README.md) · [portal_chat](portal_chat/README.md) · [portal_search](portal_search/README.md) · [portal_telegram](portal_telegram/README.md) · [portal_specialists](portal_specialists/README.md) · [portal_navigation](portal_navigation/README.md) · [portal_home](portal_home/README.md) · [portal_time_entries](portal_time_entries/README.md) · [portal_calendar](portal_calendar/README.md) · [integrations](integrations/README.md)
 
@@ -179,7 +179,7 @@ HTTP: `/api/v1/portal/specialists/...`. GET профиля/Jira — без INSER
 | Файл | Содержимое |
 |------|------------|
 | [`auth.py`](schemas/auth.py) | `PasswordLoginRequest`, `TokenExchangeRequest`, `RefreshTokenRequest/Response`, `UserPublic`, `TokenResponse`, `LogoutBeaconRequest` — контракты `/auth/*` |
-| [`pagination.py`](schemas/pagination.py) | `PagedResponse[T]` — стандартная обёртка списков с пагинацией (**api-pagination.mdc**) |
+| [`pagination.py`](schemas/pagination.py) | `PagedResponse[T]` — стандартная обёртка списков с пагинацией |
 | [`portal_account.py`](schemas/portal_account.py) | `PortalAccountPreferencesRead/Update` — настройки аккаунта (см. «API аккаунта» выше) |
 | [`portal_user.py`](schemas/portal_user.py) | `PortalUserRead`, `PortalUserPresenceRead` (используют `PresenceState` из `app.core.enums`), `PortalPresenceUpdate`, `PresenceBeaconBody`, `AvatarUploadRead` |
 | [`rich_media.py`](schemas/rich_media.py) | `RichMediaRead` — изображения rich-text (задачи/документы), см. `app/services/rich_media.py` |
@@ -187,7 +187,7 @@ HTTP: `/api/v1/portal/specialists/...`. GET профиля/Jira — без INSER
 
 ## Shared-сервисы (`app/services/`) и кэш
 
-Кросс-доменный слой; доменная логика — в `app/portal_*/`. Детали — **dry.mdc**.
+Кросс-доменный слой; доменная логика — в `app/portal_*/`. Детали —
 
 | Тема | Где | Замечание |
 |------|-----|-----------|
@@ -279,7 +279,7 @@ ORM-модели: [`portal_finance.py`](infrastructure/db/models/portal_finance.
 
 Регистрация SQLAdmin: импорт классов из доменного модуля в [`app/main.py`](main.py).
 
-Вся логика доступа к данным (SELECT/INSERT/UPDATE) остаётся в сервисах — `app/services/` и `<domain>/services/`. При необходимости выделять крупные сервисы в файлы `_queries.py` / `_mutations.py` рядом с сервисом (см. `general.mdc`, ориентир 300–400 строк).
+Вся логика доступа к данным (SELECT/INSERT/UPDATE) остаётся в сервисах — `app/services/` и `<domain>/services/`. При необходимости выделять крупные сервисы в файлы `_queries.py` / `_mutations.py` рядом с сервисом ().
 
 ## Сервисный слой — разбивка крупных файлов
 
@@ -298,7 +298,7 @@ ORM-модели: [`portal_finance.py`](infrastructure/db/models/portal_finance.
 
 Файл [`portal_document.py`](portal_documents/services/portal_document.py) — **фасад** для queries/mutations/trash/reorder/duplicate и реэкспорта операций со списком тегов из `app.services.portal_tags`. Функции, вызываемые за пределами своего файла-владельца в пакете (`write_document_history`, `replace_document_tags`) — **публичные** (без префикса `_`), даже если это внутренние хелперы, а не HTTP-контракт.
 
-TODO (UX): пункт «Посмотреть историю изменений» на странице документа позже может переехать в общее меню разделов Космолета — см. обсуждение в задаче на документы.
+TODO (UX): пункт «Посмотреть историю изменений» на странице документа позже может переехать в общее меню разделов Атриума — см. обсуждение в задаче на документы.
 
 ### `portal_collab/services/task.py`
 
@@ -355,5 +355,5 @@ tests/
 ## Техдолг (конвенции)
 
 - [`core/config.py`](core/config.py) — ~450 строк; SSO/Jira можно вынести в mixin при следующем рефакторинге.
-- Сервисный слой finance (`counterparty.py`, `contract.py`, `invoice.py`, `procurement.py`) — CRUD-функции возвращают Pydantic `*Read` напрямую вместо ORM (см. [`services.mdc`](../.cursor/rules/services.mdc)); `portal_home/services/home.py` — не техдолг: `build_portal_home` — задокументированный агрегат-исключение (комментарий в docstring, как у `payment.get_finance_summary`/`quiz.submit_attempt`). Аналогично `portal_navigation/services/navigation.py` — `get_navigation_tree` возвращает Pydantic-дерево из двух виртуальных секций без единого ORM-объекта, с обоснованием в docstring — не техдолг.
-- **Пагинация `list[T]`** для чатов, задач, избранного, уведомлений, договорённостей и части финансов — **исключение контракта SPA**, не техдолг: см. [`api-pagination.mdc`](../../.cursor/rules/api-pagination.mdc). Переводить на `PagedResponse` только когда UI получит `total` / постраничную навигацию, по одному эндпоинту.
+- Сервисный слой finance (`counterparty.py`, `contract.py`, `invoice.py`, `procurement.py`) — CRUD-функции возвращают Pydantic `*Read` напрямую вместо ORM. `portal_home/services/home.py` — не техдолг: `build_portal_home` — задокументированный агрегат-исключение (комментарий в docstring, как у `payment.get_finance_summary`/`quiz.submit_attempt`). Аналогично `portal_navigation/services/navigation.py` — `get_navigation_tree` возвращает Pydantic-дерево из двух виртуальных секций без единого ORM-объекта, с обоснованием в docstring — не техдолг.
+- **Пагинация `list[T]`** для чатов, задач, избранного, уведомлений, договорённостей и части финансов — **исключение контракта SPA**, не техдолг. Переводить на `PagedResponse` только когда UI получит `total` / постраничную навигацию, по одному эндпоинту.

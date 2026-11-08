@@ -1,20 +1,20 @@
-# Nginx: маршрутизация Cosmolet
+# Nginx: маршрутизация Atrium
 
 ## Файлы
 
 | Файл | Где используется |
 |------|------------------|
-| `cosmolet-server.vhost.conf.example` | Системный nginx на сервере (staging + production). **HTTP :80**, TLS снаружи |
-| `cosmolet-server.vhost.ssl-snippet.example` | Опционально: certbot на этом же хосте |
-| `gateway.local.conf` | Docker gateway, `stand/docker-compose.yml` → `:9088` |
+| `atrium-server.vhost.conf.example` | Системный nginx на сервере (staging + production). **HTTP :80**, TLS снаружи |
+| `atrium-server.vhost.ssl-snippet.example` | Опционально: certbot на этом же хосте |
+| `gateway.local.conf` | Docker gateway, корневой `docker-compose.yml` → `:9088` |
 | `web-spa.conf` | Внутри контейнера `web` (только SPA) |
 
 ## Деплой конфига на сервер
 
 ```bash
 # из клона репозитория на сервере
-sudo cp deploy/nginx/cosmolet-server.vhost.conf.example /etc/nginx/sites-available/cosmolet
-sudo ln -sf /etc/nginx/sites-available/cosmolet /etc/nginx/sites-enabled/cosmolet
+sudo cp deploy/nginx/atrium-server.vhost.conf.example /etc/nginx/sites-available/atrium
+sudo ln -sf /etc/nginx/sites-available/atrium /etc/nginx/sites-enabled/atrium
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
@@ -36,10 +36,10 @@ sudo nginx -t && sudo systemctl reload nginx
 ## Проверка
 
 ```bash
-curl -sI https://cosmolet.example.com/vendor/swagger-ui/swagger-ui.css | grep -i content-type
+curl -sI https://atrium.example.com/vendor/swagger-ui/swagger-ui.css | grep -i content-type
 # text/css
 
-curl -sI https://cosmolet.stage.example.com/vendor/swagger-ui/swagger-ui.css | grep -i content-type
+curl -sI https://atrium.stage.example.com/vendor/swagger-ui/swagger-ui.css | grep -i content-type
 # text/css
 ```
 
@@ -48,7 +48,7 @@ curl -sI https://cosmolet.stage.example.com/vendor/swagger-ui/swagger-ui.css | g
 ### Стили SQLAdmin (`/admin/`) и mixed content
 
 ```bash
-curl -sI https://cosmolet.stage.example.com/admin/ | grep -i location
+curl -sI https://atrium.stage.example.com/admin/ | grep -i location
 # location: https://...   — правильно
 # location: http://...    — схема http: SQLAdmin отдаст статику по http://,
 #                           браузер заблокирует её как mixed content, стили админки «слетят»

@@ -6,10 +6,10 @@ import {
   urlForPresetId,
 } from '../../domain/sound/soundPresets'
 
-const STORAGE_NOTIFICATION = 'cosmolet:notification_sound_choice'
-const STORAGE_CHAT_DM = 'cosmolet:chat_dm_sound_choice'
-const STORAGE_NOTIFICATION_VOLUME_PCT = 'cosmolet:notification_sound_volume_pct'
-const STORAGE_CHAT_DM_VOLUME_PCT = 'cosmolet:chat_dm_sound_volume_pct'
+const STORAGE_NOTIFICATION = 'atrium:notification_sound_choice'
+const STORAGE_CHAT_DM = 'atrium:chat_dm_sound_choice'
+const STORAGE_NOTIFICATION_VOLUME_PCT = 'atrium:notification_sound_volume_pct'
+const STORAGE_CHAT_DM_VOLUME_PCT = 'atrium:chat_dm_sound_volume_pct'
 
 function readRaw(key: string): string | null {
   try {

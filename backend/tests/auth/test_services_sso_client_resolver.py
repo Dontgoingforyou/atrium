@@ -36,7 +36,7 @@ def test_redirect_stage_wins() -> None:
         sso_client_id_5173="sp-id",
         sso_client_secret_5173="sp-sec",
     )
-    uri = "https://cosmolet.stage.example.com/auth/callback"
+    uri = "https://atrium.stage.example.com/auth/callback"
     assert resolve_sso_credentials_for_redirect(uri, s) == ("st-id", "st-sec")
 
 
@@ -45,19 +45,19 @@ def test_redirect_prod_not_stage() -> None:
         sso_client_id_prod="prod-id",
         sso_client_secret_prod="prod-sec",
     )
-    uri = "https://cosmolet.example.com/auth/callback"
+    uri = "https://atrium.example.com/auth/callback"
     assert resolve_sso_credentials_for_redirect(uri, s) == ("prod-id", "prod-sec")
 
 
 def test_redirect_prod_skips_when_stage_subdomain_in_host() -> None:
-    """cosmolet.stage.* не должен попадать под ветку prod."""
+    """atrium.stage.* не должен попадать под ветку prod."""
     s = _base_settings(
         sso_client_id_prod="prod-id",
         sso_client_secret_prod="prod-sec",
         sso_client_id_stage="st-id",
         sso_client_secret_stage="st-sec",
     )
-    uri = "https://app.cosmolet.stage.example.com/cb"
+    uri = "https://app.atrium.stage.example.com/cb"
     assert resolve_sso_credentials_for_redirect(uri, s) == ("st-id", "st-sec")
 
 
@@ -90,7 +90,7 @@ def test_redirect_stage_empty_pair_falls_through_to_default() -> None:
         sso_client_id_5173="spa-id",
         sso_client_secret_5173="spa-sec",
     )
-    uri = "https://cosmolet.stage.example.com/x"
+    uri = "https://atrium.stage.example.com/x"
     assert resolve_sso_credentials_for_redirect(uri, s) == ("default-id", "default-secret")
 
 

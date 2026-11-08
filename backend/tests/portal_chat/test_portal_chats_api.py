@@ -1,6 +1,6 @@
 """Интеграционные тесты: чаты (GET /portal/chats, POST /portal/chats, POST /portal/chats/direct).
 
-Покрытие (testing.mdc):
+Покрытие:
 - успешный доступ
 - изоляция данных (обычный пользователь видит только свои чаты)
 - 401 без авторизации
@@ -27,7 +27,7 @@ from app.infrastructure.db.models.portal_chat import (
     PortalChatMessage,
 )
 from app.infrastructure.db.models.portal_user_profile import PortalUserProfile
-from app.integrations.effective_admin.client import PhotoMeta
+from app.integrations.profile_directory.client import PhotoMeta
 from app.main import app
 from app.portal_chat.services.chat import get_or_create_direct_chat
 from httpx import ASGITransport, AsyncClient
@@ -41,7 +41,6 @@ from tests.helpers.portal_test_users import user_portal_admin, user_portal_regul
 # GET /portal/chats  — список чатов
 # ---------------------------------------------------------------------------
 
-
 async def test_create_chat_ignores_unknown_field(
     client_admin: AsyncClient,
 ) -> None:
@@ -53,13 +52,11 @@ async def test_create_chat_ignores_unknown_field(
     assert r.status_code == 201, r.text
     assert "nav_node_id" not in r.json()
 
-
 async def test_list_chats_empty(client_admin: AsyncClient) -> None:
     """Пустой список при отсутствии чатов в БД."""
     r = await client_admin.get("/api/v1/portal/chats")
     assert r.status_code == 200
     assert r.json() == []
-
 
 async def test_list_chats_excludes_orphan_non_dm_without_title(
     client_admin: AsyncClient,
@@ -92,7 +89,6 @@ async def test_list_chats_excludes_orphan_non_dm_without_title(
     ids = {c["id"] for c in r.json()}
     assert str(orphan_id) not in ids
 
-
 async def test_orphan_non_dm_messages_returns_404(
     client_admin: AsyncClient,
     sqlite_session: AsyncSession,
@@ -124,7 +120,6 @@ async def test_orphan_non_dm_messages_returns_404(
 
     assert_api_error(r, 404, "not_found")
 
-
 async def test_list_chats_member_subs_populated(
     client_admin: AsyncClient,
     sqlite_session: AsyncSession,
@@ -146,14 +141,12 @@ async def test_list_chats_member_subs_populated(
     assert len(chats) == 1
     assert set(chats[0]["member_subs"]) == {user_portal_admin().sub, user_portal_regular().sub}
 
-
 def _enable_user_photo_urls(monkeypatch: pytest.MonkeyPatch) -> None:
     settings = make_oidc_settings(
-        effective_admin_base_url="https://ea.example",
+        profile_directory_base_url="https://ea.example",
         admin_session_secret="dev-secret-change-me",
     )
     monkeypatch.setattr("app.services.user_photo_url.get_settings", lambda: settings)
-
 
 async def test_list_chats_dm_avatar_url_is_peer_photo_proxy(
     client_admin: AsyncClient,
@@ -178,7 +171,6 @@ async def test_list_chats_dm_avatar_url_is_peer_photo_proxy(
     assert f"/portal/users/{user_portal_regular().sub}/photo" in dm["avatar_url"]
     assert user_portal_admin().sub not in (dm["avatar_url"] or "")
 
-
 async def test_list_chats_dm_avatar_url_none_when_peer_has_no_photo(
     client_admin: AsyncClient,
     monkeypatch: pytest.MonkeyPatch,
@@ -197,7 +189,6 @@ async def test_list_chats_dm_avatar_url_none_when_peer_has_no_photo(
         listed = await client_admin.get("/api/v1/portal/chats")
     dm = next(c for c in listed.json() if c["is_direct"])
     assert dm["avatar_url"] is None
-
 
 async def test_list_chats_group_avatar_url_stays_presign(
     client_admin: AsyncClient,
@@ -221,7 +212,6 @@ async def test_list_chats_group_avatar_url_stays_presign(
     group = next(c for c in listed.json() if c["id"] == str(chat_id))
     assert group["avatar_url"] == presigned
     assert "/portal/users/" not in (group["avatar_url"] or "")
-
 
 async def test_list_chats_isolation_regular_user(
     sqlite_session: AsyncSession,
@@ -268,11 +258,9 @@ async def test_list_chats_isolation_regular_user(
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_db_session, None)
 
-
 # ---------------------------------------------------------------------------
 # POST /portal/chats/direct  — прямые сообщения
 # ---------------------------------------------------------------------------
-
 
 async def test_direct_chat_creates_dm(
     sqlite_session: AsyncSession,
@@ -299,7 +287,6 @@ async def test_direct_chat_creates_dm(
     assert data["is_direct"] is True
     assert set(data["member_subs"]) == {user_portal_admin().sub, user_portal_regular().sub}
 
-
 async def test_direct_chat_forbidden_when_other_portal_chat_disallowed(
     client_admin: AsyncClient,
     sqlite_session: AsyncSession,
@@ -324,7 +311,6 @@ async def test_direct_chat_forbidden_when_other_portal_chat_disallowed(
     assert r.status_code == 403, r.text
     assert r.json().get("code") == "forbidden"
 
-
 async def test_create_group_chat_forbidden_when_member_portal_chat_disallowed(
     client_admin: AsyncClient,
     sqlite_session: AsyncSession,
@@ -348,7 +334,6 @@ async def test_create_group_chat_forbidden_when_member_portal_chat_disallowed(
     )
     assert r.status_code == 422, r.text
     assert r.json().get("code") == "validation_error"
-
 
 async def test_direct_chat_idempotent(
     sqlite_session: AsyncSession,
@@ -377,7 +362,6 @@ async def test_direct_chat_idempotent(
     assert r1.status_code == 200
     assert r2.status_code == 200
     assert r1.json()["id"] == r2.json()["id"], "Повторный вызов должен возвращать тот же чат"
-
 
 async def test_direct_chat_symmetric(
     sqlite_session: AsyncSession,
@@ -413,7 +397,6 @@ async def test_direct_chat_symmetric(
     assert r_ba.status_code == 200
     assert r_ab.json()["id"] == r_ba.json()["id"], "A→B и B→A должны давать один и тот же чат"
 
-
 async def test_direct_chat_canonical_dm_key_set(
     sqlite_session: AsyncSession,
     patch_oidc_settings: Settings,
@@ -428,7 +411,6 @@ async def test_direct_chat_canonical_dm_key_set(
     assert row is not None
     expected_key = "|".join(sorted([admin.sub, regular.sub]))
     assert row.canonical_dm_key == expected_key
-
 
 async def test_direct_chat_sequential_get_or_create_same_chat(
     sqlite_session: AsyncSession,
@@ -447,11 +429,9 @@ async def test_direct_chat_sequential_get_or_create_same_chat(
     assert chat1.id == chat2.id, "Повторный вызов должен вернуть тот же чат"
     assert chat1.canonical_dm_key == chat2.canonical_dm_key
 
-
 # ---------------------------------------------------------------------------
 # unread_count + POST /portal/chats/{id}/read
 # ---------------------------------------------------------------------------
-
 
 async def test_unread_count_in_chat_list(
     sqlite_session: AsyncSession,
@@ -488,7 +468,6 @@ async def test_unread_count_in_chat_list(
 
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_db_session, None)
-
 
 async def test_mark_chat_read_resets_unread_count(
     sqlite_session: AsyncSession,
@@ -527,7 +506,6 @@ async def test_mark_chat_read_resets_unread_count(
 
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_db_session, None)
-
 
 async def test_message_receipt_sent_then_read(
     sqlite_session: AsyncSession,
@@ -570,7 +548,6 @@ async def test_message_receipt_sent_then_read(
 
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_db_session, None)
-
 
 async def test_post_message_with_reply_and_toggle_reaction(
     sqlite_session: AsyncSession,
@@ -621,7 +598,6 @@ async def test_post_message_with_reply_and_toggle_reaction(
 
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_db_session, None)
-
 
 async def test_forward_message_to_other_chat(
     sqlite_session: AsyncSession,
@@ -680,7 +656,6 @@ async def test_forward_message_to_other_chat(
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_db_session, None)
 
-
 async def test_forward_message_respects_rate_limit(
     sqlite_session: AsyncSession,
     patch_oidc_settings: Settings,
@@ -727,7 +702,6 @@ async def test_forward_message_respects_rate_limit(
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_db_session, None)
 
-
 async def test_mark_chat_read_403_non_member(
     sqlite_session: AsyncSession,
     patch_oidc_settings: Settings,
@@ -758,14 +732,12 @@ async def test_mark_chat_read_403_non_member(
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_db_session, None)
 
-
 # ---------------------------------------------------------------------------
 # POST /portal/chats/{id}/attachments  — загрузка вложений
 # ---------------------------------------------------------------------------
 
 _FAKE_STORAGE_KEY = "test-storage-key-abc123"
 _FAKE_PRESIGNED_URL = "http://minio.test/chat-attachments/test-storage-key-abc123?X-Amz-Signature=fake"
-
 
 def _mock_storage() -> MagicMock:
     """Мок storage-клиента: upload_file → фиксированный ключ; get_presigned_url → фиксированный URL."""
@@ -774,7 +746,6 @@ def _mock_storage() -> MagicMock:
     m.get_presigned_url.return_value = _FAKE_PRESIGNED_URL
     m.delete_object.return_value = None
     return m
-
 
 async def test_upload_attachment_success(
     client_admin: AsyncClient,
@@ -808,7 +779,6 @@ async def test_upload_attachment_success(
     assert data["file_size"] == 11
     assert "id" in data
     assert data["download_url"] == _FAKE_PRESIGNED_URL
-
 
 async def test_upload_attachment_403_non_member(
     sqlite_session: AsyncSession,
@@ -852,7 +822,6 @@ async def test_upload_attachment_403_non_member(
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_db_session, None)
 
-
 async def test_post_message_with_attachment(
     client_admin: AsyncClient,
     sqlite_session: AsyncSession,
@@ -892,7 +861,6 @@ async def test_post_message_with_attachment(
     assert msg["attachments"][0]["id"] == att_id
     assert msg["attachments"][0]["original_filename"] == "photo.png"
 
-
 async def test_post_message_empty_body_without_attachment_422(
     client_admin: AsyncClient,
     sqlite_session: AsyncSession,
@@ -909,7 +877,6 @@ async def test_post_message_empty_body_without_attachment_422(
         json={"body": "", "attachment_ids": []},
     )
     assert r.status_code == 422
-
 
 async def test_delete_message_for_all_purges_attachment_and_calls_minio(
     client_admin: AsyncClient,
@@ -959,7 +926,6 @@ async def test_delete_message_for_all_purges_attachment_and_calls_minio(
     assert msg is not None
     assert msg.deleted_for_all_at is not None
 
-
 async def test_create_group_chat_requires_title_and_members(client_admin: AsyncClient) -> None:
     r = await client_admin.post(
         "/api/v1/portal/chats",
@@ -971,7 +937,6 @@ async def test_create_group_chat_requires_title_and_members(client_admin: AsyncC
         json={"title": "Ок", "member_subs": []},
     )
     assert r2.status_code == 422
-
 
 async def test_group_chat_patch_title_and_members_flow(
     sqlite_session: AsyncSession,
@@ -1027,7 +992,6 @@ async def test_group_chat_patch_title_and_members_flow(
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_db_session, None)
 
-
 async def test_group_chat_creator_cannot_leave(
     client_admin: AsyncClient,
 ) -> None:
@@ -1038,7 +1002,6 @@ async def test_group_chat_creator_cannot_leave(
     cid = r.json()["id"]
     r_del = await client_admin.delete(f"/api/v1/portal/chats/{cid}/members/{user_portal_admin().sub}")
     assert r_del.status_code == 403
-
 
 async def test_group_chat_non_creator_cannot_patch_title(
     sqlite_session: AsyncSession,
@@ -1068,11 +1031,9 @@ async def test_group_chat_non_creator_cannot_patch_title(
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_db_session, None)
 
-
 # ---------------------------------------------------------------------------
 # 403 — не-участник чата не может отправлять сообщения и ставить реакции
 # ---------------------------------------------------------------------------
-
 
 async def test_post_message_403_non_member(
     sqlite_session: AsyncSession,
@@ -1100,7 +1061,6 @@ async def test_post_message_403_non_member(
 
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_db_session, None)
-
 
 async def test_toggle_reaction_403_non_member(
     sqlite_session: AsyncSession,
@@ -1133,7 +1093,6 @@ async def test_toggle_reaction_403_non_member(
 
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_db_session, None)
-
 
 async def test_forward_message_403_non_member_target(
     sqlite_session: AsyncSession,
@@ -1173,10 +1132,8 @@ async def test_forward_message_403_non_member_target(
     app.dependency_overrides.pop(get_current_user, None)
     app.dependency_overrides.pop(get_db_session, None)
 
-
 _FAKE_KEY = "fake-storage-key"
 _FAKE_URL = "http://minio.test/presign"
-
 
 async def test_get_attachment_download_returns_presigned(client_admin: AsyncClient) -> None:
     r_chat = await client_admin.post(
@@ -1199,7 +1156,6 @@ async def test_get_attachment_download_returns_presigned(client_admin: AsyncClie
     assert r_get.status_code == 200
     assert r_get.json()["download_url"] == _FAKE_URL
 
-
 async def test_list_chats_respects_skip(client_admin: AsyncClient) -> None:
     for i in range(2):
         await client_admin.post(
@@ -1211,7 +1167,6 @@ async def test_list_chats_respects_skip(client_admin: AsyncClient) -> None:
     assert r.status_code == 200
     assert len(r.json()) == len(r_all.json()) - 1
     assert {c["id"] for c in r.json()}.issubset({c["id"] for c in r_all.json()})
-
 
 async def test_list_messages_skip_limit(client_admin: AsyncClient) -> None:
     r_chat = await client_admin.post(
@@ -1226,7 +1181,6 @@ async def test_list_messages_skip_limit(client_admin: AsyncClient) -> None:
     )
     assert r.status_code == 200
     assert len(r.json()) >= 1
-
 
 async def test_delete_message_scope_me_hides_for_user(
     sqlite_session: AsyncSession,

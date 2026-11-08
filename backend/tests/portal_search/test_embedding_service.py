@@ -18,8 +18,6 @@ from app.portal_search.services.embedding import (
     upsert_embedding_bg,
 )
 
-from tests.conftest import make_oidc_settings
-
 
 def test_vec_literal_formats_floats() -> None:
     assert emb.vec_literal([1.0, 2.5]) == "[1.00000000,2.50000000]"
@@ -27,18 +25,18 @@ def test_vec_literal_formats_floats() -> None:
 
 
 @pytest.mark.asyncio
-async def test_upsert_embedding_skips_without_openai_key(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(emb, "get_settings", lambda: make_oidc_settings(openai_api_key=""))
-    db = MagicMock()
-    with patch.object(emb, "logger") as log:
-        await upsert_embedding(db, PORTAL_SEARCH_ENTITY_TYPE_DOCUMENT, "e1", "t", {})
-    db.execute.assert_not_called()
-    log.warning.assert_called()
+async def test_upsert_embedding_indexes_without_openai_key() -> None:
+    with patch.object(emb, "generate_embedding", new_callable=AsyncMock, return_value=[0.5, 0.5]):
+        db = MagicMock()
+        db.execute = AsyncMock()
+        db.commit = AsyncMock()
+        await upsert_embedding(db, PORTAL_SEARCH_ENTITY_TYPE_DOCUMENT, "e1", "отпуск", {})
+    db.execute.assert_awaited_once()
+    db.commit.assert_awaited_once()
 
 
 @pytest.mark.asyncio
-async def test_upsert_embedding_inserts_and_commits(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(emb, "get_settings", lambda: make_oidc_settings(openai_api_key="sk"))
+async def test_upsert_embedding_inserts_and_commits() -> None:
     with patch.object(emb, "generate_embedding", new_callable=AsyncMock, return_value=[0.25, 0.75]):
         db = MagicMock()
         db.execute = AsyncMock()
@@ -55,8 +53,7 @@ async def test_upsert_embedding_inserts_and_commits(monkeypatch: pytest.MonkeyPa
 
 
 @pytest.mark.asyncio
-async def test_upsert_embedding_logs_exception_on_failure(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(emb, "get_settings", lambda: make_oidc_settings(openai_api_key="sk"))
+async def test_upsert_embedding_logs_exception_on_failure() -> None:
     with patch.object(emb, "generate_embedding", new_callable=AsyncMock, return_value=[0.0]):
         db = MagicMock()
         db.execute = AsyncMock(side_effect=RuntimeError("db"))

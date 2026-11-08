@@ -1,5 +1,5 @@
 /**
- * Hocuspocus: sync Yjs + authenticate/snapshot через Cosmolet internal API.
+ * Hocuspocus: sync Yjs + authenticate/snapshot через Atrium internal API.
  * Канон в Postgres — HTML body (CAS); Y.Doc — runtime.
  */
 import { Server } from '@hocuspocus/server'
@@ -8,7 +8,7 @@ import * as Y from 'yjs'
 import { htmlToYUpdate, ydocToHtml } from './html-yjs.mjs'
 
 const PORT = Number(process.env.PORT || 1234)
-const API_BASE = (process.env.COSMOLET_API_BASE_URL || 'http://api:8000/api/v1').replace(/\/$/, '')
+const API_BASE = (process.env.ATRIUM_API_BASE_URL || 'http://api:8000/api/v1').replace(/\/$/, '')
 const SERVICE_TOKEN = (process.env.DOCUMENT_COLLAB_SERVICE_TOKEN || '').trim()
 const STORE_DEBOUNCE_MS = Number(process.env.DOCUMENT_COLLAB_STORE_DEBOUNCE_MS || 2000)
 

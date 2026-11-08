@@ -29,7 +29,7 @@ async def test_calendar_ws_ticket_returns_ticket(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     patch_oidc_settings.calendar_service_url = "http://calendar.test"
-    patch_oidc_settings.calendar_product = "cosmolet"
+    patch_oidc_settings.calendar_product = "atrium"
     _patch_calendar_settings(monkeypatch, patch_oidc_settings)
 
     async def _fake_issue(self: object) -> str:

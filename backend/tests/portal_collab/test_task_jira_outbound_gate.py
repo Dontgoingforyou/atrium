@@ -21,7 +21,7 @@ def test_jira_tasks_outbound_requires_flag_and_jira() -> None:
         jira_base_url="https://jira.example",
         jira_personal_access_token="tok",
         jira_tasks_sync_enabled=True,
-        jira_tasks_project_key="AUTASKS",
+        jira_tasks_project_key="TASKS",
     )
     assert s2.jira_tasks_outbound_enabled is True
 

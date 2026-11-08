@@ -14,8 +14,8 @@ from app.portal_mcp.constants import MCP_HTTP_BODY_MAX_BYTES
 
 # Портал стоит за nginx: Host публичный, не localhost. Защита SDK режет вызов Hub.
 portal_mcp = FastMCP(
-    "Космолёт",
-    instructions="Портал Космолёт. Тулы доступны администратору и менеджеру от их собственного входа.",
+    "Атриум",
+    instructions="Портал Атриум. Тулы доступны администратору и менеджеру от их собственного входа.",
     stateless_http=True,
     json_response=True,
     streamable_http_path="/",

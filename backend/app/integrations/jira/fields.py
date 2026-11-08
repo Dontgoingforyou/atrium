@@ -1,4 +1,7 @@
-"""Константы полей Jira (проект BASE) и порядок отображения в UI."""
+"""Нейтральные id полей Jira и порядок отображения в UI.
+
+Числа не из чужого проекта: свой Jira подставляет свои id в этот модуль.
+"""
 
 from __future__ import annotations
 
@@ -8,52 +11,51 @@ from typing import Literal
 
 FieldGroup = Literal["profile", "people", "dates", "other"]
 
-# Custom fields из issue BASE-4 (expand=names)
-CF_TELEGRAM = "customfield_10402"
-CF_CITY = "customfield_10408"
-CF_BIRTHDATE = "customfield_10400"
-CF_CONTACTS = "customfield_10410"
-CF_DIRECTION = "customfield_10405"
-CF_GROUP = "customfield_10407"
-CF_TRAINING_TYPE = "customfield_10413"
-CF_HIRING_STAGE = "customfield_10903"
-CF_DOCUMENTS = "customfield_10500"
-CF_CV = "customfield_10908"
-CF_CV_AU = "customfield_10904"
-CF_LEGEND = "customfield_10800"
-CF_AI_LEGEND = "customfield_10603"
-CF_POSITION = "customfield_10801"
-CF_BENCH = "customfield_10605"
-CF_OUTSTAFF = "customfield_10909"
-CF_REDFLAG = "customfield_10902"
-CF_HR = "customfield_10404"
-CF_HIRING_HR = "customfield_10901"
-CF_MANAGER_AU = "customfield_10906"
-CF_MANAGER_TS = "customfield_10900"
-CF_KP = "customfield_10907"
-CF_ON_PROJECT_SINCE = "customfield_10502"
-CF_SIGN_DATE = "customfield_10412"
-CF_OS_TRAINING_DATE = "customfield_10704"
-CF_FINAL_RUN = "customfield_10501"
-CF_ONE_ON_ONE = "customfield_10503"
-CF_RESPONSES_YEAR = "customfield_10700"
-CF_REJECTION_STAGE = "customfield_10701"
-CF_OS_TRAINING = "customfield_10606"
-CF_OS_TECH_LEGEND = "customfield_10602"
-CF_OS_LEGEND = "customfield_10604"
-CF_EXP_WORK_YEAR = "customfield_10702"
-CF_EXP_RESPONSES = "customfield_10411"
-CF_REG_TYPE_YEAR = "customfield_10703"
-CF_INTERVIEW_INFO = "customfield_10409"
+CF_TELEGRAM = "customfield_10001"
+CF_CITY = "customfield_10002"
+CF_BIRTHDATE = "customfield_10003"
+CF_CONTACTS = "customfield_10004"
+CF_DIRECTION = "customfield_10005"
+CF_GROUP = "customfield_10006"
+CF_TRAINING_TYPE = "customfield_10007"
+CF_HIRING_STAGE = "customfield_10008"
+CF_DOCUMENTS = "customfield_10009"
+CF_CV = "customfield_10010"
+CF_CV_AU = "customfield_10011"
+CF_LEGEND = "customfield_10012"
+CF_AI_LEGEND = "customfield_10013"
+CF_POSITION = "customfield_10014"
+CF_BENCH = "customfield_10015"
+CF_OUTSTAFF = "customfield_10016"
+CF_REDFLAG = "customfield_10017"
+CF_HR = "customfield_10018"
+CF_HIRING_HR = "customfield_10019"
+CF_MANAGER_AU = "customfield_10020"
+CF_MANAGER_TS = "customfield_10021"
+CF_KP = "customfield_10022"
+CF_ON_PROJECT_SINCE = "customfield_10023"
+CF_SIGN_DATE = "customfield_10024"
+CF_OS_TRAINING_DATE = "customfield_10025"
+CF_FINAL_RUN = "customfield_10026"
+CF_ONE_ON_ONE = "customfield_10027"
+CF_RESPONSES_YEAR = "customfield_10028"
+CF_REJECTION_STAGE = "customfield_10029"
+CF_OS_TRAINING = "customfield_10030"
+CF_OS_TECH_LEGEND = "customfield_10031"
+CF_OS_LEGEND = "customfield_10032"
+CF_EXP_WORK_YEAR = "customfield_10033"
+CF_EXP_RESPONSES = "customfield_10034"
+CF_REG_TYPE_YEAR = "customfield_10035"
+CF_INTERVIEW_INFO = "customfield_10036"
 
 # Ссылки для upsert в portal_specialist_link
 JIRA_LINK_FIELDS: dict[str, str] = {
     CF_CV: "CV",
-    CF_CV_AU: "CV(ау)",
+    CF_CV_AU: "CV (дополнительное)",
     CF_INTERVIEW_INFO: "Информация с собеседования",
 }
 
-# Поля, отображаемые в нативных модулях Cosmolet (не дублировать в секции Jira)
+# Поля, отображаемые в нативных модулях Atrium (не дублировать в секции Jira)
 JIRA_NATIVE_UI_FIELD_IDS: frozenset[str] = frozenset(
     {
         CF_DIRECTION,
@@ -65,13 +67,15 @@ JIRA_NATIVE_UI_FIELD_IDS: frozenset[str] = frozenset(
 
 
 def issue_key_regex(project_key: str) -> str:
-    """Regex ключа issue для проекта (``BASE-123`` / настраиваемый ``jira_project_key``)."""
-    key = (project_key or "BASE").strip().upper() or "BASE"
+    """Regex ключа issue. Пустой ключ проекта не совпадает ни с одним issue."""
+    key = (project_key or "").strip().upper()
+    if not key:
+        return r"^(?!)$"
     return rf"^{re.escape(key)}-\d+$"
 
 
-# Дефолт для проекта специалистов; валидация в сервисах — через ``issue_key_regex(settings)``.
-ISSUE_KEY_RE = issue_key_regex("BASE")
+# Пример для тестов и подсказок. Валидация в сервисах — через ``issue_key_regex(settings)``.
+ISSUE_KEY_RE = issue_key_regex("PROJ")
 
 
 @dataclass(frozen=True, slots=True)
@@ -95,9 +99,9 @@ JIRA_FIELD_SPECS: tuple[JiraFieldSpec, ...] = (
     JiraFieldSpec("issuetype", "Тип", "profile"),
     JiraFieldSpec(CF_DOCUMENTS, "Документы", "profile"),
     JiraFieldSpec(CF_CV, "CV", "profile"),
-    JiraFieldSpec(CF_CV_AU, "CV(ау)", "profile"),
+    JiraFieldSpec(CF_CV_AU, "CV (дополнительное)", "profile"),
     JiraFieldSpec("status", "Статус", "profile"),
-    JiraFieldSpec(CF_REDFLAG, "РедФлаг", "profile"),
+    JiraFieldSpec(CF_REDFLAG, "Флаг", "profile"),
     JiraFieldSpec("priority", "Приоритет", "profile"),
     JiraFieldSpec(CF_RESPONSES_YEAR, "Отклики за последний год", "profile"),
     JiraFieldSpec(CF_REJECTION_STAGE, "Отказ на этапе", "profile"),
@@ -108,18 +112,18 @@ JIRA_FIELD_SPECS: tuple[JiraFieldSpec, ...] = (
     JiraFieldSpec(CF_EXP_RESPONSES, "Опыт откликов", "profile"),
     JiraFieldSpec("environment", "Окружение", "profile"),
     JiraFieldSpec("labels", "Метки", "profile"),
-    JiraFieldSpec(CF_MANAGER_TS, "Менеджер ТС", "people"),
+    JiraFieldSpec(CF_MANAGER_TS, "Менеджер сопровождения", "people"),
     JiraFieldSpec(CF_LEGEND, "Легенда", "profile"),
     JiraFieldSpec("fixVersions", "Исправить в версиях", "other"),
     JiraFieldSpec(CF_INTERVIEW_INFO, "Информация с собеседования", "other"),
     JiraFieldSpec(CF_AI_LEGEND, "ИИ-легенда", "other"),
     JiraFieldSpec(CF_POSITION, "Должность", "other"),
     JiraFieldSpec(CF_BENCH, "Бенч", "other"),
-    JiraFieldSpec(CF_OUTSTAFF, "Outstaff", "other"),
+    JiraFieldSpec(CF_OUTSTAFF, "Внешний проект", "other"),
     JiraFieldSpec(CF_FINAL_RUN, "Финальный прогон", "other"),
     JiraFieldSpec(CF_HR, "Ответственный HR", "people"),
     JiraFieldSpec(CF_HIRING_HR, "Нанимающий HR", "people"),
-    JiraFieldSpec(CF_MANAGER_AU, "Менеджер АУ", "people"),
+    JiraFieldSpec(CF_MANAGER_AU, "Менеджер отдела", "people"),
     JiraFieldSpec(CF_KP, "КП", "people"),
     JiraFieldSpec("assignee", "Исполнитель", "people"),
     JiraFieldSpec("reporter", "Автор", "people"),

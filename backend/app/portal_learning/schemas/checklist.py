@@ -31,7 +31,7 @@ class ChecklistRead(BaseModel):
 class ChecklistCreate(BaseModel):
     title: str = Field(min_length=1, max_length=512)
     description: str | None = None
-    idp_group: str = Field(default="", max_length=128, description="Имя группы Keycloak; пусто = для всех")
+    idp_group: str = Field(default="", max_length=128, description="Группа доступа; пусто = для всех")
     items: list[str] = Field(default_factory=list, description="Тексты пунктов чек-листа")
 
 

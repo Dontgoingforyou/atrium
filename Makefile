@@ -7,7 +7,7 @@
 	coverage coverage-backend coverage-frontend clean \
 	build up-build up down restart logs logs-api logs-gateway shell-api status rebuild \
 	migrate migrate-local alembic-revision \
-	import-buildin import-buildin-local import-buildin-dry-run \
+	import-buildin import-buildin-local import-buildin-dry-run seed \
 	ci-test ci-test-backend ci-test-frontend \
 	pre-commit dev-backend dev-frontend ensure-tmp
 
@@ -18,7 +18,7 @@ NC := \033[0m
 
 BACKEND_DIR := backend
 FRONTEND_DIR := frontend
-COMPOSE_LOCAL := docker compose --project-directory . -f stand/docker-compose.yml
+COMPOSE_LOCAL := docker compose --project-directory .
 
 # Абсолютный путь: в рецептах есть «cd backend && …», относительный backend/.venv/... ломается
 BACKEND_VENV_PY := $(wildcard $(BACKEND_DIR)/.venv/bin/python)
@@ -35,9 +35,9 @@ else
   PRE_COMMIT_CMD := $(abspath $(BACKEND_PRE_COMMIT))
 endif
 
-# Для ci-test-backend: БД как в stand/docker-compose.yml (порт 5435 на localhost).
+# Для ci-test-backend: БД из корневого docker-compose.yml (порт 5435 на localhost).
 # 5433 — это backend/docker-compose.yml, его ci-test-backend не поднимает.
-CI_DATABASE_URL ?= postgresql+asyncpg://dev:dev@127.0.0.1:5435/cosmolet
+CI_DATABASE_URL ?= postgresql+asyncpg://dev:dev@127.0.0.1:5435/atrium
 
 PROJECT_TMP := $(abspath .tmp)
 export TMPDIR := $(PROJECT_TMP)
@@ -54,7 +54,7 @@ PYTEST_CI_FLAGS := $(PYTEST_XDIST_FLAGS) --cov=app --cov-config=pyproject.toml -
 
 help:
 	@echo "$(BLUE)=========================================$(NC)"
-	@echo "$(GREEN)  Cosmolet$(NC)"
+	@echo "$(GREEN)  Atrium$(NC)"
 	@echo "$(BLUE)=========================================$(NC)"
 	@echo ""
 	@echo "Доступные команды:"
@@ -66,7 +66,7 @@ help:
 	@echo "    make install          - install-backend и install-frontend"
 	@echo "    make test             - pytest в backend, xdist $(PYTEST_NUMWORKERS) (сужение: TEST_ARGS=tests/.../test_x.py -q)"
 	@echo "    make test-frontend    - vitest в frontend"
-	@echo "    make test-integration - Playwright стенд (tests/integration; нужен env)"
+	@echo "    make test-integration - Playwright (tests/integration; нужен env)"
 	@echo "    make test-all         - backend + frontend (без Playwright)"
 	@echo "    make lint             - ruff (backend) + eslint (frontend)"
 	@echo "    make format           - ruff check --fix + ruff format (backend, запись)"
@@ -79,7 +79,7 @@ help:
 	@echo "    make dev-backend      - uvicorn --reload :8000"
 	@echo "    make dev-frontend     - vite dev"
 	@echo ""
-	@echo "  $(GREEN)Docker (stand/docker-compose.yml):$(NC)"
+	@echo "  $(GREEN)Docker (docker-compose.yml):$(NC)"
 	@echo "    make up-build         - up --build (сборка + старт, логи в терминале)"
 	@echo "    make build            - только собрать образы"
 	@echo "    make up / down        - up -d / остановить стек"
@@ -98,6 +98,7 @@ help:
 	@echo "    make import-buildin-dry-run - отчёт импорта документов BuildIn"
 	@echo "    make import-buildin-local   - импорт документов BuildIn на хост (DATABASE_URL, MinIO)"
 	@echo "    make import-buildin         - импорт документов BuildIn в контейнер api"
+	@echo "    make seed                 - учебные данные и векторы документов, задач и сообщений"
 	@echo ""
 	@echo "  $(GREEN)Локальные проверки:$(NC)"
 	@echo "    make ci-test-backend    - поднять db через compose, затем lint, mypy и pytest"
@@ -155,7 +156,7 @@ test-frontend:
 
 # Стендовые Playwright: отдельно от unit; без env → blocked (см. tests/integration/README.md)
 test-integration:
-	@echo "$(BLUE)🧪 Playwright integration (стенд)...$(NC)"
+	@echo "$(BLUE)🧪 Playwright integration...$(NC)"
 	./tests/integration/run-integration.sh
 	@echo "$(GREEN)✅ Playwright integration завершён$(NC)"
 
@@ -236,7 +237,7 @@ dev-frontend:
 # -----------------------------------------------------------------------------
 
 build: ensure-tmp
-	@echo "$(BLUE)🔨 Сборка образов (stand/docker-compose.yml)...$(NC)"
+	@echo "$(BLUE)🔨 Сборка образов...$(NC)"
 	$(COMPOSE_LOCAL) build
 	@echo "$(GREEN)✅ Сборка завершена$(NC)"
 
@@ -298,22 +299,27 @@ BUILDIN_IMPORT_ROOT ?=
 
 import-buildin-dry-run:
 	@echo "$(BLUE)📋 Импорт BuildIn: dry-run (без записи)...$(NC)"
-	cd $(BACKEND_DIR) && BUILDIN_IMPORT_ROOT="$(BUILDIN_IMPORT_ROOT)" $(BACKEND_PY) scripts/import_buildin_outstaff.py --dry-run
+	cd $(BACKEND_DIR) && BUILDIN_IMPORT_ROOT="$(BUILDIN_IMPORT_ROOT)" $(BACKEND_PY) scripts/import_buildin.py --dry-run
 	@echo "$(GREEN)✅ Dry-run завершён$(NC)"
 
 import-buildin-local:
 	@echo "$(BLUE)📥 Импорт BuildIn (хост, DATABASE_URL + MinIO)...$(NC)"
 	test -n "$$DATABASE_URL" || { echo "$(YELLOW)Задайте DATABASE_URL (см. make migrate-local)$(NC)" >&2; exit 1; }
-	cd $(BACKEND_DIR) && BUILDIN_IMPORT_ROOT="$(BUILDIN_IMPORT_ROOT)" $(BACKEND_PY) scripts/import_buildin_outstaff.py
+	cd $(BACKEND_DIR) && BUILDIN_IMPORT_ROOT="$(BUILDIN_IMPORT_ROOT)" $(BACKEND_PY) scripts/import_buildin.py
 	@echo "$(GREEN)✅ Импорт завершён$(NC)"
+
+seed:
+	@echo "$(BLUE)📚 Учебные данные и векторизация (PostgreSQL :5435)...$(NC)"
+	cd $(BACKEND_DIR) && DATABASE_URL=postgresql+asyncpg://dev:dev@127.0.0.1:5435/atrium $(BACKEND_PY) scripts/seed_demo.py
+	@echo "$(GREEN)✅ Учебные данные и векторы записаны$(NC)"
 
 import-buildin:
 	@echo "$(BLUE)📥 Импорт BuildIn (контейнер api)...$(NC)"
 	$(COMPOSE_LOCAL) exec api mkdir -p /app/scripts/buildin_import
-	docker cp backend/scripts/import_buildin_outstaff.py $$($(COMPOSE_LOCAL) ps -q api):/app/scripts/import_buildin_outstaff.py
+	docker cp backend/scripts/import_buildin.py $$($(COMPOSE_LOCAL) ps -q api):/app/scripts/import_buildin.py
 	docker cp backend/scripts/buildin_import $$($(COMPOSE_LOCAL) ps -q api):/app/scripts/buildin_import
 	@echo "$(YELLOW)Скопируйте экспорт в контейнер или смонтируйте BUILDIN_IMPORT_ROOT$(NC)"
-	$(COMPOSE_LOCAL) exec -e BUILDIN_IMPORT_ROOT="$(BUILDIN_IMPORT_ROOT)" api python scripts/import_buildin_outstaff.py
+	$(COMPOSE_LOCAL) exec -e BUILDIN_IMPORT_ROOT="$(BUILDIN_IMPORT_ROOT)" api python scripts/import_buildin.py
 	@echo "$(GREEN)✅ Импорт завершён$(NC)"
 
 # -----------------------------------------------------------------------------

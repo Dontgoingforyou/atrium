@@ -1,7 +1,5 @@
-# Cursor: локальные настройки не коммитить; правила — да
-.cursor/*
-!.cursor/rules/
-!.cursor/rules/**
+# Cursor: локальные настройки и правила агента
+.cursor/
 
 # Легаси под docs/ — не коммитить; Softgen product/api — в репозитории
 docs/*

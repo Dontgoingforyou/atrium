@@ -1,4 +1,4 @@
-"""Преобразование ответа микросервиса в форму экрана Космолета."""
+"""Преобразование ответа микросервиса в форму экрана Атриума."""
 
 from __future__ import annotations
 
@@ -135,7 +135,7 @@ async def test_event_search_keeps_query_and_caps_page() -> None:
     transport = httpx.MockTransport(handler)
     query = "а" * 250
     async with httpx.AsyncClient(transport=transport) as client:
-        remote = CalendarRemote(client, "http://calendar.test", "token", "10", "user-sub", "cosmolet")
+        remote = CalendarRemote(client, "http://calendar.test", "token", "10", "user-sub", "atrium")
         await remote.search_events("созвон", 0, 108)
         await remote.search_events(query, 0, 20)
 
@@ -179,7 +179,7 @@ async def test_known_calendar_does_not_scan_every_calendar() -> None:
 
     transport = httpx.MockTransport(handler)
     async with httpx.AsyncClient(transport=transport) as client:
-        remote = CalendarRemote(client, "http://calendar.test", "token", "10", "user-sub", "cosmolet")
+        remote = CalendarRemote(client, "http://calendar.test", "token", "10", "user-sub", "atrium")
         await remote.get_event(event_id, calendar_id)
         await remote.update_event(event_id, {"title": "Перенос", "expected_version": 2}, calendar_id)
         await remote.override_occurrence(
@@ -202,7 +202,7 @@ async def test_missing_calendar_id_still_scans_the_list() -> None:
 
     transport = httpx.MockTransport(handler)
     async with httpx.AsyncClient(transport=transport) as client:
-        remote = CalendarRemote(client, "http://calendar.test", "token", "10", "user-sub", "cosmolet")
+        remote = CalendarRemote(client, "http://calendar.test", "token", "10", "user-sub", "atrium")
         with pytest.raises(NotFoundError, match="Событие не найдено"):
             await remote.get_event(uuid.uuid4())
 
@@ -299,7 +299,7 @@ async def test_peer_grid_lists_invite_on_someone_elses_calendar() -> None:
     transport = httpx.MockTransport(handler)
     window = datetime(2026, 11, 1, tzinfo=UTC)
     async with httpx.AsyncClient(transport=transport) as client:
-        remote = CalendarRemote(client, "http://calendar.test", "token", "10", "kseniya", "cosmolet")
+        remote = CalendarRemote(client, "http://calendar.test", "token", "10", "kseniya", "atrium")
         found = await remote.list_occurrences(
             starts=window,
             ends=datetime(2026, 12, 1, tzinfo=UTC),

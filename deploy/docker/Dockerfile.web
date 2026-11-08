@@ -4,17 +4,10 @@ WORKDIR /build
 # Фиксированный redirect_uri для OAuth (Keycloak): иначе при заходе с 127.0.0.1 не совпадёт с localhost в IdP
 ARG VITE_SPA_REDIRECT_URI=
 ENV VITE_SPA_REDIRECT_URI=${VITE_SPA_REDIRECT_URI}
-# production — подмена favicon перед сборкой (staging/local остаются с дефолтными из frontend/public)
-ARG DEPLOY_ENVIRONMENT=
 COPY frontend/package.json frontend/package-lock.json frontend/.npmrc ./
 RUN --mount=type=cache,target=/root/.npm \
     npm ci
 COPY frontend/ ./
-COPY deploy/ /repo/deploy/
-# Только копирование закоммиченных PNG/SVG — без apt (на prod-хосте часто нет доступа к deb.debian.org).
-RUN if [ "$DEPLOY_ENVIRONMENT" = "production" ]; then \
-      bash /repo/deploy/scripts/apply-prod-favicons.sh /build/public; \
-    fi
 RUN npm run build
 
 FROM nginx:alpine

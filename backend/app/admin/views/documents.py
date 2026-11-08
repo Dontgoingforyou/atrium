@@ -8,7 +8,7 @@ from wtforms.validators import DataRequired, Optional
 from wtforms.widgets import TextInput
 
 from app.admin.formatters import fmt_color, fmt_datetime
-from app.admin.model_converter import CosmoletAdminModelConverter
+from app.admin.model_converter import AtriumAdminModelConverter
 from app.admin.sqladmin_categories import SQLADMIN_CATEGORY_DOCUMENTS
 from app.infrastructure.db.models.portal_document import PortalDocument, PortalTag
 from app.infrastructure.db.models.portal_user_profile import PortalUserProfile
@@ -171,11 +171,11 @@ class PortalDocumentAdmin(ModelView, model=PortalDocument):
         "icon_emoji": "Эмодзи в дереве",
         "body": "Содержимое",
         "tags": "Теги",
-        "author_sub": "Идентификатор автора в SSO",
+        "author_sub": "Идентификатор автора",
         "author_display_name": "Автор",
         "author_email": "Почта автора",
         "author_user": "Автор",
-        "owner_sub": "Идентификатор владельца в SSO",
+        "owner_sub": "Идентификатор владельца",
         "owner_email": "Почта владельца",
         "owner_user": "Владелец",
         "history": "История изменений",
@@ -199,8 +199,8 @@ class PortalDocumentAdmin(ModelView, model=PortalDocument):
         "sort_order",
         "version",
     ]
-    # Тип/статус: русские подписи и значения БД — см. CosmoletAdminModelConverter
-    form_converter = CosmoletAdminModelConverter
+    # Тип/статус: русские подписи и значения БД — см. AtriumAdminModelConverter
+    form_converter = AtriumAdminModelConverter
     # M2M: у sqladmin QuerySelectMultipleField при data=None не рендерит options; Ajax обходит баг
     form_ajax_refs = {
         "tags": {

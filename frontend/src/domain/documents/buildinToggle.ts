@@ -2,10 +2,10 @@
  * Логика авто-раскрытия buildin-toggle (details.buildin-toggle) в HTML просмотра
  * документа и rich-text редактора задач. Вынесено из taskDetailPanelContent.ts,
  * чтобы не смешивать ответственность «контент панели задачи» и «манипуляция HTML
- * toggle-блоков» (см. clean-code.mdc, SRP).
+ * toggle-блоков» (, SRP).
  *
  * Проверку «есть ли видимый контент в toggle-body» переиспользуем из
- * utils/html/isEmptyHtml.ts (единый атом buildinToggleBodyHasVisibleContent) — см. dry.mdc.
+ * utils/html/isEmptyHtml.ts (единый атом buildinToggleBodyHasVisibleContent) —.
  */
 import { buildinToggleBodyHasVisibleContent } from '../../utils/html/isEmptyHtml'
 

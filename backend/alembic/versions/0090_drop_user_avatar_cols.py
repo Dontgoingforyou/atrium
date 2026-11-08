@@ -1,4 +1,4 @@
-"""Drop user avatar columns; photos live in Effective Admin.
+"""Drop user avatar columns; photos live in the profile service.
 
 Revision ID: 0090_drop_user_avatar_cols
 Revises: 0089_cal_event_color

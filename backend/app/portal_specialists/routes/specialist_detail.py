@@ -31,7 +31,7 @@ from app.services.file_upload_validation import open_upload_stream
 
 router = APIRouter(prefix="/portal/specialists", tags=["Специалисты — карточка"])
 
-SpecialistSubPath = Annotated[str, Path(description="sub специалиста в Keycloak")]
+SpecialistSubPath = Annotated[str, Path(description="Идентификатор специалиста")]
 NoteIdPath = Annotated[uuid.UUID, Path(description="UUID заметки")]
 LinkIdPath = Annotated[uuid.UUID, Path(description="UUID ссылки")]
 
@@ -83,7 +83,7 @@ async def patch_specialist_profile(
     summary="Удалить специалиста из портала (администратор)",
     description=(
         "Удаляет portal_user_profile и связанные данные (доска, профиль, ссылки, заметки). "
-        "Учётка Keycloak сохраняется; при повторном входе профиль создаётся заново."
+        "Учётная запись сохраняется; при повторном входе профиль создаётся заново."
     ),
 )
 async def purge_specialist(

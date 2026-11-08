@@ -69,7 +69,7 @@ class PortalLearningMaterialAdmin(ModelView, model=PortalLearningMaterial):
         "body": "Содержание",
         "material_type": "Тип",
         "status": "Статус",
-        "idp_group_rows": "Доступ (группы Keycloak)",
+        "idp_group_rows": "Доступ (группы)",
         "created_by_sub": "Автор",
         "created_by_profile": "Автор (профиль)",
         "quizzes": "Связанные тесты",

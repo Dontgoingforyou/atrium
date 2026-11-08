@@ -16,7 +16,7 @@ function mediaIdFromSrc(src: string | null | undefined): string | null {
 function resolveAndApplySrc(img: HTMLImageElement, src: string): () => void {
   const mediaId = mediaIdFromSrc(src)
   if (!mediaId) {
-    // Не ставим опасные схемы (javascript:/data:) в img.src — security.mdc.
+    // Не ставим javascript: и data: в img.src.
     if (!isDangerousHrefScheme(src)) img.src = src
     return () => { /* no-op */ }
   }

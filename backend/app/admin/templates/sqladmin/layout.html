@@ -9,18 +9,14 @@
     <div class="container-fluid">
       <h1 class="navbar-brand navbar-brand-autodark">
         <a href="{{ url_for('admin:index') }}">
-          {% if admin.logo_url %}
-          <img src="{{ admin.logo_url }}" width="64" height="64" alt="{{ admin.title }}" />
-          {% else %}
           <img
             class="admin-brand-icon"
-            src="/static/admin-brand/brand-waves.svg"
+            src="/static/admin-brand/favicon.svg"
             width="28"
             height="28"
             alt=""
           />
           <h3>{{ admin.title }}</h3>
-          {% endif %}
         </a>
       </h1>
       <nav class="navbar navbar-expand-sm shadow-none" id="navbar-menu">

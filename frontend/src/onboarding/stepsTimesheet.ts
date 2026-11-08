@@ -5,7 +5,7 @@ import {
 } from '../domain/onboarding/guidedTour'
 import { documentStep } from './documentTourSteps'
 
-/** Guided tour для timesheet-only (Специалисты АУ, students). */
+/** Guided tour для timesheet-only (ограниченная роль, students). */
 export const GUIDED_TOUR_TIMESHEET_STEPS: GuidedTourStepSource[] = [
   {
     id: 'theme',

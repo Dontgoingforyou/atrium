@@ -126,7 +126,7 @@ async def update_specialist_profile(
     updates = data.model_dump(exclude_unset=True)
     updates.pop("expected_version", None)
     if "birthdate" in updates or "telegram" in updates:
-        raise ForbiddenError("Дата рождения и Telegram синхронизируются из SSO/Jira и не редактируются в портале")
+        raise ForbiddenError("Дата рождения и Telegram подтягиваются из профиля и здесь не редактируются")
     if "location" in updates and profile.jira_issue_key:
         raise ForbiddenError("Город синхронизируется из Jira — измените значение в Jira и нажмите «Обновить из Jira»")
     if not updates:
@@ -169,7 +169,7 @@ async def purge_specialist_from_portal(
 ) -> list[uuid.UUID]:
     """Удалить данные специалиста из портала (профиль, доска, ссылки, заметки, Telegram-привязка).
 
-    Keycloak-учётка не затрагивается: при следующем SSO-входе профиль создаётся снова.
+    Учётная запись не затрагивается: при следующем входе профиль создаётся снова.
     Только администратор; нельзя удалить себя или пользователя с доступом к чатам портала.
     """
     if not user.is_portal_admin:
@@ -189,7 +189,7 @@ async def purge_specialist_from_portal(
         raise ForbiddenError("Нельзя удалить профиль администратора портала")
     if user_profile.portal_chat_allowed:
         raise ForbiddenError(
-            "Нельзя удалить пользователя с доступом к чатам портала; допустимы только студенты без чатов"
+            "Нельзя удалить пользователя с доступом к чатам портала; допустимы только специалисты без чатов"
         )
 
     note_ids = list(

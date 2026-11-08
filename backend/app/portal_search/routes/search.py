@@ -8,7 +8,7 @@ from fastapi import APIRouter, BackgroundTasks, Header, Query
 
 from app.api.deps import DbSession, HttpClient
 from app.api.deps_auth import CurrentUser, PortalAdminUser
-from app.core.exceptions import ConflictError, ServiceUnavailableError, ValidationError
+from app.core.exceptions import ConflictError, ValidationError
 from app.core.portal_search_constants import (
     PORTAL_SEARCH_ENTITY_TYPES,
     PORTAL_SEARCH_MIN_QUERY_LEN,
@@ -23,6 +23,7 @@ from app.portal_search.schemas.search import (
     PortalSemanticSearchResponse,
 )
 from app.portal_search.services import embedding as emb_svc
+from app.portal_search.services._embedding_local import LOCAL_SEMANTIC_MIN_SCORE
 from app.portal_search.services.search_orchestrator import run_fulltext_search, run_semantic_search
 
 router = APIRouter(prefix="/portal", tags=["Поиск"])
@@ -104,10 +105,10 @@ async def portal_search(
     "/search/semantic",
     summary="Семантический поиск по всему контенту портала",
     description=(
-        "Поиск по смыслу (векторные эмбеддинги OpenAI). "
-        "Возвращает результаты из всех типов сущностей отсортированные по релевантности. "
-        "Требует наличия OPENAI_API_KEY в конфигурации и проиндексированных данных "
-        "(запустите POST /portal/admin/search/reindex)."
+        "Поиск по смыслу: запрос и тексты сравниваются как векторы в pgvector. "
+        "Без ключа модели векторы считаются на портале по словам. "
+        "С ключом запрос уходит во внешнюю модель эмбеддингов. "
+        "Нужен индекс: make seed или POST /portal/admin/search/reindex."
     ),
 )
 async def portal_semantic_search(
@@ -164,8 +165,10 @@ async def portal_semantic_search(
             f"Неизвестные типы сущностей: {', '.join(sorted(unknown))}",
         )
 
-    if not get_settings().openai_api_key:
-        raise ServiceUnavailableError("Семантический поиск недоступен: OPENAI_API_KEY не задан")
+    settings = get_settings()
+    min_score = settings.semantic_search_min_score
+    if not settings.openai_api_key:
+        min_score = min(min_score, LOCAL_SEMANTIC_MIN_SCORE)
 
     calendar_remote, omit_calendar = calendar_remote_for_search(user, authorization, http)
     return await run_semantic_search(
@@ -177,7 +180,7 @@ async def portal_semantic_search(
         status_ids=status_ids,
         skip=skip,
         limit=limit,
-        min_score=get_settings().semantic_search_min_score,
+        min_score=min_score,
         calendar_remote=calendar_remote,
         omit_calendar=omit_calendar,
     )

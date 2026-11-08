@@ -1,6 +1,6 @@
 """Тесты галереи вложений чата: GET /portal/chats/{id}/attachments.
 
-Покрытие (testing.mdc): успешный сценарий + фильтр по типу + пагинация, исключение
+Покрытие: успешный сценарий + фильтр по типу + пагинация, исключение
 вложений удалённых/скрытых для пользователя сообщений и «осиротевших» (без message_id)
 вложений, 403 для не-участника чата.
 """
@@ -25,7 +25,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from tests.helpers.portal_test_users import user_portal_admin, user_portal_regular, user_portal_user_b
 
-
 async def _attach(
     session: AsyncSession,
     *,
@@ -48,7 +47,6 @@ async def _attach(
     await session.commit()
     await session.refresh(att)
     return att
-
 
 async def test_list_chat_attachments_filters_by_kind(sqlite_session: AsyncSession) -> None:
     admin = user_portal_admin()
@@ -81,7 +79,6 @@ async def test_list_chat_attachments_filters_by_kind(sqlite_session: AsyncSessio
     all_atts, all_total = await chat_svc.list_chat_attachments(sqlite_session, admin, chat.id, kind=None)
     assert all_total == 3
     assert {a.id for a in all_atts} == {img.id, voice.id, doc.id}
-
 
 async def test_list_chat_attachments_pagination(sqlite_session: AsyncSession) -> None:
     admin = user_portal_admin()
@@ -121,7 +118,6 @@ async def test_list_chat_attachments_pagination(sqlite_session: AsyncSession) ->
     assert [a.id for a in page1] == expected_order[:2]
     assert [a.id for a in page2] == expected_order[2:4]
 
-
 async def test_list_chat_attachments_excludes_deleted_message(sqlite_session: AsyncSession) -> None:
     admin = user_portal_admin()
     other = user_portal_regular()
@@ -137,7 +133,6 @@ async def test_list_chat_attachments_excludes_deleted_message(sqlite_session: As
     atts, total = await chat_svc.list_chat_attachments(sqlite_session, admin, chat.id)
     assert atts == []
     assert total == 0
-
 
 async def test_list_chat_attachments_excludes_hidden_for_user(sqlite_session: AsyncSession) -> None:
     """Вложение сообщения, скрытого «у меня», не показывается этому пользователю, но видно другим."""
@@ -158,7 +153,6 @@ async def test_list_chat_attachments_excludes_hidden_for_user(sqlite_session: As
     atts_admin, total_admin = await chat_svc.list_chat_attachments(sqlite_session, admin, chat.id)
     assert total_admin == 1
 
-
 async def test_list_chat_attachments_excludes_unlinked_orphan(sqlite_session: AsyncSession) -> None:
     """Вложения без message_id (не отправленные в составе сообщения) не входят в галерею."""
     admin = user_portal_admin()
@@ -170,11 +164,9 @@ async def test_list_chat_attachments_excludes_unlinked_orphan(sqlite_session: As
     assert atts == []
     assert total == 0
 
-
 # ---------------------------------------------------------------------------
 # HTTP-уровень: GET /portal/chats/{id}/attachments
 # ---------------------------------------------------------------------------
-
 
 async def test_list_chat_attachments_route_success(
     client_admin: AsyncClient,
@@ -204,7 +196,6 @@ async def test_list_chat_attachments_route_success(
     assert len(data["items"]) == 1
     assert data["items"][0]["message_id"] == message_id
     assert data["items"][0]["download_url"] == "https://dl.example/x"
-
 
 async def test_list_chat_attachments_route_403_non_member(
     sqlite_session: AsyncSession,

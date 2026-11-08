@@ -13,10 +13,8 @@ from fastapi import FastAPI, HTTPException
 from httpx import ASGITransport, AsyncClient
 from pydantic import BaseModel, Field
 
-
 class _EchoIn(BaseModel):
     name: str = Field(min_length=1)
-
 
 def _handlers_app() -> FastAPI:
     application = FastAPI()
@@ -45,7 +43,6 @@ def _handlers_app() -> FastAPI:
 
     return application
 
-
 async def test_app_error_not_found_payload() -> None:
     transport = ASGITransport(app=_handlers_app())
     async with AsyncClient(transport=transport, base_url="http://test") as client:
@@ -56,7 +53,6 @@ async def test_app_error_not_found_payload() -> None:
     assert body["message"] == "Объект не найден"
     assert body.get("request_id")
 
-
 async def test_app_error_forbidden_payload() -> None:
     transport = ASGITransport(app=_handlers_app())
     async with AsyncClient(transport=transport, base_url="http://test") as client:
@@ -66,7 +62,6 @@ async def test_app_error_forbidden_payload() -> None:
     assert body["code"] == "forbidden"
     assert body["message"] == "Нет доступа"
     assert body.get("request_id")
-
 
 async def test_unhandled_exception_internal_error_without_traceback() -> None:
     transport = ASGITransport(app=_handlers_app(), raise_app_exceptions=False)
@@ -80,7 +75,6 @@ async def test_unhandled_exception_internal_error_without_traceback() -> None:
     assert "Traceback" not in r.text
     assert body.get("request_id")
 
-
 async def test_http_exception_uses_shared_payload() -> None:
     transport = ASGITransport(app=_handlers_app())
     async with AsyncClient(transport=transport, base_url="http://test") as client:
@@ -90,9 +84,8 @@ async def test_http_exception_uses_shared_payload() -> None:
     assert body["code"] == "http_418"
     assert body["message"] == "teapot"
 
-
 async def test_pydantic_422_keeps_fastapi_detail_shape() -> None:
-    """Pydantic 422 — тело FastAPI ``detail``, не {code, message} (см. testing.mdc)."""
+    """Pydantic 422 — тело FastAPI ``detail``, не {code, message} ."""
     transport = ASGITransport(app=_handlers_app())
     async with AsyncClient(transport=transport, base_url="http://test") as client:
         r = await client.post("/echo", json={"name": ""})
@@ -100,7 +93,6 @@ async def test_pydantic_422_keeps_fastapi_detail_shape() -> None:
     body = r.json()
     assert "detail" in body
     assert "code" not in body
-
 
 async def test_request_id_middleware_passes_lifespan_scope() -> None:
     inner = AsyncMock()
@@ -111,7 +103,6 @@ async def test_request_id_middleware_passes_lifespan_scope() -> None:
     await mw(scope, receive, send)
     inner.assert_awaited_once_with(scope, receive, send)
 
-
 async def test_health_ok_includes_request_id() -> None:
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as client:
@@ -119,7 +110,6 @@ async def test_health_ok_includes_request_id() -> None:
     assert r.status_code == 200
     assert r.json() == {"status": "ok"}
     assert r.headers.get("x-request-id") == "rid-from-client"
-
 
 async def test_health_generates_request_id_when_missing() -> None:
     transport = ASGITransport(app=app)
@@ -129,7 +119,6 @@ async def test_health_generates_request_id_when_missing() -> None:
     rid = r.headers.get("x-request-id")
     assert rid is not None and len(rid) >= 8
 
-
 def test_error_payload_includes_request_id_when_set() -> None:
     token = set_request_id("ctx-rid-99")
     try:
@@ -138,27 +127,22 @@ def test_error_payload_includes_request_id_when_set() -> None:
         reset_request_id(token)
     assert body.get("request_id") == "ctx-rid-99"
 
-
 def test_extract_request_id_missing_header_generates_uuid() -> None:
     rid = _extract_request_id({})
     assert len(rid) == 36
-
 
 def test_extract_request_id_valid_header_passthrough() -> None:
     rid = _extract_request_id({b"x-request-id": b"client-rid-1"})
     assert rid == "client-rid-1"
 
-
 def test_extract_request_id_invalid_utf8_falls_back_to_uuid() -> None:
     rid = _extract_request_id({b"x-request-id": b"\xff\xfebad"})
     assert len(rid) == 36
-
 
 def test_extract_request_id_too_long_falls_back_to_uuid() -> None:
     too_long = ("a" * 500).encode()
     rid = _extract_request_id({b"x-request-id": too_long})
     assert len(rid) == 36
-
 
 def test_extract_request_id_crlf_falls_back_to_uuid() -> None:
     rid = _extract_request_id({b"x-request-id": b"ok\r\nSet-Cookie: x=1"})
@@ -166,11 +150,9 @@ def test_extract_request_id_crlf_falls_back_to_uuid() -> None:
     assert "\r" not in rid
     assert "\n" not in rid
 
-
 def test_extract_request_id_spaces_and_unicode_fall_back_to_uuid() -> None:
     assert len(_extract_request_id({b"x-request-id": b"rid with spaces"})) == 36
     assert len(_extract_request_id({b"x-request-id": "запрос-1".encode()})) == 36
-
 
 async def test_request_id_middleware_survives_invalid_utf8_header() -> None:
     async def inner(scope: dict, receive: object, send: object) -> None:

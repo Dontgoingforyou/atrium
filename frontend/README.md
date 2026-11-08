@@ -1,6 +1,6 @@
-# Cosmolet — фронтенд портала
+# Atrium — фронтенд портала
 
-SPA корпоративного портала: **Vite**, **React 19**, **TypeScript**, **React Router**, **TanStack Query**, **Zustand** (сессия). HTTP — **fetch** через [`src/api/rawClient.ts`](src/api/rawClient.ts).
+SPA портала: **Vite**, **React 19**, **TypeScript**, **React Router**, **TanStack Query**, **Zustand** (сессия). HTTP — **fetch** через [`src/api/rawClient.ts`](src/api/rawClient.ts).
 
 ## Запуск из корня репозитория
 
@@ -14,7 +14,7 @@ SPA корпоративного портала: **Vite**, **React 19**, **TypeS
 
 ## Соглашения
 
-- Правила для агента и команды: [`.cursor/rules/react-frontend.mdc`](../.cursor/rules/react-frontend.mdc) (в т.ч. Query vs Zustand, ошибки API, стили).
+- Данные сервера — TanStack Query, состояние сессии — Zustand.
 - **Стили:** токены в [`src/styles/tokens.css`](src/styles/tokens.css), глобальная база в [`src/styles/global.css`](src/styles/global.css); в TSX — `var(--…)`, новые экраны по возможности с **CSS Modules** рядом с компонентом.
 - **Ошибки API для пользователя:** [`src/utils/apiUserMessage.ts`](src/utils/apiUserMessage.ts) и единый разбор ответов в [`src/api/parseResponse.ts`](src/api/parseResponse.ts); в UI для неизвестных ошибок — `userFacingMessageFromUnknown`.
 

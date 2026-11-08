@@ -239,7 +239,7 @@ async def test_password_login_no_sso_credentials(
         json={"email": "u@example.com", "password": "secret", "redirect_uri": _CALLBACK},
     )
     assert response.status_code == 400
-    assert "учётных данных SSO" in response.json()["message"]
+    assert "Внешний вход не настроен" in response.json()["message"]
 
 
 async def test_password_login_userinfo_network_error(

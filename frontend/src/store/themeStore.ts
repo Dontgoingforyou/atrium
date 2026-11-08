@@ -6,7 +6,7 @@ import { persist } from 'zustand/middleware'
 
 export type ThemeId = 'light' | 'dark'
 
-export const THEME_PERSIST_KEY = 'cosmolet-theme'
+export const THEME_PERSIST_KEY = 'atrium-theme'
 
 const DEFAULT_THEME: ThemeId = 'light'
 

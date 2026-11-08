@@ -1,11 +1,11 @@
-IDP_GROUP_PORTAL_ADMIN = "cosmolet_role_admin"
+IDP_GROUP_PORTAL_ADMIN = "atrium_role_admin"
 # Группа Keycloak «outstaff» — IdP-метка отдела, НЕ политика «менеджер портала».
 # Менеджер = gid_number == SSO_GID_OUTSTAFF (см. permissions.is_manager_or_admin).
 IDP_GROUP_OUTSTAFF = "outstaff"
 IDP_GROUP_MANAGER = IDP_GROUP_OUTSTAFF  # алиас совместимости; не использовать для RBAC менеджера
 IDP_GROUP_DEVELOPER = "students"
 
-# Должности SSO (claim ``position``); см. документацию Effective Mobile SSO.
+# Должности SSO (claim ``position``); см. документацию SSO.
 SSO_POSITION_AU_SPECIALIST = "au_specialist"
 SSO_POSITION_STUDENT = "student"
 

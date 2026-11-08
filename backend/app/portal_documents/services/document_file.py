@@ -53,7 +53,7 @@ ALLOWED_DOCUMENT_FILE_CONTENT_TYPES: frozenset[str] = frozenset(
         "text/markdown",
     }
 )
-# Список одного документа без PagedResponse (UI без постранички); см. api-pagination.mdc.
+# Список одного документа без PagedResponse: у экрана нет постранички.
 _DOCUMENT_FILES_LIST_CAP = 500
 
 

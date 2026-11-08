@@ -14,7 +14,7 @@ export type UserOptionAvatar = {
 
 /**
  * Общий renderOption для пикеров пользователей: аватар + имя + secondary.
- * Используется в UserMultiPicker и SpecialistMultiPicker (dry.mdc).
+ * Используется в UserMultiPicker и SpecialistMultiPicker.
  *
  * @param opt   опция пикера (value/label/secondary)
  * @param pick  колбэк выбора

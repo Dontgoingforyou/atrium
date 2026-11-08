@@ -33,7 +33,7 @@ describe('canMutateOwnedFinanceRecord', () => {
     expect(canMutateOwnedFinanceRecord('other', user({ sub: 'u1' }))).toBe(false)
   })
 
-  it('менеджер АУ не мутирует чужую запись (только author|admin)', () => {
+  it('менеджер отдела не мутирует чужую запись (только author|admin)', () => {
     expect(
       canMutateOwnedFinanceRecord('other', user({ sub: 'u1', gid_number: SSO_GID_OUTSTAFF })),
     ).toBe(false)

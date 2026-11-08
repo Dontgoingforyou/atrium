@@ -8,7 +8,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 import pytest
 from app.core.config import Settings
 from app.infrastructure.cache import token_cache as tc
-from app.integrations.effective_admin.client import PhotoMeta
+from app.integrations.profile_directory.client import PhotoMeta
 from app.services import user_photo_meta_cache as pmc
 
 

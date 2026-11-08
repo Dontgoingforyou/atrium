@@ -126,7 +126,7 @@ export const DocumentBodySection = forwardRef<DocumentBodySectionHandle, Props>(
 
     // Охраняемый setState в рендере (React «adjusting state when props change»):
     // условие становится false после установки — цикла рендеров нет, а синхронизация
-    // отрабатывает до paint, без «мигания» старого значения. См. performance.mdc.
+    // отрабатывает до paint, без мигания старого значения.
     if (prevBody !== body) {
       setPrevBody(body)
       // Collab: REST body/version обновляется (snapshot/meta), Y.Doc не сбрасываем

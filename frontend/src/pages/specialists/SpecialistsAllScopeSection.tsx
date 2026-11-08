@@ -102,7 +102,7 @@ export function SpecialistsAllScopeSection({
         })}
       </ul>
       {allSpecialists.length === 0 && !loading && !isError && (
-        <p className="text-muted">Нет студентов в справочнике</p>
+        <p className="text-muted">Нет специалистов в справочнике</p>
       )}
       {(hasPrev || hasNext) && (
         <div className={styles.pager}>

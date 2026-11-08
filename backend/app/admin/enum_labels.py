@@ -1,6 +1,6 @@
 """Единый источник русских подписей для enum-полей портала в SQLAdmin.
 
-Используется и формой (``model_converter.CosmoletAdminModelConverter``,
+Используется и формой (``model_converter.AtriumAdminModelConverter``,
 ``form_args["choices"]`` для полей без SQLAlchemy Enum-типа), и форматтерами
 списков/деталей (``formatters.py``) — не дублировать подписи в разных модулях.
 """

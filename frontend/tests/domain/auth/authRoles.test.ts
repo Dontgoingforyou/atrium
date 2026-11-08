@@ -122,7 +122,7 @@ describe('isTimesheetOnlyUser', () => {
     expect(isUserManagerOrAdmin(role([], true, SSO_POSITION_STUDENT, SSO_GID_OUTSTAFF))).toBe(true)
   })
 
-  it('false — менеджер АУ students + outstaff + au_chief + gid 10000', () => {
+  it('false — менеджер отдела students + outstaff + au_chief + gid 10000', () => {
     expect(
       isTimesheetOnlyUser(role([IDP_GROUP_DEVELOPER, IDP_GROUP_OUTSTAFF], false, 'au_chief', SSO_GID_OUTSTAFF)),
     ).toBe(false)

@@ -1,4 +1,4 @@
-"""Backfill существующих portal_task → AUTASKS (только prod / sync enabled)."""
+"""Backfill существующих portal_task → TASKS (только prod / sync enabled)."""
 
 from __future__ import annotations
 

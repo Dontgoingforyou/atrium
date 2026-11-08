@@ -54,7 +54,7 @@ export function AddSpecialistModal({
     if (isError) return userFacingMessageFromUnknown(error)
     if (isPending || (isFetching && allSpecialists.length === 0)) return 'Загрузка…'
     if (search.trim()) return 'Ничего не найдено'
-    if (allSpecialists.length === 0) return 'Нет доступных студентов'
+    if (allSpecialists.length === 0) return 'Нет доступных специалистов'
     return 'Нет специалистов для этой колонки'
   })()
 

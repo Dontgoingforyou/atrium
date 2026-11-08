@@ -1,5 +1,5 @@
 /** Константы ролей — синхронизированы с backend/app/core/auth_constants.py */
-export const IDP_GROUP_PORTAL_ADMIN = 'cosmolet_role_admin'
+export const IDP_GROUP_PORTAL_ADMIN = 'atrium_role_admin'
 /** IdP-метка отдела «Аутстафф» (группа Keycloak). Не политика менеджера — та по gid_number. */
 export const IDP_GROUP_OUTSTAFF = 'outstaff'
 /** IDP-группа «students» в Keycloak; в коде — «developer» (историческое название). */

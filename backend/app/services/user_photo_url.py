@@ -10,7 +10,7 @@ from urllib.parse import urlencode
 from app.core.config import get_settings
 from app.core.exceptions import ForbiddenError, UnauthorizedError
 from app.core.utils import hmac_secrets_equal
-from app.integrations.effective_admin.username import username_from_email
+from app.integrations.profile_directory.username import username_from_email
 
 
 def _signing_secret() -> bytes | None:
@@ -26,7 +26,7 @@ def _signing_secret() -> bytes | None:
 def build_user_photo_proxy_url(*, user_sub: str, email: str | None, version: int | None = None) -> str | None:
     """Относительный URL ``/api/v1/portal/users/{sub}/photo?exp&sig&v=`` или None."""
     settings = get_settings()
-    if not settings.effective_admin_photos_enabled:
+    if not settings.profile_directory_photos_enabled:
         return None
     if username_from_email(email) is None:
         return None

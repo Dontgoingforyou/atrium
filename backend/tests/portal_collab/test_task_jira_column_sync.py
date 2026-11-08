@@ -1,4 +1,4 @@
-"""Тесты маппинга колонок канбана → статусы доски AUTASKS."""
+"""Тесты маппинга колонок канбана → статусы доски TASKS."""
 
 from __future__ import annotations
 
@@ -35,10 +35,10 @@ def test_build_index_and_status_lookup() -> None:
         "в работе": "2",
         "выполнено": "3",
     }
-    assert sync_mod.status_id_for_cosmolet_title("Бэклог", index) == "1"
-    assert sync_mod.status_id_for_cosmolet_title("Готово", index) == "3"
-    assert sync_mod.status_id_for_cosmolet_title("В работе", index) == "2"
-    assert sync_mod.status_id_for_cosmolet_title("Неизвестная", index) is None
+    assert sync_mod.status_id_for_atrium_title("Бэклог", index) == "1"
+    assert sync_mod.status_id_for_atrium_title("Готово", index) == "3"
+    assert sync_mod.status_id_for_atrium_title("В работе", index) == "2"
+    assert sync_mod.status_id_for_atrium_title("Неизвестная", index) is None
 
 
 @pytest.mark.asyncio

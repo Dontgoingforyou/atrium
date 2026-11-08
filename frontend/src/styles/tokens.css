@@ -103,15 +103,15 @@
   --color-text-label: rgba(37, 37, 37, 0.8);
   --color-text-disabled: rgba(37, 37, 37, 0.4); /* dark/400 */
   --color-heading: #252525;
-  --color-link: #6131cf;
+  --color-link: #0f766e;
 
-  /* ─── Состояния / акцент (фиолетовая система) ─────── */
-  --color-accent: #6131cf; /* accent/main */
-  --color-accent-hover: #49239f;
+  /* ─── Состояния / акцент ─────── */
+  --color-accent: #0f766e; /* accent/main */
+  --color-accent-hover: #115e59;
   --color-on-accent: #fefefc; /* light/main */
   --color-warning: #ff6f00;
   /** Бренд-панель логина (форсит light). */
-  --color-brand-login-panel: #df4d12;
+  --color-brand-login-panel: #0f766e;
   --color-info: #0ea5e9;
   --color-success: #1a9000;
   /** Серии бенч-графиков (офферы / CV). */
@@ -143,21 +143,21 @@
   --color-bg-panel: #f8f9fa;
   /* Карточки на фоне surface (канбан и т.п.) */
   --color-bg-elevated: #fafafa;
-  --color-bg-selected: rgba(97, 49, 207, 0.08);
-  --color-bg-selected-soft: rgba(97, 49, 207, 0.04);
-  --color-bg-chip: rgba(97, 49, 207, 0.08);
+  --color-bg-selected: rgba(15, 118, 110, 0.08);
+  --color-bg-selected-soft: rgba(15, 118, 110, 0.04);
+  --color-bg-chip: rgba(15, 118, 110, 0.08);
   --color-bubble-other: #f4f5f7;
   --color-text-on-dark-muted: rgba(255, 255, 255, 0.7);
   --shadow-elev-1: 0 1px 3px rgb(0 0 0 / 0.08);
   --shadow-elev-2: 0 2px 8px rgb(0 0 0 / 0.13);
   --shadow-elev-3: 0 8px 32px rgb(0 0 0 / 0.12);
   --shadow-elev-4: 0 10px 36px rgb(0 0 0 / 0.16);
-  --input-focus-shadow: 0 0 0 0.2rem rgba(97, 49, 207, 0.2);
+  --input-focus-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.2);
   /* Модалки, скрим */
   --color-backdrop: rgba(9, 30, 66, 0.35);
   /* «Мягкие» статусы (списки, дашборд) */
-  --color-bg-accent-soft: rgba(97, 49, 207, 0.1);
-  --color-fg-on-accent-soft: #6131cf;
+  --color-bg-accent-soft: rgba(15, 118, 110, 0.1);
+  --color-fg-on-accent-soft: #0f766e;
   --color-bg-danger-soft: rgba(223, 27, 31, 0.15);
   --color-bg-success-soft: #e6f4ea;
   --color-fg-on-success-soft: #188038;
@@ -167,7 +167,7 @@
   --color-bg-input: #fefefc;
   --color-border-success: #1a9000;
   /** Кольцо фокуса для :focus-visible на интерактивных элементах. */
-  --color-focus-ring: #6131cf;
+  --color-focus-ring: #0f766e;
 
   /* Кнопки поиска (primary/main): тёмные на светлой теме */
   --color-search-action-bg: #252525;
@@ -190,14 +190,13 @@
   --color-text-label: #d4d4d4;
   --color-text-disabled: rgba(212, 212, 212, 0.45);
   --color-heading: #ececec;
-  /* читаемый фиолетовый на тёмном фоне */
-  --color-link: #a78bfa;
+  --color-link: #5eead4;
 
-  --color-accent: #8b5cf6;
-  --color-accent-hover: #a78bfa;
+  --color-accent: #14b8a6;
+  --color-accent-hover: #5eead4;
   --color-on-accent: #ffffff;
   --color-warning: #d29922;
-  --color-brand-login-panel: #df4d12;
+  --color-brand-login-panel: #0f766e;
   --color-info: #38bdf8;
   --color-success: #3fb950;
   --color-bench-orange: #f97316;
@@ -224,19 +223,19 @@
   --color-bg-subtle: #2f2f2f;
   --color-bg-panel: #171717;
   --color-bg-elevated: #2f2f2f;
-  --color-bg-selected: rgba(139, 92, 246, 0.18);
-  --color-bg-selected-soft: rgba(139, 92, 246, 0.1);
-  --color-bg-chip: rgba(139, 92, 246, 0.12);
+  --color-bg-selected: rgba(20, 184, 166, 0.18);
+  --color-bg-selected-soft: rgba(20, 184, 166, 0.1);
+  --color-bg-chip: rgba(20, 184, 166, 0.12);
   --color-bubble-other: #2f2f2f;
   --color-text-on-dark-muted: rgba(255, 255, 255, 0.72);
   --shadow-elev-1: 0 1px 3px rgb(0 0 0 / 0.35);
   --shadow-elev-2: 0 2px 8px rgb(0 0 0 / 0.35);
   --shadow-elev-3: 0 8px 32px rgb(0 0 0 / 0.5);
   --shadow-elev-4: 0 10px 36px rgb(0 0 0 / 0.45);
-  --input-focus-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.35);
+  --input-focus-shadow: 0 0 0 0.2rem rgba(20, 184, 166, 0.35);
   --color-backdrop: rgba(0, 0, 0, 0.6);
-  --color-bg-accent-soft: rgba(139, 92, 246, 0.15);
-  --color-fg-on-accent-soft: #c4b5fd;
+  --color-bg-accent-soft: rgba(20, 184, 166, 0.15);
+  --color-fg-on-accent-soft: #5eead4;
   --color-bg-danger-soft: rgba(248, 81, 73, 0.15);
   --color-bg-success-soft: rgba(63, 185, 80, 0.12);
   --color-fg-on-success-soft: #3fb950;
@@ -246,7 +245,7 @@
   /* Граница «успех» для квизов / статусов */
   --color-border-success: #3fb950;
   /** Кольцо фокуса для :focus-visible на интерактивных элементах. */
-  --color-focus-ring: #a78bfa;
+  --color-focus-ring: #5eead4;
 
   /* Кнопки поиска: светлые на тёмной теме */
   --color-search-action-bg: #ececec;

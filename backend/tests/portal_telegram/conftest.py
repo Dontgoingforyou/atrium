@@ -119,7 +119,7 @@ def patch_telegram_bind_env(monkeypatch: pytest.MonkeyPatch) -> None:
     fake_redis.set = AsyncMock(return_value=True)
 
     monkeypatch.setattr("app.portal_telegram.routes.telegram.get_redis_client", lambda: fake_redis)
-    monkeypatch.setattr("app.portal_telegram.routes.telegram.get_bot_username", lambda: "CosmoletTestBot")
+    monkeypatch.setattr("app.portal_telegram.routes.telegram.get_bot_username", lambda: "AtriumTestBot")
 
     base = make_oidc_settings(telegram_bot_token="123:FAKE", telegram_use_polling=True)
     monkeypatch.setattr("app.portal_telegram.routes.telegram.get_settings", lambda: base)

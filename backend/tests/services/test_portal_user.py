@@ -9,7 +9,7 @@ from app.core.exceptions import ForbiddenError
 from app.core.utils import now_utc
 from app.infrastructure.db.models.portal_chat import PortalChat, PortalChatMember
 from app.infrastructure.db.models.portal_user_profile import PortalUserProfile
-from app.integrations.effective_admin.client import PhotoMeta
+from app.integrations.profile_directory.client import PhotoMeta
 from app.services.portal_user import (
     assert_subs_may_use_portal_chat,
     avatar_urls_for_subs,
@@ -214,7 +214,7 @@ async def test_avatar_urls_for_subs_proxy_when_has_photo(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     settings = make_oidc_settings(
-        effective_admin_base_url="https://ea.example",
+        profile_directory_base_url="https://ea.example",
         admin_session_secret="dev-secret-change-me",
     )
     monkeypatch.setattr("app.services.user_photo_url.get_settings", lambda: settings)

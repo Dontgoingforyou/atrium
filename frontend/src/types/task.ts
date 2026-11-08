@@ -99,7 +99,7 @@ export type PortalTaskColumn = {
   status_key: string
   position: number
   exclude_from_kpi: boolean
-  /** ID статуса Jira на доске AUTASKS (только portal_admin при обновлении). */
+  /** ID статуса Jira на доске TASKS (только portal_admin при обновлении). */
   jira_status_id?: string | null
 }
 
@@ -116,7 +116,7 @@ export type TaskColumnUpdate = {
   color?: string
   position?: number
   exclude_from_kpi?: boolean
-  /** ID статуса Jira на доске AUTASKS; только portal_admin. */
+  /** ID статуса Jira на доске TASKS; только portal_admin. */
   jira_status_id?: string | null
 }
 

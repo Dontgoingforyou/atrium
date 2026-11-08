@@ -38,7 +38,7 @@ ORM: [../infrastructure/db/models/portal_favorite.py](../infrastructure/db/model
 
 При **безвозвратном удалении** и очистке корзины по TTL записи избранного на документ и поддерево удаляются фасадом `remove_favorites_for_documents` из
 [`../portal_documents/services/portal_document_trash.py`](../portal_documents/services/portal_document_trash.py)
-(не прямой `DELETE` по `PortalFavorite` в чужом домене — см. `dry.mdc`).
+(не прямой `DELETE` по `PortalFavorite` в чужом домене — ).
 
 **Soft-delete избранное не снимает:** список скрывает документы в корзине (`deleted_at IS NULL` в JOIN); `restore` снова показывает те же звёзды.
 

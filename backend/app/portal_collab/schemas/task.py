@@ -199,7 +199,7 @@ class PortalTaskColumnUpdate(BaseModel):
     jira_status_id: str | None = Field(
         default=None,
         max_length=32,
-        description="ID статуса Jira на доске AUTASKS (только portal_admin)",
+        description="ID статуса Jira на доске TASKS (только portal_admin)",
     )
 
 

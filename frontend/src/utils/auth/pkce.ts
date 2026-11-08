@@ -1,6 +1,6 @@
 /** Ключи localStorage для PKCE (тот же origin, что и старт входа). */
-export const PKCE_STORAGE_STATE_KEY = 'cosmolet_pkce_state'
-export const PKCE_STORAGE_VERIFIER_KEY = 'cosmolet_pkce_verifier'
+export const PKCE_STORAGE_STATE_KEY = 'atrium_pkce_state'
+export const PKCE_STORAGE_VERIFIER_KEY = 'atrium_pkce_verifier'
 
 function randomUrlSafe(len: number): string {
   const bytes = new Uint8Array(len)

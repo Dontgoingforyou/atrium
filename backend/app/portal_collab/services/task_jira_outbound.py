@@ -1,4 +1,4 @@
-"""Outbound push portal_task → Jira AUTASKS (только при jira_tasks_sync_enabled)."""
+"""Outbound push portal_task → Jira TASKS (только при jira_tasks_sync_enabled)."""
 
 from __future__ import annotations
 
@@ -64,7 +64,7 @@ async def push_task_to_jira(
     *,
     settings: Settings | None = None,
 ) -> None:
-    """Создаёт или обновляет issue в AUTASKS; пишет ключ/ошибку в portal_task."""
+    """Создаёт или обновляет issue в TASKS; пишет ключ/ошибку в portal_task."""
     s = settings or get_settings()
     if not s.jira_tasks_outbound_enabled:
         return
@@ -85,7 +85,7 @@ async def push_task_to_jira(
             "issuetype": {"name": s.jira_tasks_issue_type},
             "priority": {"name": _priority_name(str(task.priority))},
         }
-        # duedate на экране создания AUTASKS нет — срок только в description.
+        # duedate на экране создания TASKS нет — срок только в description.
 
         emails = await _assignee_emails(session, task.id)
         watcher_names: list[str] = []
@@ -168,11 +168,11 @@ def _build_description(task: PortalTask, settings: Settings) -> str:
         "",
     ]
     if task.due_at is not None:
-        parts.append(f"Срок (Cosmolet): {task.due_at.date().isoformat()}")
+        parts.append(f"Срок (Atrium): {task.due_at.date().isoformat()}")
     parts.extend(
         [
-            f"Открыть в Космолете: {link}",
-            f"Cosmolet task #{task.number or task.id}",
+            f"Открыть в Атриуме: {link}",
+            f"Atrium task #{task.number or task.id}",
         ]
     )
     return "\n".join(p for p in parts if p is not None).strip()

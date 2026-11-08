@@ -30,7 +30,6 @@ from tests.helpers.portal_test_users import (
     user_portal_user_b,
 )
 
-
 @pytest.fixture(autouse=True)
 def calendar_routes_stay_on_local_services(monkeypatch: pytest.MonkeyPatch) -> None:
     """Экранные ручки зовут микросервис. В тестах его подменяет местный календарь."""
@@ -38,7 +37,6 @@ def calendar_routes_stay_on_local_services(monkeypatch: pytest.MonkeyPatch) -> N
 
     monkeypatch.setattr("app.portal_calendar.routes.calendars.require_remote", local_remote)
     monkeypatch.setattr("app.portal_calendar.routes.events.require_remote", local_remote)
-
 
 @pytest.fixture(autouse=True)
 def clear_memory_rate_limit_windows() -> Any:
@@ -48,20 +46,17 @@ def clear_memory_rate_limit_windows() -> Any:
     yield
     _memory_windows.clear()
 
-
 @pytest.fixture(autouse=True)
 def clear_settings_cache() -> Any:
     get_settings.cache_clear()
     yield
     get_settings.cache_clear()
 
-
 @pytest.fixture
 async def client() -> AsyncIterator[AsyncClient]:
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
-
 
 def make_oidc_settings(**kwargs: Any) -> Settings:
     """Настройки с включённым SSO для тестов."""
@@ -93,7 +88,6 @@ def make_oidc_settings(**kwargs: Any) -> Settings:
     data.update(kwargs)
     return Settings(**data)
 
-
 @pytest.fixture
 def patch_oidc_settings(monkeypatch: pytest.MonkeyPatch) -> Settings:
     """Патчит get_settings в роутерах авторизации (импорт по ссылке на функцию)."""
@@ -102,7 +96,6 @@ def patch_oidc_settings(monkeypatch: pytest.MonkeyPatch) -> Settings:
     monkeypatch.setattr("app.api.v1.routes.auth_session.get_settings", lambda: s)
     monkeypatch.setattr("app.api.deps_auth.get_settings", lambda: s)
     return s
-
 
 @pytest.fixture
 async def sqlite_session() -> AsyncIterator[AsyncSession]:
@@ -142,15 +135,12 @@ async def sqlite_session() -> AsyncIterator[AsyncSession]:
         yield session
     await engine.dispose()
 
-
 def _pop_db_override() -> None:
     app.dependency_overrides.pop(get_db_session, None)
-
 
 def _pop_db_and_user_overrides() -> None:
     app.dependency_overrides.pop(get_db_session, None)
     app.dependency_overrides.pop(get_current_user, None)
-
 
 @pytest.fixture
 async def client_sqlite_only(
@@ -168,11 +158,9 @@ async def client_sqlite_only(
         yield ac
     _pop_db_override()
 
-
 # ---------------------------------------------------------------------------
-# Интеграционные клиенты API (testing.mdc — общие фикстуры в conftest)
+# Интеграционные клиенты API
 # ---------------------------------------------------------------------------
-
 
 @pytest.fixture
 async def client_admin(
@@ -189,7 +177,6 @@ async def client_admin(
         yield ac
     _pop_db_and_user_overrides()
 
-
 @pytest.fixture
 async def client_user(
     sqlite_session: AsyncSession,
@@ -204,7 +191,6 @@ async def client_user(
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
     _pop_db_and_user_overrides()
-
 
 @pytest.fixture
 async def client_user_b(
@@ -221,14 +207,12 @@ async def client_user_b(
         yield ac
     _pop_db_and_user_overrides()
 
-
 @pytest.fixture
 async def client_admin_session() -> AsyncIterator[AsyncClient]:
     """Клиент без подмены БД (только для эндпоинтов вроде admin-session)."""
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
-
 
 @pytest.fixture
 async def client_developer(
@@ -245,7 +229,6 @@ async def client_developer(
         yield ac
     _pop_db_and_user_overrides()
 
-
 @pytest.fixture
 async def client_manager(
     sqlite_session: AsyncSession,
@@ -261,7 +244,6 @@ async def client_manager(
         yield ac
     _pop_db_and_user_overrides()
 
-
 @pytest.fixture
 async def client_no_idp(
     sqlite_session: AsyncSession,
@@ -276,7 +258,6 @@ async def client_no_idp(
     async with AsyncClient(transport=transport, base_url="http://test") as ac:
         yield ac
     _pop_db_and_user_overrides()
-
 
 @pytest.fixture
 async def client_outstaff_not_manager(

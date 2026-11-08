@@ -16,7 +16,7 @@ def _admin_user() -> UserPublic:
         email="a@example.com",
         username="admin",
         full_name="Admin",
-        idp_groups=["cosmolet_role_admin"],
+        idp_groups=["atrium_role_admin"],
         is_portal_admin=True,
     )
 

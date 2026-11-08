@@ -24,7 +24,7 @@ describe('sanitizeUserAvatarUrl', () => {
     expect(sanitizeUserAvatarUrl('/api/v1/portal/users/8fc273a0-82a8-4e6a-b286-9050d24a0d9f')).toBeNull()
     expect(
       sanitizeUserAvatarUrl(
-        'https://cosmolet.stage.example.com/api/v1/portal/users/3c7bb67c-2c1e-4533-8991-884043b35f60',
+        'https://atrium.stage.example.com/api/v1/portal/users/3c7bb67c-2c1e-4533-8991-884043b35f60',
       ),
     ).toBeNull()
     expect(sanitizeUserAvatarUrl('/api/v1/portal/users/u1/')).toBeNull()

@@ -80,7 +80,7 @@ class PortalDocumentHistoryAdmin(ModelView, model=PortalDocumentHistory):
         "id": "Внутренний номер",
         "document": "Документ",
         "document_id": "Документ",
-        "changed_by_sub": "Идентификатор в SSO",
+        "changed_by_sub": "Идентификатор автора изменения",
         "changed_by_display_name": "Редактор",
         "changed_by_email": "Почта редактора",
         "changed_at": "Время изменения",

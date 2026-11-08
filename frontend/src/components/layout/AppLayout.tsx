@@ -75,7 +75,7 @@ function AppLayoutInner() {
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
     try {
-      return localStorage.getItem('cosmolet:sidebar_collapsed') === '1'
+      return localStorage.getItem('atrium:sidebar_collapsed') === '1'
     } catch {
       return false
     }
@@ -87,7 +87,7 @@ function AppLayoutInner() {
     setSidebarCollapsed((prev) => {
       const next = !prev
       try {
-        localStorage.setItem('cosmolet:sidebar_collapsed', next ? '1' : '0')
+        localStorage.setItem('atrium:sidebar_collapsed', next ? '1' : '0')
       } catch {
         /* ignore */
       }
@@ -205,15 +205,9 @@ function AppLayoutInner() {
           onClick={nav.onSidebarClick}
         >
           <div className={styles.sidebarHeader}>
-            <Link to="/" className={styles.logo} aria-label="Cosmolet">
-              <img
-                src="/brand-waves.svg"
-                alt=""
-                className={styles.logoIcon}
-                width={28}
-                height={28}
-              />
-              <span className={styles.logoText}>Cosmolet</span>
+            <Link to="/" className={styles.logo} aria-label="Atrium">
+              <img src="/favicon.svg" alt="" className={styles.logoIcon} width={28} height={28} />
+              <span className={styles.logoText}>Atrium</span>
             </Link>
           </div>
           <nav className={styles.nav}>

@@ -25,7 +25,7 @@ export default defineConfig({
   projects: [
     { name: "setup", testMatch: /auth\.setup\.ts/ },
     {
-      name: "stand",
+      name: "portal",
       dependencies: ["setup"],
       testIgnore: [/auth\.setup\.ts/, /sso-login\.spec.ts/],
       use: { storageState: AUTH_STATE_PATH },

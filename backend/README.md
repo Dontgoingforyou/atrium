@@ -18,15 +18,15 @@ uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 ```bash
 cd backend && source .venv/bin/activate
-export DATABASE_URL=postgresql+asyncpg://dev:dev@localhost:5433/cosmolet
+export DATABASE_URL=postgresql+asyncpg://dev:dev@localhost:5433/atrium
 python -m alembic upgrade head
 ```
 
-В Docker (локальный стенд [`stand/docker-compose.yml`](../stand/docker-compose.yml), из корня репо):  
-`docker compose --project-directory . -f stand/docker-compose.yml exec api python -m alembic upgrade head`
+В Docker (корневой [`docker-compose.yml`](../docker-compose.yml), из корня репо):  
+`docker compose exec api python -m alembic upgrade head`
 
 Если раньше собирали образ без зависимости `alembic`, пересоберите API:  
-`docker compose --project-directory . -f stand/docker-compose.yml build --no-cache api`
+`docker compose build --no-cache api`
 
 ## Docker (только API + БД)
 

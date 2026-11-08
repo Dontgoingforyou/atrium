@@ -41,8 +41,8 @@ beacon_router = APIRouter(prefix="/portal", tags=["Пользователи"])
     description=(
         "Пользователи с профилем и portal_chat_allowed=True (пикер чатов и фильтров задач). "
         "Студенты без чатов (portal_chat_allowed=False) не входят в список. "
-        "Тестовые учётки, явный список AUTASKS-413, чужой отдел (gid не АУ) "
-        "и почты, которых нет среди активных в Effective Admin, скрыты. "
+        "Тестовые учётки, явный список скрытых адресов, чужой отдел (не основной отдел) "
+        "и почты, которых нет среди активных в сервисе профилей, скрыты. "
         "Поле presence — из Redis при доступном REDIS_URL."
     ),
 )
@@ -62,10 +62,10 @@ async def list_portal_users(
 
 @router.get(
     "/users/specialists",
-    summary="Специалисты: список студентов портала",
+    summary="Специалисты без доступа к чатам",
     description=(
-        "Пользователи с профилем ``portal_chat_allowed=false`` (роль students без чатов). "
-        "Доступ: менеджер АУ (основной отдел, gid_number=10000) или администратор портала."
+        "Пользователи с профилем ``portal_chat_allowed=false``. "
+        "Доступ: менеджер или администратор портала."
     ),
     response_model=PagedResponse[PortalUserRead],
 )
@@ -167,7 +167,7 @@ async def presence_beacon(
 
 @router.get(
     "/users/{user_sub}/photo",
-    summary="Прокси фото пользователя из Effective Admin",
+    summary="Прокси фото пользователя из сервиса профилей",
     description=(
         "Signed query (exp+sig). Service token на бэкенде для чужих фото; "
         "свой аватар — опционально с Authorization Bearer (без service token)."
@@ -214,7 +214,7 @@ def _jwt_sub_unverified(token: str) -> str | None:
     summary="Загрузить аватар текущего пользователя",
     description=(
         f"Изображение до {avatar_svc.AVATAR_MAX_BYTES // (1024 * 1024)} МБ: JPEG, PNG, WebP или GIF. "
-        "Пишется в Effective Admin (/me/photo)."
+        "Пишется в сервисе профилей (/me/photo)."
     ),
 )
 async def post_my_avatar(

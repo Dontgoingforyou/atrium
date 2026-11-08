@@ -54,7 +54,7 @@ async def create_task_column(
 
 @router.post(
     "/task-columns/jira/sync-mapping",
-    summary="Привязать колонки канбана к статусам доски AUTASKS (portal_admin)",
+    summary="Привязать колонки канбана к статусам доски TASKS (portal_admin)",
 )
 async def sync_task_column_jira_mapping(
     user: PortalAdminUser,

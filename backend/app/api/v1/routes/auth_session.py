@@ -56,7 +56,7 @@ async def admin_session(
 ) -> dict[str, str]:
     """
     Одна точка OAuth у SPA; панель /admin открывается по cookie после проверки
-    is_portal_admin (группа cosmolet_role_admin в профиле SSO, как у /auth/me).
+    is_portal_admin (группа atrium_role_admin в профиле SSO, как у /auth/me).
 
     Ответ JSON, а не HTTP-редирект: иначе fetch с redirect=follow получает 200 от HTML /admin/
     и фронт не может обработать переход.
@@ -75,7 +75,7 @@ async def admin_session(
 
 @router.post(
     "/logout",
-    summary="Выход: инвалидация токена в SSO и кэше Redis",
+    summary="Выход: сброс сессии",
 )
 async def logout(
     request: Request,

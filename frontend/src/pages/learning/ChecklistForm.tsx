@@ -66,7 +66,7 @@ export function ChecklistCreateForm({
           />
         </label>
         <label className={styles.adminLabel}>
-          Группа Keycloak
+          Группа доступа
           <input className={styles.adminInput} value={idpGroup} onChange={(e) => setIdpGroup(e.target.value)} />
         </label>
         <div>
@@ -206,7 +206,7 @@ export function ChecklistEditForm({
           />
         </label>
         <label className={styles.adminLabel}>
-          Группа Keycloak
+          Группа доступа
           <input className={styles.adminInput} value={idpGroup} onChange={(e) => setIdpGroup(e.target.value)} />
         </label>
         <div>

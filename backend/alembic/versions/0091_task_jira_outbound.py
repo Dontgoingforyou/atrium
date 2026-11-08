@@ -1,4 +1,4 @@
-"""Jira outbound fields for portal tasks (AUTASKS).
+"""Jira outbound fields for portal tasks (TASKS).
 
 Revision ID: 0091_task_jira_outbound
 Revises: 0090_drop_user_avatar_cols

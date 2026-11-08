@@ -7,7 +7,7 @@ import logging
 
 from app.core.config import get_settings
 from app.infrastructure.cache.token_cache import get_redis_client
-from app.integrations.effective_admin.client import PhotoMeta
+from app.integrations.profile_directory.client import PhotoMeta
 
 logger = logging.getLogger(__name__)
 

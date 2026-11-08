@@ -93,7 +93,7 @@ class ManagerSpecialistEntryRead(BaseModel):
 
 
 class ManagerSpecialistAdd(BaseModel):
-    specialist_sub: str = Field(description="sub пользователя (специалиста) в Keycloak")
+    specialist_sub: str = Field(description="Идентификатор специалиста")
     column_key: str = Field(default="new", max_length=100, description="Ключ колонки воронки")
 
 

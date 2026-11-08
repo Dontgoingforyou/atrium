@@ -20,7 +20,7 @@ function accountNavLink(page: Page) {
 }
 
 /**
- * Логин через форму `/login` Cosmolet (POST /auth/login → прокси SSO).
+ * Логин через форму `/login` Atrium (POST /auth/login → прокси SSO).
  * Критерий: app-shell с пунктом «Аккаунт» и кнопкой «Выход».
  * После логина закрывает автостарт guided tour (иначе modalBackdrop ломает клики по nav).
  */

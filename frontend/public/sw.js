@@ -5,7 +5,7 @@ self.addEventListener('push', (event) => {
   } catch {
     /* ignore */
   }
-  const title = typeof data.title === 'string' ? data.title : 'Cosmolet'
+  const title = typeof data.title === 'string' ? data.title : 'Atrium'
   const body = typeof data.body === 'string' ? data.body : 'Новое сообщение'
   const url = typeof data.url === 'string' ? data.url : '/chats'
   const tag = typeof data.tag === 'string' ? data.tag : 'portal-chat'
@@ -14,7 +14,7 @@ self.addEventListener('push', (event) => {
       body,
       tag,
       data: { url },
-      icon: '/favicon.ico',
+      icon: '/favicon-192x192.png',
     }),
   )
 })

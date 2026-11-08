@@ -13,8 +13,8 @@ from sqlalchemy.sql.selectable import Subquery
 from app.core.exceptions import ForbiddenError
 from app.core.permissions import is_manager_or_admin
 from app.infrastructure.db.models.portal_user_profile import PortalUserProfile
-from app.integrations.effective_admin.client import PhotoMeta
-from app.integrations.effective_admin.username import username_from_email
+from app.integrations.profile_directory.client import PhotoMeta
+from app.integrations.profile_directory.username import username_from_email
 from app.schemas.auth import UserPublic
 from app.schemas.portal_user import PortalUserRead
 from app.services.portal_user_visibility import directory_employee_visible_sql, hidden_emails_for_directory
@@ -157,8 +157,8 @@ async def list_portal_users(
 
     Источник — только ``portal_user_profile`` (без «призраков» из истории чатов).
     Исключаются пользователи с ``portal_chat_allowed=False``, тестовые учётки,
-    явный список AUTASKS-413, чужой отдел (gid известен и не АУ)
-    и почты not_found в каталоге Effective Admin (если сверка настроена).
+    явный список скрытых адресов, чужой отдел (gid известен и это не основной отдел)
+    и почты not_found в сервисе профилей (если сверка настроена).
     """
     hidden = await _hidden_picker_emails(session, http)
     total = await _count_portal_users(session, hidden)

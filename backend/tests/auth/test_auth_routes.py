@@ -82,7 +82,7 @@ async def test_authorization_url_no_credentials_for_redirect(
         params={"redirect_uri": _CALLBACK, "code_challenge": "x", "state": "y"},
     )
     assert response.status_code == 400
-    assert "учётных данных SSO" in response.json()["message"]
+    assert "Внешний вход не настроен" in response.json()["message"]
 
 
 async def test_authorization_url_uses_port_specific_client(
@@ -134,7 +134,7 @@ async def test_token_no_credentials_for_redirect(
         json={"code": "c", "redirect_uri": _CALLBACK},
     )
     assert response.status_code == 400
-    assert "учётных данных SSO" in response.json()["message"]
+    assert "Внешний вход не настроен" in response.json()["message"]
 
 
 async def test_token_exchange_sso_unreachable(
@@ -151,7 +151,7 @@ async def test_token_exchange_sso_unreachable(
         json={"code": "c", "redirect_uri": _CALLBACK},
     )
     assert response.status_code == 503
-    assert "SSO" in response.json()["message"]
+    assert "Сервис входа временно недоступен" in response.json()["message"]
 
 
 async def test_token_exchange_empty_token_response(

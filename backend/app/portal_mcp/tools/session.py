@@ -9,7 +9,7 @@ from app.portal_mcp.constants import LIST_LIMIT_DEFAULT
 
 
 def register(mcp: FastMCP) -> None:
-    @mcp.tool(description="Кто вызывает MCP: sub, признак админа и отдел SSO.")
+    @mcp.tool(description="Кто вызывает MCP: sub, признак админа и отдел.")
     async def whoami() -> dict[str, object]:
         async with mcp_call("whoami") as call:
             return {

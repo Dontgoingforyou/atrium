@@ -53,7 +53,7 @@ HTTP-роуты подключены с **`NON_DEVELOPER_ROUTE_DEPENDENCIES`**. 
 | `services/task_file.py` | Файлы задачи (MIME + magic bytes) |
 | `services/task_link.py` | Ссылки |
 | `services/notification.py` | Создание уведомлений; @mention не восстанавливает менеджера по `gid_number` из `portal_user_profile` (поля нет в кэше профиля) |
-| `services/task_jira_*.py` | Outbound AUTASKS |
+| `services/task_jira_*.py` | Outbound TASKS |
 | `schemas/*.py` | Pydantic для задач и договорённостей |
 | `admin/agreements.py`, `admin/tasks.py` | SQLAdmin: договорённости, задачи |
 | `admin/formatters.py` | Подформаттеры user_sub и автора |

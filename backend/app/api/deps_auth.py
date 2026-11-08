@@ -13,6 +13,12 @@ from app.core.permissions import is_manager_or_admin, is_timesheet_only
 from app.core.utils import decode_jwt_payload_unverified
 from app.infrastructure.cache import token_cache
 from app.schemas.auth import UserPublic
+from app.services.demo_accounts import (
+    DEMO_GROUPS_CLAIM,
+    DemoTokenInvalid,
+    demo_signing_secret,
+    read_demo_access_claims,
+)
 from app.services.sso.login_allowlist import ensure_portal_login_allowed
 from app.services.sso.token_service import fetch_user_info_from_gateway
 from app.services.user_profile import build_user_public
@@ -122,6 +128,14 @@ async def verify_access_token(
         logger.warning("400: токен превышает допустимую длину (%d)", len(token))
         raise BadRequestError("Токен слишком длинный")
     s = get_settings()
+    try:
+        demo_claims = read_demo_access_claims(token, demo_signing_secret(s))
+    except DemoTokenInvalid:
+        raise UnauthorizedError("Невалидный или истёкший токен") from None
+    if demo_claims is not None:
+        user = await build_user_public(db, demo_claims, groups_claim_path=DEMO_GROUPS_CLAIM)
+        ensure_portal_login_allowed(user, s)
+        return user
     if not s.sso_enabled:
         raise ServiceUnavailableError(s.sso_disabled_detail)
 
@@ -139,8 +153,7 @@ async def verify_access_token(
     except httpx.RequestError as exc:
         logger.warning("503: SSO userinfo недоступен: %s", exc)
         raise ServiceUnavailableError(
-            "Сервис аутентификации (userinfo) временно недоступен. "
-            "Проверьте, что из контейнера API достижим SSO_SERVICE_URL, и повторите.",
+            "Сервис входа временно недоступен. Повторите попытку через минуту.",
         ) from exc
     if not gateway_payload or not gateway_payload.get("sub"):
         logger.warning("401: SSO вернул пустой payload (невалидный или истёкший токен)")

@@ -1,13 +1,6 @@
 # Cursor: локальные настройки и правила агента
 .cursor/
 
-# Легаси под docs/ — не коммитить; Softgen product/api — в репозитории
-docs/*
-!docs/product/
-!docs/product/**
-!docs/api/
-!docs/api/**
-
 # Python
 .venv/
 .venv-ci/

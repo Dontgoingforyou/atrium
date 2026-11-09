@@ -7,7 +7,7 @@
 | Поле | Значение |
 |------|----------|
 | Тип | web-api |
-| HTTP API | `docs/api/openapi.yaml` |
+| HTTP API | FastAPI, страница `/docs` |
 | Локальный Docker | `docker-compose.yml` |
 | Код | `backend/`, `frontend/` в корне |
 
@@ -26,10 +26,6 @@
 ## Границы
 
 Секреты не в git (`.env`). Не переносить `backend/` и `frontend/` в `project/`.
-
-## Где требования
-
-[`docs/product/requirements.md`](docs/product/requirements.md), [`docs/product/test-cases.md`](docs/product/test-cases.md), [`docs/product/screens-index.md`](docs/product/screens-index.md). OpenAPI — [`docs/api/openapi.yaml`](docs/api/openapi.yaml).
 
 ## Тестирование
 

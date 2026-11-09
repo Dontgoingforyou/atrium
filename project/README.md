@@ -11,5 +11,4 @@
 | Локальный Docker | [`docker-compose.yml`](../docker-compose.yml) |
 | Деплой | [`deploy/`](../deploy/) |
 | Playwright | [`tests/integration/`](../tests/integration/) |
-| Требования и TC | [`docs/product/`](../docs/product/) |
 | Карта репозитория | [`AGENTS.md`](../AGENTS.md) |
